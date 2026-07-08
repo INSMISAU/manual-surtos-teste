@@ -341,7 +341,7 @@ function emTeste(){ return ghRepo()===GH_TEST; }
 function alternarTeste(){ try{ if(emTeste()){ localStorage.removeItem('ins_gh_repo'); toast('MODO REAL: as publicacoes vao para o manual do lancamento.'); } else { localStorage.setItem('ins_gh_repo', GH_TEST); toast('MODO DE TESTE: as publicacoes vao para a copia de teste ('+GH_TEST+'). O manual real fica intacto.'); } if(typeof render==='function') render(); }catch(e){} }
 function ghToken(){ try{return localStorage.getItem('ins_gh_token')||'';}catch(e){return '';} }
 function configGitHub(){
-  var t=prompt('Chave de publicacao do GitHub (token fine-grained, permissao Contents: write no repositorio '+GH_REPO+'). Fica guardada APENAS neste navegador, nunca no codigo. Deixe vazio para remover.', ghToken());
+  var t=prompt('Chave de publicacao do GitHub (token fine-grained, permissao Contents: write no repositorio '+ghRepo()+'). Fica guardada APENAS neste navegador, nunca no codigo. Deixe vazio para remover.', ghToken());
   if(t===null) return;
   try{ if(t.trim()){ localStorage.setItem('ins_gh_token', t.trim()); toast('Publicacao automatica configurada neste navegador.'); } else { localStorage.removeItem('ins_gh_token'); toast('Chave removida.'); } }catch(e){ toast('Nao foi possivel guardar.'); }
 }
