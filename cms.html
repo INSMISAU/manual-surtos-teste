@@ -277,9 +277,10 @@ function publicarSite(){
     sb.from('doencas').select('*').eq('estado','publicado').order('nome'),
     sb.from('seccoes').select('*').eq('estado','publicado').order('ordem'),
     sb.from('glossario_abreviaturas').select('*').order('sigla'),
-    fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/ddata.js?_='+Date.now()).then(function(r){return r.ok?r.text():null;}).catch(function(){return null;})
+    fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/ddata.js?_='+Date.now()).then(function(r){return r.ok?r.text():null;}).catch(function(){return null;}),
+    fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/assets/js/content.js?_='+Date.now()).then(function(r){return r.ok?r.text():null;}).catch(function(){return null;})
   ]).then(function(res){
-    var sind=res[0].data||[], doe=res[1].data||[], sec=res[2].data||[], ab=res[3].data||[], ddataTxt=res[4];
+    var sind=res[0].data||[], doe=res[1].data||[], sec=res[2].data||[], ab=res[3].data||[], ddataTxt=res[4], contentTxt=res[5];
     var sinIndex={}; var groups=sind.map(function(s,i){ sinIndex[s.id]=i+1; return {id:i+1,name:s.nome,icon:'sindrome',diseases:[]}; });
     var LBL=[['pontos_chave','Pontos-chave'],['definicao_caso','Definicao de caso'],['limiares_notificacao','Limiar de notificacao e surto'],['agente_infeccioso','Agente infeccioso'],['fonte_periodo_infeccao','Fonte e periodo de infeccao'],['grupos_risco','Grupos de risco'],['protocolo_investigacao','Protocolo de investigacao'],['colheita_manuseio_amostras','Laboratorio e amostras']];
     var diseases=doe.map(function(d){
@@ -291,7 +292,13 @@ function publicarSite(){
     var sections=sec.map(function(s){return {id:s.ordem,title:s.titulo,label:'SECCAO '+s.ordem,blocks:txtToBlocks(s.conteudo),figures:[]};});
     var MAN={meta:{title:'Manual Nacional para Deteccao e Investigacao de Surtos',subtitle:'Instituto Nacional de Saude',version:'V1.0'},
       sections:sections,groups:groups,diseases:diseases,glossary:{abbreviations:ab.map(function(a){return {abbr:a.sigla,meaning:a.significado};})}};
-    var contentJs='window.MANUAL='+JSON.stringify(MAN)+';\n';
+    var contentJs;
+    var baseMAN=parseManual(contentTxt);
+    if(baseMAN && baseMAN.diseases && baseMAN.diseases.length){
+      var doeBy={}; doe.forEach(function(d){ doeBy[d.slug]=d; });
+      baseMAN.diseases.forEach(function(dis){ var d=doeBy[dis.slug]; if(!d) return; dis.fields=LBL.filter(function(x){return d[x[0]];}).map(function(x){return {label:x[1],blocks:txtToBlocks(d[x[0]])};}); });
+      contentJs='window.MANUAL='+JSON.stringify(baseMAN)+';\n';
+    } else { contentJs='window.MANUAL='+JSON.stringify(MAN)+';\n'; }
     var files=[{path:'content.js',content:contentJs},{path:'assets/js/content.js',content:contentJs}];
 
     /* Gerar tambem ddata.js (o ficheiro que a FICHA le): fundir o texto do CMS na
@@ -332,6 +339,7 @@ function baixar(nome, conteudo){
   var a=document.createElement('a'); a.href=u; a.download=nome; a.click(); URL.revokeObjectURL(u);
 }
 /* le o ddata.js actual (var DISEASES={...};) e devolve o objecto */
+function parseManual(txt){ try{ return new Function('window', txt+'; return window.MANUAL;')({}); }catch(e){ return null; } }
 function parseDdataAll(txt){
   try{ return new Function('return (function(){'+txt+'; return {DISEASES:typeof DISEASES!=="undefined"?DISEASES:null, ICONS:typeof ICONS!=="undefined"?ICONS:null, COVER:typeof COVER!=="undefined"?COVER:null};})()')(); }
   catch(e){ return {DISEASES:null,ICONS:null,COVER:null}; }
