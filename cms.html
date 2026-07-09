@@ -367,7 +367,7 @@ function publicarFicheiros(files, nDoencas, comDdata){
     commitToGitHub(files, 'Publicar manual via CMS ('+nDoencas+' doencas)').then(function(){
       toast('Publicado! O site actualiza em 1-2 min. ('+nDoencas+' doencas'+(comDdata?' + fichas':'')+')');
     }).catch(function(e){
-      toast('Falha ao publicar ('+e.message+'). A descarregar os ficheiros como alternativa.');
+      alert('FALHA AO PUBLICAR NO GITHUB:\n\n'+e.message+'\n\n(Como alternativa, vou descarregar os ficheiros. Nada foi publicado.)');
       files.forEach(function(f){ baixar(f.path.split('/').pop(), f.content); });
     });
   } else {
