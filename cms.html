@@ -298,7 +298,7 @@ function publicarSite(){
     var geradoDdata=false;
     if(ddataTxt){
       try{
-        var base=parseDdata(ddataTxt);
+        var _all=parseDdataAll(ddataTxt); var base=_all.DISEASES; if(!base) throw new Error('ddata ilegivel');
         var MAP={ 'Pontos-chave':'pontos_chave','Definicao de caso':'definicao_caso','Definição de caso':'definicao_caso','Limiar de notificação e surto':'limiares_notificacao','Limiar de notificacao e surto':'limiares_notificacao',
           'Agente infeccioso':'agente_infeccioso','Fonte e periodo de infeccao':'fonte_periodo_infeccao','Fonte e período de infecção':'fonte_periodo_infeccao',
           'Grupos de risco':'grupos_risco','Protocolo de investigacao':'protocolo_investigacao','Protocolo de investigação':'protocolo_investigacao',
@@ -314,7 +314,10 @@ function publicarSite(){
             }
           });
         });
-        files.push({path:'ddata.js',content:'var DISEASES='+JSON.stringify(base)+';\n'});
+        var ddOut='var DISEASES='+JSON.stringify(base)+';\n';
+        if(_all.ICONS!=null) ddOut+='var ICONS='+JSON.stringify(_all.ICONS)+';\n';
+        if(_all.COVER!=null) ddOut+='var COVER='+JSON.stringify(_all.COVER)+';\n';
+        files.push({path:'ddata.js',content:ddOut});
         geradoDdata=true;
       }catch(e){ /* nao bloqueia */ }
     }
@@ -328,6 +331,10 @@ function baixar(nome, conteudo){
   var a=document.createElement('a'); a.href=u; a.download=nome; a.click(); URL.revokeObjectURL(u);
 }
 /* le o ddata.js actual (var DISEASES={...};) e devolve o objecto */
+function parseDdataAll(txt){
+  try{ return new Function('return (function(){'+txt+'; return {DISEASES:typeof DISEASES!=="undefined"?DISEASES:null, ICONS:typeof ICONS!=="undefined"?ICONS:null, COVER:typeof COVER!=="undefined"?COVER:null};})()')(); }
+  catch(e){ return {DISEASES:null,ICONS:null,COVER:null}; }
+}
 function parseDdata(txt){
   try{ return JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}')+1)); }
   catch(e){ var f=new Function(txt+'; return typeof DISEASES!=="undefined"?DISEASES:null;'); return f(); }
