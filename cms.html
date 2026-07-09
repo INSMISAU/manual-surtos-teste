@@ -158,7 +158,7 @@ function render(){
     return;
   }
   c.innerHTML='<div class="card"><div class="ok-banner">O manual público fica <b>estático e seguro</b>: ao "Publicar para o site", este gestor gera o ficheiro do manual a partir do que está <b>publicado</b>. O leitor nunca depende da base de dados.</div>'+
-    '<div class="row" style="margin-bottom:10px"><b style="flex:1">Doenças</b>'+
+    '<div class="'+(emTeste()?'ok-banner':'hint')+'" style="margin-bottom:10px">Publicacao actual &rarr; <b>'+(emTeste()?'CoPIA DE TESTE':'MANUAL REAL (lancamento)')+'</b> &middot; '+ghRepo()+'</div>'+'<div class="row" style="margin-bottom:10px"><b style="flex:1">Doenças</b>'+
     '<button class="btn-o" onclick="loadEmendas()">Ver emendas</button>'+
     (can('publish')?'<button class="btn-g" onclick="publicarSite()">↥ Publicar para o site</button><button class="btn-o" onclick="configGitHub()" style="margin-left:6px">⚙ Ligação de publicação</button><button class="btn-o" onclick="alternarTeste()" style="margin-left:6px">🧪 Modo de teste</button>':'')+'</div>'+
     '<div id="lista">A carregar…</div></div>';
@@ -270,6 +270,7 @@ function txtToBlocks(t){
   return out;
 }
 function publicarSite(){
+  if(!emTeste()){ if(!confirm('ATENCAO: vais publicar no MANUAL REAL do lancamento ('+ghRepo()+').\n\nTens a certeza? (Para testar, liga primeiro o Modo de teste.)')) return; }
   toast('A gerar o manual a partir da base de dados...');
   Promise.all([
     sb.from('sindromes').select('*').order('ordem'),
