@@ -204,3 +204,10 @@ body{font-family:"Raleway","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-
 .tbl th,.tbl td{border:1px solid #dce7ea;padding:7px 9px;text-align:left;vertical-align:top;line-height:1.35}
 .tbl thead th{background:#e6f2f4;color:#0a4a5a;font-weight:700}
 .tbl tbody tr:nth-child(even){background:#f6fafb}
+
+/* Tabela 1 — agrupamento por vigilância sindrómica */
+table.t1{width:100%;border-collapse:collapse;font-size:12.5px}
+table.t1 th{background:var(--petrol);color:#fff;text-align:left;padding:7px 9px;font-size:12px}
+table.t1 td{padding:7px 9px;border-bottom:1px solid #e2e8ec;vertical-align:top}
+table.t1 tr:nth-child(even) td{background:#fafcfd}
+table.t1 a{color:var(--petrol);text-decoration:none}
