@@ -393,9 +393,10 @@ document.addEventListener('DOMContentLoaded',()=>{
      'box-shadow:0 3px 10px rgba(0,0,0,.22);cursor:pointer;display:grid;place-items:center;font-size:17px;line-height:1}',
    '.fab-nav button.menu{background:#b02040;font-size:16px}',
    '.fab-nav button.up{background:#0b465d;font-size:16px;width:36px;height:36px}',
+   // telemovel: esconder as setas de rolar (o dedo ja rola); ficam so o menu e o voltar
    '@media(max-width:560px){.fab-nav{right:6px;bottom:84px;gap:6px}',
-     '.fab-nav button{width:34px;height:34px;font-size:15px}',
-     '.fab-nav button.up{width:32px;height:32px;font-size:14px}}',
+     '.fab-nav button{width:36px;height:36px;font-size:16px}',
+     '.fab-nav button.up{display:none}}',
    // ---- Ver texto integral (igual ao das fichas: topo, largo, contorno petroleo) ----
    '.rm-clip{max-height:460px;overflow:hidden;position:relative}',
    '.rm-clip::after{content:"";position:absolute;left:0;right:0;bottom:0;height:80px;',
