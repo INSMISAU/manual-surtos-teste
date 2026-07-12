@@ -104,8 +104,13 @@ function mount(headerOpts, bodyHtml, activeTab){
 }
 function pageHome(){
   const card=(href,t,extra)=>'<a class="nav-card" href="'+href+'"><span class="t">'+t+'</span>'+(extra||'')+'</a>';
+  const pf=(M.meta&&M.meta.prefacio)||null;
+  const prefacio=pf?('<details class="acc" style="margin:0 0 12px"><summary><span class="dot"></span>'+esc(pf.titulo)+'<span class="chev">'+I.chev+'</span></summary>'+
+    '<div class="inner content">'+pf.paragrafos.map(p=>'<p>'+esc(p)+'</p>').join('')+
+    '<p style="font-size:12.5px;color:var(--muted);margin-top:10px">'+esc(pf.assinatura)+'</p></div></details>'):'';
   const body=
     coverBlock()+
+    prefacio+
     card('explorar-seccao.html','Explorar por Secção')+
     card('explorar-sindrome.html','Explorar por Síndrome','<span class="ico"><img class="dico" src="assets/icons/sindromes.png" alt=""></span>')+
     card('explorar-abecedario.html','Explorar por Abecedário','<span class="az">A-Z</span>')+
@@ -157,7 +162,15 @@ function pageSeccao(){
 function pageExplorarSindrome(){
   const cards=(M.groups||[]).map(g=>
     '<div class="syn" onclick="location.href=\'sindrome.html?id='+g.id+'\'"><div class="ico">'+groupIcon(g.icon)+'</div><div class="nm">'+esc(g.name)+'</div></div>').join('');
-  const body='<div class="grid">'+cards+'</div>'+
+  const si=(M.meta&&M.meta.sindromesIntro)||[];
+  const intro=si.length?('<div class="card content" style="margin-bottom:14px">'+si.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div>'):'';
+  const t1=(M.meta&&M.meta.tabela1)||null;
+  const tabela=t1?('<details class="acc" style="margin:14px 0 0"><summary><span class="dot"></span>'+esc(t1.titulo)+'<span class="chev">'+I.chev+'</span></summary>'+
+    '<div class="inner content"><div style="overflow-x:auto"><table class="t1"><thead><tr>'+
+    t1.cabecalho.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+
+    (M.groups||[]).map(g=>'<tr><td><a href="sindrome.html?id='+g.id+'"><b>'+esc(g.name)+'</b></a></td><td>'+esc(g.agentes||'')+'</td><td>'+esc(g.obs||'')+'</td></tr>').join('')+
+    '</tbody></table></div></div></details>'):'';
+  const body=intro+'<div class="grid">'+cards+'</div>'+tabela+
     '<div class="card" style="margin-top:16px;display:flex;gap:14px;align-items:center">'+
     '<img src="assets/img/foto1.jpg" style="width:84px;height:84px;object-fit:cover;border-radius:12px" alt="">'+
     '<div><div style="font-family:Poppins;font-weight:700;color:var(--petrol);font-size:14px">Manual para Detecção e Investigação de Surtos em Moçambique</div>'+
@@ -172,7 +185,11 @@ function pageSindrome(){
   const ds=(M.diseases||[]).filter(d=>g.diseases.includes(d.slug));
   const rows=ds.map(d=>'<a class="abc-row" href="doenca.html?slug='+d.slug+'"><span class="ltr">'+esc(d.letter)+'</span>'+esc(d.name)+'<span style="float:right;color:var(--petrol)">'+I.arrow+'</span></a>').join('')
     || '<div class="abc-row dim">Sem fichas nesta categoria.</div>';
-  const body='<div class="lead">'+ds.length+' condição(ões) nesta síndrome</div><div class="abc-list">'+rows+'</div>';
+  const intro=(g.intro&&g.intro.length)
+    ? '<div class="card" style="margin-bottom:14px">'+g.intro.map(p=>'<p style="margin:0 0 10px;font-size:14px;line-height:1.6">'+esc(p)+'</p>').join('')+'</div>'
+    : '';
+  const obs=g.obs?('<div class="card content" style="margin-bottom:14px;border-left:4px solid var(--petrol)"><p style="margin:0"><b>Observações:</b> '+esc(g.obs)+'</p></div>'):'';
+  const body=intro+obs+'<div class="lead">'+ds.length+' condição(ões) nesta síndrome</div><div class="abc-list">'+rows+'</div>';
   mount({back:true,crumb:'Síndrome',title:esc(g.name),search:false},body,'map');
 }
 function pageAbecedario(){
@@ -196,16 +213,11 @@ function pageDoenca(){
 }
 function pageGlossario(){
   const ab=(M.glossary&&M.glossary.abbreviations)||[];
-  const concepts=[
-    ['Surto','A ocorrência de um número de casos de uma doença superior ao esperado em determinado local e período.'],
-    ['Endemia','Doença que está constantemente presente numa área geográfica ou população específica, geralmente a um nível basal previsível.'],
-    ['Epidemia','Aumento, frequentemente súbito, do número de casos de uma doença acima do que é normalmente esperado numa população.'],
-    ['Caso suspeito','Pessoa que apresenta sinais e sintomas compatíveis com a definição clínica de uma doença sob vigilância.'],
-    ['Definição de caso','Conjunto de critérios padronizados utilizados para classificar se uma pessoa apresenta uma determinada doença ou condição de saúde.'],
-  ];
+  const concepts=((M.glossary&&M.glossary.concepts)||[]).map(c=>[c.term,c.def]);
   const cBody=concepts.map(c=>'<h4>'+esc(c[0])+':</h4><p>'+esc(c[1])+'</p>').join('');
   const abBody=ab.map(a=>'<div class="abbr"><span class="k">'+esc(a.abbr)+'</span><span class="v">'+esc(a.meaning)+'</span></div>').join('');
-  const body='<div class="card content"><h3 style="margin-top:4px">Principais conceitos epidemiológicos</h3>'+cBody+'</div>'+
+  const gi=(M.glossary&&M.glossary.intro)?'<p style="margin:0 0 12px">'+esc(M.glossary.intro)+'</p>':'';
+  const body='<div class="card content">'+gi+'<h3 style="margin-top:4px">Principais conceitos epidemiológicos</h3>'+cBody+'</div>'+
     '<h2 class="sec-h">Abreviaturas ('+ab.length+')</h2><div class="card" style="padding:6px 16px">'+abBody+'</div>';
   mount({crumb:'Glossário',title:'Glossário',search:false},body,'book');
 }
