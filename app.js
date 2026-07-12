@@ -386,12 +386,16 @@ document.addEventListener('DOMContentLoaded',()=>{
    '.mnav a.adm{margin-top:6px;border-top:1px solid #e4e9ed;padding-top:14px;color:#b02040}',
    '.mnav a.adm .mi{background:#f7e6ea;color:#b02040}',
    // ---- Botoes flutuantes (cores do manual) ----
-   '.fab-nav{position:fixed;bottom:92px;right:calc(50% - 234px);z-index:45;display:flex;flex-direction:column;gap:10px}',
-   '@media(max-width:520px){.fab-nav{right:14px}}',
-   '.fab-nav button{width:48px;height:48px;border-radius:50%;border:none;background:#007088;color:#fff;',
-     'box-shadow:0 5px 14px rgba(0,0,0,.28);cursor:pointer;display:grid;place-items:center;font-size:22px;line-height:1}',
-   '.fab-nav button.menu{background:#b02040;font-size:20px}',
-   '.fab-nav button.up{background:#0b465d;font-size:20px;width:44px;height:44px}',
+   // fora da coluna de texto sempre que haja espaco; encostados a margem em ecras estreitos
+   '.fab-nav{position:fixed;bottom:92px;right:max(6px, calc(50% - 285px));z-index:45;display:flex;flex-direction:column;gap:7px;opacity:.93}',
+   '.fab-nav:hover{opacity:1}',
+   '.fab-nav button{width:38px;height:38px;border-radius:50%;border:none;background:#007088;color:#fff;',
+     'box-shadow:0 3px 10px rgba(0,0,0,.22);cursor:pointer;display:grid;place-items:center;font-size:17px;line-height:1}',
+   '.fab-nav button.menu{background:#b02040;font-size:16px}',
+   '.fab-nav button.up{background:#0b465d;font-size:16px;width:36px;height:36px}',
+   '@media(max-width:560px){.fab-nav{right:6px;bottom:84px;gap:6px}',
+     '.fab-nav button{width:34px;height:34px;font-size:15px}',
+     '.fab-nav button.up{width:32px;height:32px;font-size:14px}}',
    // ---- Ver texto integral (igual ao das fichas: topo, largo, contorno petroleo) ----
    '.rm-clip{max-height:460px;overflow:hidden;position:relative}',
    '.rm-clip::after{content:"";position:absolute;left:0;right:0;bottom:0;height:80px;',
