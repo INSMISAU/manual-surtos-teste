@@ -202,14 +202,16 @@ function pageSeccao(){
   const s=(M.sections||[]).find(s=>s.id===id);
   if(!s){mount({back:true,title:'Secção'},'<div class="card">Secção não encontrada.</div>','map');return;}
   const body='<div class="note">Texto reproduzido <b>integralmente</b> do Manual Nacional (pendente de validação do INS).</div>'+
-    '<div class="content card">'+renderSectionContent(s)+'</div>'+seccaoPager(id);
+    '<details class="acc" open><summary><span class="dot"></span>'+esc(s.title)+'<span class="chev">'+I.chev+'</span></summary>'+
+    '<div class="inner content">'+renderSectionContent(s)+'</div></details>'+seccaoPager(id);
   mount({back:true,crumb:'Secção '+id,title:'SECÇÃO '+id+'<br><span class="thin">'+esc(s.title)+'</span>',search:false},body,'map');
 }
 function pageExplorarSindrome(){
   const cards=(M.groups||[]).map(g=>
     '<div class="syn" onclick="location.href=\'sindrome.html?id='+g.id+'\'"><div class="ico">'+groupIcon(g.icon)+'</div><div class="nm">'+esc(g.name)+'</div></div>').join('');
   const si=(M.meta&&M.meta.sindromesIntro)||[];
-  const intro=si.length?('<div class="card content" style="margin-bottom:14px">'+si.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div>'):'';
+  const intro=si.length?('<details class="acc" open style="margin-bottom:14px"><summary><span class="dot"></span>Porquê agrupar por síndrome<span class="chev">'+I.chev+'</span></summary>'+
+    '<div class="inner content">'+si.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div></details>'):'';
   const t1=(M.meta&&M.meta.tabela1)||null;
   const tabela=t1?('<details class="acc" style="margin:14px 0 0"><summary><span class="dot"></span>'+esc(t1.titulo)+'<span class="chev">'+I.chev+'</span></summary>'+
     '<div class="inner content"><div style="overflow-x:auto"><table class="t1"><thead><tr>'+
@@ -232,9 +234,11 @@ function pageSindrome(){
   const rows=ds.map(d=>'<a class="abc-row" href="doenca.html?slug='+d.slug+'"><span class="ltr">'+esc(d.letter)+'</span>'+esc(d.name)+'<span style="float:right;color:var(--petrol)">'+I.arrow+'</span></a>').join('')
     || '<div class="abc-row dim">Sem fichas nesta categoria.</div>';
   const intro=(g.intro&&g.intro.length)
-    ? '<div class="card" style="margin-bottom:14px">'+g.intro.map(p=>'<p style="margin:0 0 10px;font-size:14px;line-height:1.6">'+esc(p)+'</p>').join('')+'</div>'
+    ? '<details class="acc" open><summary><span class="dot"></span>Introdução<span class="chev">'+I.chev+'</span></summary>'+
+      '<div class="inner content">'+g.intro.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div></details>'
     : '';
-  const obs=g.obs?('<div class="card content" style="margin-bottom:14px;border-left:4px solid var(--petrol)"><p style="margin:0"><b>Observações:</b> '+esc(g.obs)+'</p></div>'):'';
+  const obs=g.obs?('<details class="acc"><summary><span class="dot"></span>Observações do manual<span class="chev">'+I.chev+'</span></summary>'+
+    '<div class="inner content"><p>'+esc(g.obs)+'</p></div></details>'):'';
   const body=intro+obs+'<div class="lead">'+ds.length+' condição(ões) nesta síndrome</div><div class="abc-list">'+rows+'</div>'+sindromePager(id);
   mount({back:true,crumb:'Síndrome',title:esc(g.name),search:false},body,'map');
 }
@@ -263,7 +267,9 @@ function pageGlossario(){
   const cBody=concepts.map(c=>'<h4>'+esc(c[0])+':</h4><p>'+esc(c[1])+'</p>').join('');
   const abBody=ab.map(a=>'<div class="abbr"><span class="k">'+esc(a.abbr)+'</span><span class="v">'+esc(a.meaning)+'</span></div>').join('');
   const gi=(M.glossary&&M.glossary.intro)?'<p style="margin:0 0 12px">'+esc(M.glossary.intro)+'</p>':'';
-  const body='<div class="card content">'+gi+'<h3 style="margin-top:4px">Principais conceitos epidemiológicos</h3>'+cBody+'</div>'+
+  const body=(gi?'<div class="note">'+esc(M.glossary.intro)+'</div>':'')+
+    '<details class="acc" open><summary><span class="dot"></span>Principais conceitos epidemiológicos<span class="chev">'+I.chev+'</span></summary>'+
+    '<div class="inner content">'+cBody+'</div></details>'+
     '<h2 class="sec-h">Abreviaturas ('+ab.length+')</h2><div class="card" style="padding:6px 16px">'+abBody+'</div>';
   mount({crumb:'Glossário',title:'Glossário',search:false},body,'book');
 }
