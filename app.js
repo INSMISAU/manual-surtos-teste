@@ -5,6 +5,8 @@
 (function(){
 const M = window.MANUAL || {};
 const I = {
+  chevL:'<svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>',
+  chevR:'<svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>',
   burger:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
   search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',
   bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
@@ -101,6 +103,25 @@ function tabbar(active){
 }
 function mount(headerOpts, bodyHtml, activeTab){
   document.body.innerHTML='<div class="app">'+header(headerOpts)+'<main class="body">'+bodyHtml+'</main></div>'+tabbar(activeTab);
+  addClosers();
+}
+/* Comprimir sem voltar ao topo: botao "Fechar" no fim de cada bloco aberto. */
+function addClosers(root){
+  var box=(root||document);
+  var alvos=[].slice.call(box.querySelectorAll('details.acc > .inner'));
+  alvos.forEach(function(inn){
+    if(inn.querySelector('.closer')) return;
+    var b=document.createElement('button');
+    b.type='button'; b.className='closer';
+    b.innerHTML='<svg class="i" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M18 15l-6-6-6 6"/></svg> Fechar';
+    b.addEventListener('click',function(e){
+      e.preventDefault(); e.stopPropagation();
+      var d=inn.parentNode; d.open=false;
+      var y=d.getBoundingClientRect().top+window.pageYOffset-70;
+      window.scrollTo({top:y<0?0:y,behavior:'smooth'});
+    });
+    inn.appendChild(b);
+  });
 }
 function pageHome(){
   const card=(href,t,extra)=>'<a class="nav-card" href="'+href+'"><span class="t">'+t+'</span>'+(extra||'')+'</a>';
@@ -151,12 +172,37 @@ function coverBlock(){
     '<div class="cv-title"><b>Manual para Detecção e Investigação de Surtos em Moçambique</b>'+
     '<span>Instituto Nacional de Saúde · Ministério da Saúde</span></div></div>';
 }
+/* Navegacao continua (Anterior / Seguinte) — segue a ordem do manual. */
+function pager(prev,next){
+  const lnk=(o,dir)=>'<a class="pg '+dir+'" href="'+o.href+'">'+
+     (dir==='pv'?'<span class="ar">'+I.chevL+'</span>':'')+
+     '<span class="tx"><span class="lb">'+(dir==='pv'?'Anterior':'Seguinte')+'</span><span class="tt">'+esc(o.title)+'</span></span>'+
+     (dir==='nx'?'<span class="ar">'+I.chevR+'</span>':'')+'</a>';
+  const fim=t=>'<span class="pg end">'+t+'</span>';
+  return '<div class="pager">'+(prev?lnk(prev,'pv'):fim('Início do manual'))+(next?lnk(next,'nx'):fim('Fim do manual'))+'</div>';
+}
+function seccaoPager(id){
+  const ordem=[1,2,3,4,5,6];
+  const href=i=>i===4?'explorar-sindrome.html':('seccao.html?id='+i);
+  const nome=i=>i===4?'Vigilância Sindrómica':SECT_TITLE(i);
+  const i=ordem.indexOf(id);
+  const pv=i>0?{href:href(ordem[i-1]),title:'Secção '+ordem[i-1]+' · '+nome(ordem[i-1])}:null;
+  const nx=i<ordem.length-1?{href:href(ordem[i+1]),title:'Secção '+ordem[i+1]+' · '+nome(ordem[i+1])}:null;
+  return pager(pv,nx);
+}
+function sindromePager(id){
+  const gs=(M.groups||[]);
+  const i=gs.findIndex(g=>g.id===id);
+  const pv=i>0?{href:'sindrome.html?id='+gs[i-1].id,title:gs[i-1].name}:null;
+  const nx=(i>=0&&i<gs.length-1)?{href:'sindrome.html?id='+gs[i+1].id,title:gs[i+1].name}:null;
+  return pager(pv,nx);
+}
 function pageSeccao(){
   const id=+param('id');
   const s=(M.sections||[]).find(s=>s.id===id);
   if(!s){mount({back:true,title:'Secção'},'<div class="card">Secção não encontrada.</div>','map');return;}
   const body='<div class="note">Texto reproduzido <b>integralmente</b> do Manual Nacional (pendente de validação do INS).</div>'+
-    '<div class="content card">'+renderSectionContent(s)+'</div>';
+    '<div class="content card">'+renderSectionContent(s)+'</div>'+seccaoPager(id);
   mount({back:true,crumb:'Secção '+id,title:'SECÇÃO '+id+'<br><span class="thin">'+esc(s.title)+'</span>',search:false},body,'map');
 }
 function pageExplorarSindrome(){
@@ -189,7 +235,7 @@ function pageSindrome(){
     ? '<div class="card" style="margin-bottom:14px">'+g.intro.map(p=>'<p style="margin:0 0 10px;font-size:14px;line-height:1.6">'+esc(p)+'</p>').join('')+'</div>'
     : '';
   const obs=g.obs?('<div class="card content" style="margin-bottom:14px;border-left:4px solid var(--petrol)"><p style="margin:0"><b>Observações:</b> '+esc(g.obs)+'</p></div>'):'';
-  const body=intro+obs+'<div class="lead">'+ds.length+' condição(ões) nesta síndrome</div><div class="abc-list">'+rows+'</div>';
+  const body=intro+obs+'<div class="lead">'+ds.length+' condição(ões) nesta síndrome</div><div class="abc-list">'+rows+'</div>'+sindromePager(id);
   mount({back:true,crumb:'Síndrome',title:esc(g.name),search:false},body,'map');
 }
 function pageAbecedario(){
