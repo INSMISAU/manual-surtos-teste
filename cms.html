@@ -80,9 +80,9 @@ var HARD_KEY='sb_publishable_ZxGOBZcm1IGp36e7Qh2nyg_S8Tb56B4';
 var sb=null, USER=null, PERFIL=null;
 var FIELDS=[
 ['pontos_chave','Pontos-chave'],['definicao_caso','Definição de caso'],
-['limiares_notificacao','Limiar de notificação e surto'],['agente_infeccioso','Agente infeccioso'],
+['limiares_notificacao','Número de casos necessários para desencadear a notificação e a investigação'],['agente_infeccioso','Agente infeccioso'],
 ['fonte_periodo_infeccao','Fonte e período de infecção'],['grupos_risco','Grupos de risco'],
-['protocolo_investigacao','Protocolo de investigação'],['colheita_manuseio_amostras','Laboratório e amostras']
+['protocolo_investigacao','Protocolo de investigação'],['colheita_manuseio_amostras','Colheita e manuseio de amostras para o diagnóstico laboratorial']
 ];
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2800);}
 function show(id){['cfg','login','trocar','app'].forEach(function(x){document.getElementById(x).classList.toggle('hide',x!==id);});}
@@ -377,7 +377,7 @@ fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/assets/js/co
 ]).then(function(res){
 var sind=res[0].data||[], doe=res[1].data||[], sec=res[2].data||[], ab=res[3].data||[], ddataTxt=res[4], contentTxt=res[5];
 var sinIndex={}; var groups=sind.map(function(s,i){ sinIndex[s.id]=i+1; return {id:i+1,name:s.nome,icon:'sindrome',diseases:[]}; });
-var LBL=[['pontos_chave','Pontos-chave'],['definicao_caso','Definicao de caso'],['limiares_notificacao','Limiar de notificacao e surto'],['agente_infeccioso','Agente infeccioso'],['fonte_periodo_infeccao','Fonte e periodo de infeccao'],['grupos_risco','Grupos de risco'],['protocolo_investigacao','Protocolo de investigacao'],['colheita_manuseio_amostras','Laboratorio e amostras']];
+var LBL=[['pontos_chave','Pontos-chave'],['definicao_caso','Definicao de caso'],['limiares_notificacao','Número de casos necessários para desencadear a notificação e a investigação'],['agente_infeccioso','Agente infeccioso'],['fonte_periodo_infeccao','Fonte e periodo de infeccao'],['grupos_risco','Grupos de risco'],['protocolo_investigacao','Protocolo de investigacao'],['colheita_manuseio_amostras','Colheita e manuseio de amostras para o diagnóstico laboratorial']];
 var diseases=doe.map(function(d){
 var gid=sinIndex[d.sindrome_id]; if(gid) groups[gid-1].diseases.push(d.slug);
 return {slug:d.slug,name:d.nome,letter:d.letra||(d.nome||'?').charAt(0),group:gid||0,
@@ -399,10 +399,10 @@ var geradoDdata=false;
 if(ddataTxt){
 try{
 var _all=parseDdataAll(ddataTxt); var base=_all.DISEASES; if(!base) throw new Error('ddata ilegivel');
-var MAP={ 'Pontos-chave':'pontos_chave','Definicao de caso':'definicao_caso','Definição de caso':'definicao_caso','Limiar de notificação e surto':'limiares_notificacao','Limiar de notificacao e surto':'limiares_notificacao',
+var MAP={ 'Pontos-chave':'pontos_chave','Definicao de caso':'definicao_caso','Definição de caso':'definicao_caso','Número de casos necessários para desencadear a notificação e a investigação':'limiares_notificacao','Número de casos necessários para desencadear a notificação e a investigação':'limiares_notificacao',
 'Agente infeccioso':'agente_infeccioso','Fonte e periodo de infeccao':'fonte_periodo_infeccao','Fonte e período de infecção':'fonte_periodo_infeccao',
 'Grupos de risco':'grupos_risco','Protocolo de investigacao':'protocolo_investigacao','Protocolo de investigação':'protocolo_investigacao',
-'Laboratorio e amostras':'colheita_manuseio_amostras','Laboratório e amostras':'colheita_manuseio_amostras' };
+'Colheita e manuseio de amostras para o diagnóstico laboratorial':'colheita_manuseio_amostras','Colheita e manuseio de amostras para o diagnóstico laboratorial':'colheita_manuseio_amostras' };
 var cms={}; doe.forEach(function(d){ cms[d.slug]=d; });
 Object.keys(base).forEach(function(slug){
 var d=cms[slug]; if(!d) return;
@@ -410,7 +410,12 @@ if(d.pontos_chave){ base[slug].keys=(''+d.pontos_chave).split('\n').map(function
 (base[slug].secfull||[]).forEach(function(secf){
 var key=MAP[secf.t];
 if(key && d[key]!=null && (''+d[key]).trim()){
-secf.items=(''+d[key]).split('\n').map(function(s){return s.trim();}).filter(Boolean).map(function(s){return /^[•\-]\s+/.test(s)?[1,s.replace(/^[•\-]\s+/,'')]:[0,s];});
+secf.items=(''+d[key]).split('\n').map(function(s){return s.trim();}).filter(Boolean).map(function(s){
+/* Niveis do manual: sem marca = topo (•) | "• " = sub (o) | "•• " = sub-sub (§).
+   Compativel com o texto antigo: "• " continua a valer sub-item. */
+if(/^(••|--)\s+/.test(s)) return [2, s.replace(/^(••|--)\s+/,'')];
+if(/^[•\-]\s+/.test(s)) return [1, s.replace(/^[•\-]\s+/,'')];
+return [0,s];});
 }
 });
 });
