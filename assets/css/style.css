@@ -235,3 +235,9 @@ table.t1 a{color:var(--petrol);text-decoration:none}
 .synhero{margin:0 0 14px}
 .synhero img{width:100%;height:auto;display:block;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow-s)}
 .synhero figcaption{font-size:11.5px;color:var(--muted);margin-top:6px;text-align:center}
+
+/* Itens de lista subordinados nas seccoes (o manual usa a. b. c. indentados) */
+.content li.sub{list-style:circle;margin-left:20px;color:#4a5a62}
+.content li.sub2{list-style:square;margin-left:38px;color:#5a6a72;font-size:.95em}
+/* Linhas de cabecalho de grupo dentro das tabelas (S56-13) */
+.tbl td.grp{background:#f2f7f9}
