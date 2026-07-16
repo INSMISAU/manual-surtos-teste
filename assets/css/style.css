@@ -241,3 +241,22 @@ table.t1 a{color:var(--petrol);text-decoration:none}
 .content li.sub2{list-style:square;margin-left:38px;color:#5a6a72;font-size:.95em}
 /* Linhas de cabecalho de grupo dentro das tabelas (S56-13) */
 .tbl td.grp{background:#f2f7f9}
+
+/* ── Texto nunca transborda a caixa ──────────────────────────────
+   O manual tem URLs muito longos (ate 133 caracteres, sem espacos) e
+   linhas de preenchimento "______" nos formularios. Sem isto, saem
+   pela margem direita e ficam cortados. */
+.content, .content p, .content li, .content h3, .content h4,
+.card, .lead, .abc-row, .note, .pager .tt, .tbl td, .tbl th,
+.synhero figcaption, .secimg figcaption{
+  overflow-wrap:break-word;
+  word-break:break-word;
+}
+/* URLs e caminhos: partir em qualquer ponto se nao houver alternativa */
+.content a, .content code{word-break:break-all}
+/* Tabelas: nunca empurrar a pagina para o lado */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{min-width:100%}
+/* Cabecalhos dos blocos: os titulos do manual chegam aos 75 caracteres */
+.acc>summary{overflow-wrap:break-word;min-width:0}
+.acc>summary .dot{flex:none}
