@@ -405,6 +405,15 @@ fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/ddata.js?_='
 fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/assets/js/content.js?_='+Date.now()).then(function(r){return r.ok?r.text():null;}).catch(function(){return null;})
 ]).then(function(res){
 var sind=res[0].data||[], doe=res[1].data||[], sec=res[2].data||[], ab=res[3].data||[], ddataTxt=res[4], contentTxt=res[5];
+/* Sem estes dois ficheiros do GitHub nao ha manual completo: o content.js traz o
+   prefacio, as figuras e o glossario; o ddata.js traz os icones das fichas.
+   Se falharem, PARAR. Antes gerava-se um manual mutilado sem avisar ninguem. */
+if(!contentTxt || !ddataTxt){
+var _f=[]; if(!contentTxt) _f.push('assets/js/content.js'); if(!ddataTxt) _f.push('ddata.js');
+alert('NADA FOI PUBLICADO.\n\nNao foi possivel descarregar do GitHub:\n   '+_f.join('\n   ')+'\n\nRepositorio: '+ghRepo()+' (ramo '+GH_BRANCH+')\n\nCausa mais provavel: o GitHub limita pedidos seguidos. Espere um minuto e tente outra vez.\n\nO manual NAO foi alterado.');
+toast('Publicacao cancelada: o GitHub nao respondeu.');
+return;
+}
 var sinIndex={}; var groups=sind.map(function(s,i){ sinIndex[s.id]=i+1; return {id:i+1,name:s.nome,icon:'sindrome',diseases:[]}; });
 var LBL=[['pontos_chave','Pontos-chave'],['definicao_caso','Definicao de caso'],['limiares_notificacao','Número de casos necessários para desencadear a notificação e a investigação'],['agente_infeccioso','Agente infeccioso'],['fonte_periodo_infeccao','Fonte e periodo de infeccao'],['grupos_risco','Grupos de risco'],['protocolo_investigacao','Protocolo de investigacao'],['colheita_manuseio_amostras','Colheita e manuseio de amostras para o diagnóstico laboratorial']];
 var diseases=doe.map(function(d){
@@ -422,7 +431,13 @@ if(baseMAN && baseMAN.diseases && baseMAN.diseases.length){
 var doeBy={}; doe.forEach(function(d){ doeBy[d.slug]=d; });
 baseMAN.diseases.forEach(function(dis){ var d=doeBy[dis.slug]; if(!d) return; dis.fields=LBL.filter(function(x){return d[x[0]];}).map(function(x){return {label:x[1],blocks:txtToBlocks(d[x[0]])};}); });
 contentJs='window.MANUAL='+JSON.stringify(baseMAN)+';\n';
-} else { contentJs='window.MANUAL='+JSON.stringify(MAN)+';\n'; }
+} else {
+/* O content.js veio mas nao se conseguiu ler. Antes publicava-se um manual minimo
+   (so o texto da base de dados), perdendo prefacio, figuras, glossario e tabelas. */
+alert('NADA FOI PUBLICADO.\n\nO content.js foi descarregado do GitHub mas nao foi possivel interpreta-lo.\n\nPublicar assim faria o manual perder o prefacio, as figuras, os conceitos do glossario e as tabelas.\n\nO manual NAO foi alterado. Avise a equipa tecnica.');
+toast('Publicacao cancelada: content.js ilegivel.');
+return;
+}
 var files=[{path:'content.js',content:contentJs},{path:'assets/js/content.js',content:contentJs}];
 var geradoDdata=false;
 if(ddataTxt){
@@ -455,7 +470,13 @@ if(_all.ICONS!=null) ddOut+='var ICONS='+JSON.stringify(_all.ICONS)+';\n';
 if(_all.COVER!=null) ddOut+='var COVER='+JSON.stringify(_all.COVER)+';\n';
 files.push({path:'ddata.js',content:ddOut});
 geradoDdata=true;
-}catch(e){ }
+}catch(e){
+/* Antes: catch vazio. O ddata.js nao era gerado e ninguem sabia -- so vinham 2
+   ficheiros em vez de 3, e as fichas das doencas ficavam por actualizar. */
+alert('NADA FOI PUBLICADO.\n\nErro ao gerar as fichas das doencas (ddata.js):\n'+e.message+'\n\nO manual NAO foi alterado. Tente outra vez; se persistir, avise a equipa tecnica.');
+toast('Publicacao cancelada: falha ao gerar o ddata.js.');
+return;
+}
 }
 publicarFicheiros(files, diseases.length, geradoDdata);
 }).catch(function(e){ toast('Erro: '+e.message); });
