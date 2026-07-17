@@ -379,7 +379,8 @@ function sincRiscos(o){
   var novos=_agrupar(sec); if(!novos.length) return;
   o.risks=novos.map(function(t,i){
     var ant=porTexto[_nrm(t)]||velhos[i]||{};   /* mesmo texto -> mesmo icone, mesmo que mude de ordem */
-    var b={}; if(ant.wide) b.wide=ant.wide; b.media=ant.media||""; b.text=t; return b;
+    var b={}; for(var p in ant){ if(p!=="text") b[p]=ant[p]; }   /* preserva tudo o que nao seja o texto */
+    b.media=ant.media||""; b.text=t; return b;
   });
 }
 function sincCasos(o){
@@ -387,7 +388,7 @@ function sincCasos(o){
   var velhos=o.cases, novos=_agrupar(sec); if(!novos.length) return;
   o.cases=novos.map(function(t,i){
     var ant=velhos[i]||{}; var rot=(t.match(/^([^:]{2,70}):/)||[,""])[1];
-    var b={}; if(ant.k) b.k=ant.k;
+    var b={}; for(var p in ant){ if(p!=="body") b[p]=ant[p]; }   /* preserva tudo o que nao seja o corpo */
     b.label=ant.label||_nrm(rot.replace(/^Caso\s+/i,""))||("Caso "+(i+1));
     b.body=t.replace(/^[^:]{2,70}:\s*/,""); b.media=ant.media||"";
     return b;
