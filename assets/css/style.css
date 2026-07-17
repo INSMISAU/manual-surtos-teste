@@ -260,3 +260,12 @@ table.t1 a{color:var(--petrol);text-decoration:none}
 /* Cabecalhos dos blocos: os titulos do manual chegam aos 75 caracteres */
 .acc>summary{overflow-wrap:break-word;min-width:0}
 .acc>summary .dot{flex:none}
+
+/* ── Tabelas largas: cada coluna com largura minima ──────────────
+   O manual imprime a "Lista de Casos" com 11 colunas tao estreitas
+   que as palavras partem letra a letra ("Des fec ho"). No ecra nao
+   temos essa limitacao: damos espaco a cada coluna e a tabela rola
+   na horizontal, ficando legivel. */
+.tbl th, .tbl td{min-width:88px}
+.tbl th:first-child, .tbl td:first-child{min-width:40px}
+.tbl-wrap{position:relative}
