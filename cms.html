@@ -364,6 +364,35 @@ else out.push({type:'p',text:ln});
 });
 return out;
 }
+/* ── Sincronizar os blocos visuais com o texto da base de dados ─────────────
+   A ficha da doenca NAO le secfull para "Definicao de caso" nem "Grupos de
+   risco": le cases[] (separadores) e risks[] (blocos com icone). Sem isto,
+   editar esses dois campos no CMS nao muda nada na ficha, e nao da erro.
+   Regra confirmada nas 39 fichas: item de nivel 0 = um bloco; os de nivel 1
+   entram no bloco de cima. O icone, a imagem e o rotulo sao preservados.    */
+function _nrm(s){ return String(s==null?"":s).replace(/\s+/g," ").trim(); }
+function _secPor(o,re){ var a=(o&&o.secfull)||[]; for(var i=0;i<a.length;i++){ if(re.test(a[i].t||"")) return a[i]; } return null; }
+function _agrupar(sec){ var g=[]; ((sec&&sec.items)||[]).forEach(function(it){ if(!_nrm(it[1])) return; if(it[0]===0) g.push([String(it[1])]); else if(g.length) g[g.length-1].push(String(it[1])); }); return g.map(function(x){ return x.join(" "); }); }
+function sincRiscos(o){
+  var sec=_secPor(o,/grupos de risco/i); if(!sec||!o.risks||!o.risks.length) return;
+  var velhos=o.risks, porTexto={}; velhos.forEach(function(r){ if(r.text) porTexto[_nrm(r.text)]=r; });
+  var novos=_agrupar(sec); if(!novos.length) return;
+  o.risks=novos.map(function(t,i){
+    var ant=porTexto[_nrm(t)]||velhos[i]||{};   /* mesmo texto -> mesmo icone, mesmo que mude de ordem */
+    var b={}; if(ant.wide) b.wide=ant.wide; b.media=ant.media||""; b.text=t; return b;
+  });
+}
+function sincCasos(o){
+  var sec=_secPor(o,/defini[cç][aã]o de caso/i); if(!sec||!o.cases||!o.cases.length) return;
+  var velhos=o.cases, novos=_agrupar(sec); if(!novos.length) return;
+  o.cases=novos.map(function(t,i){
+    var ant=velhos[i]||{}; var rot=(t.match(/^([^:]{2,70}):/)||[,""])[1];
+    var b={}; if(ant.k) b.k=ant.k;
+    b.label=ant.label||_nrm(rot.replace(/^Caso\s+/i,""))||("Caso "+(i+1));
+    b.body=t.replace(/^[^:]{2,70}:\s*/,""); b.media=ant.media||"";
+    return b;
+  });
+}
 function publicarSite(){
 if(!emTeste()){ if(!confirm('ATENCAO: vais publicar no MANUAL REAL do lancamento ('+ghRepo()+').\n\nTens a certeza? (Para testar, liga primeiro o Modo de teste.)')) return; }
 toast('A gerar o manual a partir da base de dados...');
@@ -418,6 +447,8 @@ if(/^[•\-]\s+/.test(s)) return [1, s.replace(/^[•\-]\s+/,'')];
 return [0,s];});
 }
 });
+sincRiscos(base[slug]);
+sincCasos(base[slug]);
 });
 var ddOut='var DISEASES='+JSON.stringify(base)+';\n';
 if(_all.ICONS!=null) ddOut+='var ICONS='+JSON.stringify(_all.ICONS)+';\n';
