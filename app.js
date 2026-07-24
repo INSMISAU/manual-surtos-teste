@@ -220,7 +220,7 @@ function pageSeccao(){
   const id=+param('id');
   const s=(M.sections||[]).find(s=>s.id===id);
   if(!s){mount({back:true,title:'Secção'},'<div class="card">Secção não encontrada.</div>','map');return;}
-  const body='<div class="note">Texto reproduzido <b>integralmente</b> do Manual Nacional (pendente de validação do INS).</div>'+
+  const body=''+
     '<details class="acc" open><summary><span class="dot"></span>'+esc(s.title)+'<span class="chev">'+I.chev+'</span></summary>'+
     '<div class="inner content">'+renderSectionContent(s)+'</div></details>'+seccaoPager(id);
   mount({back:true,crumb:'Secção '+id,title:'SECÇÃO '+id+'<br><span class="thin">'+esc(s.title)+'</span>',search:false},body,'map');
@@ -278,7 +278,7 @@ function pageDoenca(){
   const accs=(d.fields||[]).map((f,i)=>'<details class="acc" '+(i===0?'open':'')+'>'+
     '<summary><span class="dot"></span>'+esc(f.label)+'<span class="chev">'+I.chev+'</span></summary>'+
     '<div class="inner content">'+renderBlocks(f.blocks)+'</div></details>').join('');
-  const body='<div class="note">Ficha reproduzida <b>integralmente</b> do Manual Nacional (pendente de validação do INS).</div>'+accs;
+  const body=accs;
   mount({back:true,crumb:'Síndrome · '+d.letter,title:esc(d.name),search:false},body,'map');
 }
 function pageGlossario(){
@@ -287,7 +287,7 @@ function pageGlossario(){
   const cBody=concepts.map(c=>'<h4>'+esc(c[0])+':</h4><p>'+esc(c[1])+'</p>').join('');
   const abBody=ab.map(a=>'<div class="abbr"><span class="k">'+esc(a.abbr)+'</span><span class="v">'+esc(a.meaning)+'</span></div>').join('');
   const gi=(M.glossary&&M.glossary.intro)?'<p style="margin:0 0 12px">'+esc(M.glossary.intro)+'</p>':'';
-  const body=(gi?'<div class="note">'+esc(M.glossary.intro)+'</div>':'')+
+  const body=(gi?'<p style="font-size:13px;color:#5a6b73;margin:6px 0 12px">'+esc(M.glossary.intro)+'</p>':'')+
     '<details class="acc" open><summary><span class="dot"></span>Principais conceitos epidemiológicos<span class="chev">'+I.chev+'</span></summary>'+
     '<div class="inner content">'+cBody+'</div></details>'+
     '<h2 class="sec-h">Abreviaturas ('+ab.length+')</h2><div class="card" style="padding:6px 16px">'+abBody+'</div>';
@@ -306,7 +306,7 @@ function pageEmendas(){
     '<div class="ver-item"><div class="vn">V1.0</div><div class="vd">20 Maio 2026</div>'+
     '<div class="chg"><b>Adicionado:</b> Digitalização integral do Manual Nacional (6 secções, 37 fichas de doença).</div>'+
     '<div class="chg"><b>Pendente:</b> Validação clínica e do design pelo INS.</div></div>'+
-    '<div class="note">As emendas e o histórico de versões serão geridos pelo INS após a publicação oficial.</div>';
+    '';
   mount({crumb:'Emendas',title:'Histórico<br><span class="thin">de Versões</span>',search:false},body,'doc');
 }
 function pageSearch(){
@@ -335,7 +335,7 @@ function pageSearch(){
     });
     (M.sections||[]).forEach(s=>{
       const full='Secção '+s.id+' '+s.title+' '+s.blocks.map(b=>b.text).join(' ');
-      if(matches(full)) results.push({t:'SECÇÃO '+s.id+': '+s.title,s:'Secção',href:'seccao.html?id='+s.id,snip:snippet(full)});
+      if(matches(full)) results.push({t:'SECÇÃO '+s.id+' — '+s.title,s:'Secção',href:'seccao.html?id='+s.id,snip:snippet(full)});
     });
     ((M.glossary&&M.glossary.abbreviations)||[]).forEach(a=>{
       if(matches(a.abbr+' '+a.meaning)) results.push({t:a.abbr+' — '+a.meaning,s:'Abreviatura',href:'glossario.html',snip:''});
@@ -367,7 +367,7 @@ function pagePerfil(){
     '<div class="card content"><h4 style="margin-top:2px">Sobre</h4>'+
     '<p>Digitalização do Manual Nacional para Detecção e Investigação de Surtos, do Instituto Nacional de Saúde (INS) / Ministério da Saúde (MISAU).</p>'+
     '<p>Protótipo para validação de design e estrutura. Conteúdo clínico pendente de validação do INS.</p></div>'+
-    '<div class="note">Este é o e-book (manual digital), destinado à consulta. O registo de utilizadores e a certificação aplicam-se à componente formativa, não ao e-book.</div>';
+    '';
   mount({crumb:'Perfil',title:'Perfil',search:false},body,'user');
 }
 const PAGES={home:pageHome,'explorar-seccao':pageExplorarSeccao,seccao:pageSeccao,
