@@ -229,8 +229,7 @@ function pageExplorarSindrome(){
   const cards=(M.groups||[]).map(g=>
     '<div class="syn" onclick="location.href=\'sindrome.html?id='+g.id+'\'"><div class="ico">'+groupIcon(g.icon)+'</div><div class="nm">'+esc(g.name)+'</div></div>').join('');
   const si=(M.meta&&M.meta.sindromesIntro)||[];
-  const intro=si.length?('<details class="acc" open style="margin-bottom:14px"><summary><span class="dot"></span>Porquê agrupar por síndrome<span class="chev">'+I.chev+'</span></summary>'+
-    '<div class="inner content">'+si.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div></details>'):'';
+  const intro='';
   const t1=(M.meta&&M.meta.tabela1)||null;
   const tabela=t1?('<details class="acc" style="margin:14px 0 0"><summary><span class="dot"></span>'+esc(t1.titulo)+'<span class="chev">'+I.chev+'</span></summary>'+
     '<div class="inner content"><div style="overflow-x:auto"><table class="t1"><thead><tr>'+
@@ -257,8 +256,7 @@ function pageSindrome(){
       '<div class="inner content">'+g.intro.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div></details>'
     : '';
   const hero=g.img?('<figure class="synhero"><img src="'+g.img+'" alt="'+esc(g.imgAlt||g.name)+'" loading="lazy">'+(g.imgAlt?'<figcaption>'+esc(g.imgAlt)+'</figcaption>':'')+'</figure>'):'';
-  const obs=g.obs?('<details class="acc"><summary><span class="dot"></span>Observações do manual<span class="chev">'+I.chev+'</span></summary>'+
-    '<div class="inner content"><p>'+esc(g.obs)+'</p></div></details>'):'';
+  const obs='';
   const body=hero+intro+obs+'<div class="lead">'+ds.length+' condição(ões) nesta síndrome</div><div class="abc-list">'+rows+'</div>'+sindromePager(id);
   mount({back:true,crumb:'Síndrome',title:esc(g.name),search:false},body,'map');
 }
