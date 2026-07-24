@@ -115,7 +115,7 @@ function header(o){
 }
 function tabbar(active){
   const tabs=[['index.html','home','Início'],['explorar-seccao.html','map','Explorar'],
-    ['emendas.html','doc','Emendas'],['glossario.html','book','Glossário'],['perfil.html','user','Perfil']];
+    ['glossario.html','book','Glossário'],['perfil.html','user','Perfil']];
   return '<nav class="tabbar">'+tabs.map(t=>
     '<a class="tab '+(active===t[1]?'active':'')+'" href="'+t[0]+'">'+I[t[1]]+'<span>'+t[2]+'</span></a>').join('')+'</nav>';
 }
@@ -158,7 +158,8 @@ function pageHome(){
       '<div class="scrim"></div><div class="ct"><h3>Atualização<br>do Protocolo<br>de Cólera</h3><span class="tag">Emenda</span></div></a>'+
     '<p class="hero-meta">Veja as últimas V1.0 — Atualização do Protocolo de Cólera<br>Publicado em: 20/05/2026 · Secção 4</p>'+
     '<button class="pill carmine" onclick="location.href=\'doenca.html?slug=colera\'">'+I.download+' Baixar PDF</button>'+
-    '<div class="recent">Os seus registos de leitura recente aparecerão aqui</div>';
+    '<div class="recent">Os seus registos de leitura recente aparecerão aqui</div>'+
+    '<p class="disclaimer" style="text-align:center;font-size:12px;color:var(--muted);margin-top:14px">Este manual digital não substitui o manual oficial do INS · MISAU.</p>';
   mount({crumb:'Estrutura de Exploração do Manual',title:'Estrutura de<br><span class="thin">Exploração do Manual</span>',search:true},body,'home');
 }
 function SECT_TITLE(id){
@@ -176,7 +177,7 @@ function pageExplorarSeccao(){
     6:'Considerações éticas na investigação de surtos.'};
   const body=[1,2,3,4,5,6].map(id=>{
     const href=id===4?'explorar-sindrome.html':('seccao.html?id='+id);
-    return '<div class="sec-card"><h3>SECÇÃO '+id+': '+esc(SECT_TITLE(id))+'</h3>'+
+    return '<div class="sec-card"><h3>SECÇÃO '+id+' — '+esc(SECT_TITLE(id))+'</h3>'+
       '<p>'+esc(secInfo[id])+'</p>'+
       '<button class="pill" onclick="location.href=\''+href+'\'">Saiba Mais '+I.arrow+'</button></div>';
   }).join('');
