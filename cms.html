@@ -353,7 +353,7 @@ var rows=(r.data||[]).map(function(e){
 return '<tr><td class="mut">'+(e.data||'').slice(0,10)+'</td><td><b>'+esc(e.alvo_nome||'')+'</b></td><td>v'+(e.versao||'')+'</td><td class="mut">'+esc(e.autor||'')+'</td><td class="mut">'+esc(e.descricao||'')+'</td></tr>';
 }).join('');
 document.getElementById('content').innerHTML='<div class="card"><div class="row"><button class="btn-o" onclick="render()">← Voltar</button><b style="flex:1">Emendas / Versões</b></div>'+
-(rows?'<table><thead><tr><th>Data</th><th>Conteúdo</th><th>Versão</th><th>Autor</th><th>Descrição</th></tr></thead><tbody>'+rows+'</tbody></table>':'<div class="mut" style="padding:14px">Sem emendas ainda.</div>')+'</div>';
+(rows?'<div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Conteúdo</th><th>Versão</th><th>Autor</th><th>Descrição</th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<div class="mut" style="padding:14px">Sem emendas ainda.</div>')+'</div>';
 });
 }
 function txtToBlocks(t){
