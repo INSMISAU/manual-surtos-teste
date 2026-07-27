@@ -165,7 +165,7 @@ a{color:inherit;text-decoration:none}
 
 /* ===== Alinhamento com a maquetização final do Hélder (Raleway, figuras, branding) ===== */
 body{font-family:"Raleway","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
-.page-title,.nav-card .t,.sec-card h3,.sec-h,.content h3,.content h4,
+.page-title,.nav-card .t,.sec-card h3,.sec-h,
 .acc>summary,.ver-now .big,.ver-item .vn,.hero .ct h3,.brand .bt b{font-family:"Raleway","Segoe UI",sans-serif}
 
 /* Figuras do manual */
