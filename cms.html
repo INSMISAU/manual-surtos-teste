@@ -154,7 +154,7 @@ return;
 var tabs=[['doencas','Doenças'],['sindromes','Síndromes'],['seccoes','Secções']];
 var nav='<div class="row" style="gap:6px;margin-bottom:12px;align-items:center">'+tabs.map(function(t){return '<button class="'+(VIEW===t[0]?'btn-p':'btn-o')+'" onclick="irPara(\''+t[0]+'\')">'+t[1]+'</button>';}).join('')+'<span style="flex:1"></span><button class="btn-o" onclick="loadEmendas()">Ver emendas</button></div>';
 var actions=(can('publish')?'<div class="row" style="margin-bottom:10px;align-items:center"><button class="btn-g" onclick="publicarSite()">↥ Publicar para o site</button><span style="flex:1"></span><button class="btn-o" onclick="toggleDef()" title="Definições de publicação" style="opacity:.45;font-size:16px;padding:4px 9px">⚙</button></div><div id="defBox" style="display:none;margin-bottom:10px;border:1px solid var(--linha);border-radius:8px;padding:10px;background:#fafafa"><div class="mut" style="font-size:12px;margin-bottom:6px">Definições (só publicadores). O destino (teste/real) é automático conforme o endereço deste gestor. A mesma chave serve os dois repositórios.</div><button class="btn-o" onclick="configGitHub()">⚙ Ligação de publicação</button></div>':'');
-c.innerHTML='<div class="card"><h1 style="margin:0 0 14px;font-size:19px;color:var(--azul2)">Administração — Gestor de Conteúdos</h1>'+
+c.innerHTML='<div class="card"><h1 style="margin:0 0 14px;font-size:19px;color:var(--azul2);text-align:center">Administração — Gestor de Conteúdos</h1>'+
 nav+actions+'<div id="viewbox">A carregar…</div></div>';
 if(VIEW==='sindromes') viewSindromes();
 else if(VIEW==='seccoes') viewSeccoes();
@@ -163,7 +163,7 @@ else viewDoencas();
 function toggleDef(){ var d=document.getElementById('defBox'); if(d) d.style.display=(d.style.display==='none'||!d.style.display)?'block':'none'; }
 function viewDoencas(){
 var vb=document.getElementById('viewbox');
-vb.innerHTML='<div class="row" style="margin-bottom:8px"><b style="flex:1">Doenças</b>'+(can('edit')?'<button class="btn-p" onclick="novaDoenca()">+ Nova doença</button>':'')+'</div><div id="novaBox"></div><div id="lista">A carregar…</div>';
+vb.innerHTML='<div style="text-align:center;font-weight:700;font-size:16px;margin:0 0 8px">Doenças</div>'+(can('edit')?'<div style="text-align:center;margin:0 0 12px"><button class="btn-p" onclick="novaDoenca()">+ Nova doença</button></div>':'')+'<div id="novaBox"></div><div id="lista">A carregar…</div>';
 sb.from('doencas').select('id,nome,slug,estado,versao,sindrome_id').order('nome').then(function(r){
 if(r.error){document.getElementById('lista').innerHTML='<div class="hint">Erro: '+esc(r.error.message)+'</div>';return;}
 var rows=r.data.map(function(d){
@@ -194,7 +194,7 @@ toast('Doença criada — preencha os campos'); editDoe(r.data.id);
 }
 function viewSindromes(){
 var vb=document.getElementById('viewbox');
-vb.innerHTML='<div class="row" style="margin-bottom:8px"><b style="flex:1">Síndromes</b>'+(can('edit')?'<button class="btn-p" onclick="novaSindrome()">+ Nova síndrome</button>':'')+'</div><div id="lista">A carregar…</div>';
+vb.innerHTML='<div style="text-align:center;font-weight:700;font-size:16px;margin:0 0 8px">Síndromes</div>'+(can('edit')?'<div style="text-align:center;margin:0 0 12px"><button class="btn-p" onclick="novaSindrome()">+ Nova síndrome</button></div>':'')+'<div id="lista">A carregar…</div>';
 sb.from('sindromes').select('*').order('ordem').then(function(r){
 if(r.error){document.getElementById('lista').innerHTML='<div class="hint">Erro: '+esc(r.error.message)+'</div>';return;}
 var rows=(r.data||[]).map(function(s){
@@ -223,7 +223,7 @@ if(res.error){toast('Erro: '+res.error.message);return;} toast('Actualizado'); r
 }
 function viewSeccoes(){
 var vb=document.getElementById('viewbox');
-vb.innerHTML='<div class="row" style="margin-bottom:8px"><b style="flex:1">Secções</b>'+(can('edit')?'<button class="btn-p" onclick="novaSeccao()">+ Nova secção</button>':'')+'</div><div id="lista">A carregar…</div>';
+vb.innerHTML='<div style="text-align:center;font-weight:700;font-size:16px;margin:0 0 8px">Secções</div>'+(can('edit')?'<div style="text-align:center;margin:0 0 12px"><button class="btn-p" onclick="novaSeccao()">+ Nova secção</button></div>':'')+'<div id="lista">A carregar…</div>';
 sb.from('seccoes').select('*').order('ordem').then(function(r){
 if(r.error){document.getElementById('lista').innerHTML='<div class="hint">Erro: '+esc(r.error.message)+'</div>';return;}
 var rows=(r.data||[]).map(function(s){
