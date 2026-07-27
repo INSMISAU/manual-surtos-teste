@@ -57,7 +57,7 @@
 
 <div id="app" class="hide">
   <div class="top">
-    <h2 id="viewTitle">Administração — Gestor de Conteúdos</h2>
+    <h2 id="viewTitle">Doenças</h2>
     <span class="pill" id="whoRole">&mdash;</span>
     <span id="whoName" class="mut"></span>
     <button class="btn-o" onclick="location.href='index.html'" style="padding:6px 12px" title="Voltar ao manual">&larr; Manual</button>
@@ -154,7 +154,7 @@ return;
 var tabs=[['doencas','Doenças'],['sindromes','Síndromes'],['seccoes','Secções']];
 var nav='<div class="row" style="gap:6px;margin-bottom:12px;align-items:center">'+tabs.map(function(t){return '<button class="'+(VIEW===t[0]?'btn-p':'btn-o')+'" onclick="irPara(\''+t[0]+'\')">'+t[1]+'</button>';}).join('')+'<span style="flex:1"></span><button class="btn-o" onclick="loadEmendas()">Ver emendas</button></div>';
 var actions=(can('publish')?'<div class="row" style="margin-bottom:10px;align-items:center"><button class="btn-g" onclick="publicarSite()">↥ Publicar para o site</button><span style="flex:1"></span><button class="btn-o" onclick="toggleDef()" title="Definições de publicação" style="opacity:.45;font-size:16px;padding:4px 9px">⚙</button></div><div id="defBox" style="display:none;margin-bottom:10px;border:1px solid var(--linha);border-radius:8px;padding:10px;background:#fafafa"><div class="mut" style="font-size:12px;margin-bottom:6px">Definições (só publicadores). O destino (teste/real) é automático conforme o endereço deste gestor. A mesma chave serve os dois repositórios.</div><button class="btn-o" onclick="configGitHub()">⚙ Ligação de publicação</button></div>':'');
-c.innerHTML='<div class="card">'+
+c.innerHTML='<div class="card"><h1 style="margin:0 0 14px;font-size:19px;color:var(--azul2)">Administração — Gestor de Conteúdos</h1>'+
 nav+actions+'<div id="viewbox">A carregar…</div></div>';
 if(VIEW==='sindromes') viewSindromes();
 else if(VIEW==='seccoes') viewSeccoes();
