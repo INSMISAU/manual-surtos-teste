@@ -183,7 +183,7 @@ function pageExplorarSeccao(){
   }).join('');
   mount({crumb:'Explorar',title:'Explorar<br><span class="thin">por Secção</span>'},body,'map');
 }
-function figHtml(f){return '<figure class="fig"><img src="'+f.file+'" alt="'+esc(f.caption)+'" loading="lazy">'+
+function figHtml(f){return '<figure class="fig"><img src="'+f.file+'" alt="" loading="lazy">'+
   '<figcaption><b>Figura '+f.num+'.</b> '+esc(f.caption.replace(/^Figura\s+\d+\.\s*/,''))+'</figcaption></figure>';}
 function renderSectionContent(sec){ return renderBody((sec.blocks||[]),(sec.figures||[])); }
 function coverBlock(){
