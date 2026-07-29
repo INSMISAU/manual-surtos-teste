@@ -34,7 +34,7 @@ function deaccent(s){return (s||'').toLowerCase()
 function boldLabel(t){
   let html;
   const m=t.match(/^([^:]{2,80}):\s+(.+)$/);
-  if(m) html='<b>'+esc(m[1])+':</b> '+esc(m[2]);
+  if(m) html='<b>'+esc(m[1])+'</b><br>'+esc(m[2]);
   else html=esc(t);
   return html.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>'); /* negrito inline **...** */
 }
