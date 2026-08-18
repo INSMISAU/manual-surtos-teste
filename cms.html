@@ -34,7 +34,7 @@
   <div class="login-card">
     <div class="brand-badge"><span class="dot">INS</span> MANUAL DE SURTOS</div>
     <h1>Gestor de Conteúdos</h1>
-    <p class="sub">Plataforma de gestão do Manual para Detecção e Investigação de Surtos. Entre com a sua conta para editar e publicar conteúdos.</p>
+    <p class="sub">Plataforma de gestão do Manual de Detecção e Investigação de Surtos em Moçambique. Entre com a sua conta para editar e publicar conteúdos.</p>
     <div id="loginErr" class="hint hide"></div>
     <div class="field"><label>Email</label><input id="email" type="email" placeholder="nome@ins.gov.mz" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="field"><label>Palavra-passe</label><input id="pass" type="password" onkeydown="if(event.key==='Enter')doLogin()"></div>
@@ -439,10 +439,9 @@ images:(Array.isArray(d.imagens)?d.imagens:[]),
 fields:LBL.filter(function(x){return d[x[0]];}).map(function(x){return {label:x[1],blocks:txtToBlocks(d[x[0]])};})};
 });
 var sections=sec.map(function(s){return {id:s.ordem,title:s.titulo,label:'SECCAO '+s.ordem,blocks:txtToBlocks(s.conteudo),figures:[]};});
-var MAN={meta:{title:'Manual Nacional para Deteccao e Investigacao de Surtos',subtitle:'Instituto Nacional de Saude',version:'V1.0'},
+var MAN={meta:{title:'Manual de Deteccao e Investigacao de Surtos em Mocambique',subtitle:'Instituto Nacional de Saude',version:'V1.0'},
 sections:sections,groups:groups,diseases:diseases,glossary:{abbreviations:ab.map(function(a){return {abbr:a.sigla,meaning:a.significado};})}};
 var contentJs;
-var debugGroups;
 var baseMAN=parseManual(contentTxt);
 if(baseMAN && baseMAN.diseases && baseMAN.diseases.length){
 var doeBy={}; doe.forEach(function(d){ doeBy[d.slug]=d; });
@@ -467,7 +466,6 @@ var gidBySlug={}; baseMAN.groups.forEach(function(g){ g.diseases.forEach(functio
 (baseMAN.diseases||[]).forEach(function(dis){ if(gidBySlug[dis.slug]) dis.group=gidBySlug[dis.slug]; });
 }
 contentJs='window.MANUAL='+JSON.stringify(baseMAN)+';\n';
-debugGroups=JSON.stringify((baseMAN.groups||[]).map(function(g){return {nome:g.name,icone:g.icon};}),null,2);
 } else {
 /* O content.js veio mas nao se conseguiu ler. Antes publicava-se um manual minimo
    (so o texto da base de dados), perdendo prefacio, figuras, glossario e tabelas. */
@@ -475,7 +473,7 @@ alert('NADA FOI PUBLICADO.\n\nO content.js foi descarregado do GitHub mas nao fo
 toast('Publicacao cancelada: content.js ilegivel.');
 return;
 }
-var files=[{path:'content.js',content:contentJs},{path:'assets/js/content.js',content:contentJs},{path:'debug_groups.json',content:debugGroups||'[]'}];
+var files=[{path:'content.js',content:contentJs},{path:'assets/js/content.js',content:contentJs}];
 var geradoDdata=false;
 if(ddataTxt){
 try{
