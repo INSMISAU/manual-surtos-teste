@@ -445,7 +445,26 @@ var contentJs;
 var baseMAN=parseManual(contentTxt);
 if(baseMAN && baseMAN.diseases && baseMAN.diseases.length){
 var doeBy={}; doe.forEach(function(d){ doeBy[d.slug]=d; });
-baseMAN.diseases.forEach(function(dis){ var d=doeBy[dis.slug]; if(!d) return; dis.fields=LBL.filter(function(x){return d[x[0]];}).map(function(x){return {label:x[1],blocks:txtToBlocks(d[x[0]])};}); });
+/* REGRA UNICA: tudo o que e editavel no CMS reflecte-se no manual; o que nao e
+   editavel (prefacio, figuras do manual, glossario, texto integral) fica do base. */
+/* Doencas: nome, letra, imagens e campos de conteudo. */
+baseMAN.diseases.forEach(function(dis){ var d=doeBy[dis.slug]; if(!d) return; if(d.nome) dis.name=d.nome; if(d.letra) dis.letter=d.letra; if(Array.isArray(d.imagens)) dis.images=d.imagens; dis.fields=LBL.filter(function(x){return d[x[0]];}).map(function(x){return {label:x[1],blocks:txtToBlocks(d[x[0]])};}); });
+/* Seccoes: titulo, conteudo e ORDEM da BD (figuras do base preservadas). */
+var secByOrd={}; sec.forEach(function(s){ secByOrd[s.ordem]=s; });
+(baseMAN.sections||[]).forEach(function(sc){ var s=secByOrd[sc.id]; if(!s) return; if(s.titulo) sc.title=s.titulo; if(s.conteudo && (''+s.conteudo).trim()) sc.blocks=txtToBlocks(s.conteudo); });
+if(baseMAN.sections){ baseMAN.sections.sort(function(a,b){ var oa=secByOrd[a.id]?secByOrd[a.id].ordem:a.id, ob=secByOrd[b.id]?secByOrd[b.id].ordem:b.id; return (oa||0)-(ob||0); }); }
+/* Sindromes/estrutura: nome, ORDEM e PERTENCA das doencas a partir da BD.
+   Conteudo rico de cada doenca preservado do base (so se reordena/renomeia). */
+if(sind && sind.length){
+var slugsBase={}; (baseMAN.diseases||[]).forEach(function(dis){ slugsBase[dis.slug]=true; });
+var iconByName={}; (baseMAN.groups||[]).forEach(function(g){ iconByName[g.name]=g.icon; });
+baseMAN.groups=sind.slice().sort(function(a,b){return (a.ordem||0)-(b.ordem||0);}).map(function(s,i){
+var membros=doe.filter(function(d){return d.sindrome_id===s.id && slugsBase[d.slug];}).map(function(d){return d.slug;});
+return { id:i+1, name:s.nome, icon:iconByName[s.nome]||'sindrome', diseases:membros };
+});
+var gidBySlug={}; baseMAN.groups.forEach(function(g){ g.diseases.forEach(function(sl){ gidBySlug[sl]=g.id; }); });
+(baseMAN.diseases||[]).forEach(function(dis){ if(gidBySlug[dis.slug]) dis.group=gidBySlug[dis.slug]; });
+}
 contentJs='window.MANUAL='+JSON.stringify(baseMAN)+';\n';
 } else {
 /* O content.js veio mas nao se conseguiu ler. Antes publicava-se um manual minimo
@@ -464,8 +483,11 @@ var MAP={ 'Pontos-chave':'pontos_chave','Definicao de caso':'definicao_caso','De
 'Grupos de risco':'grupos_risco','Protocolo de investigacao':'protocolo_investigacao','Protocolo de investigação':'protocolo_investigacao',
 'Colheita e manuseio de amostras para o diagnóstico laboratorial':'colheita_manuseio_amostras','Colheita e manuseio de amostras para o diagnóstico laboratorial':'colheita_manuseio_amostras' };
 var cms={}; doe.forEach(function(d){ cms[d.slug]=d; });
+var _sinName={}; sind.forEach(function(s){ _sinName[s.id]=s.nome; });
 Object.keys(base).forEach(function(slug){
 var d=cms[slug]; if(!d) return;
+if(d.nome) base[slug].name=d.nome; if(d.letra) base[slug].letter=d.letra;
+if(d.sindrome_id && _sinName[d.sindrome_id]) base[slug].grp=_sinName[d.sindrome_id];
 if(d.pontos_chave){ base[slug].keys=(''+d.pontos_chave).split('\n').map(function(s){return s.trim().replace(/^[•\-]\s+/,'');}).filter(Boolean); }
 (base[slug].secfull||[]).forEach(function(secf){
 var key=MAP[secf.t];
