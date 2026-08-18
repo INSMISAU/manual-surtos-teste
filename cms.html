@@ -442,6 +442,7 @@ var sections=sec.map(function(s){return {id:s.ordem,title:s.titulo,label:'SECCAO
 var MAN={meta:{title:'Manual Nacional para Deteccao e Investigacao de Surtos',subtitle:'Instituto Nacional de Saude',version:'V1.0'},
 sections:sections,groups:groups,diseases:diseases,glossary:{abbreviations:ab.map(function(a){return {abbr:a.sigla,meaning:a.significado};})}};
 var contentJs;
+var debugGroups;
 var baseMAN=parseManual(contentTxt);
 if(baseMAN && baseMAN.diseases && baseMAN.diseases.length){
 var doeBy={}; doe.forEach(function(d){ doeBy[d.slug]=d; });
@@ -466,6 +467,7 @@ var gidBySlug={}; baseMAN.groups.forEach(function(g){ g.diseases.forEach(functio
 (baseMAN.diseases||[]).forEach(function(dis){ if(gidBySlug[dis.slug]) dis.group=gidBySlug[dis.slug]; });
 }
 contentJs='window.MANUAL='+JSON.stringify(baseMAN)+';\n';
+debugGroups=JSON.stringify((baseMAN.groups||[]).map(function(g){return {nome:g.name,icone:g.icon};}),null,2);
 } else {
 /* O content.js veio mas nao se conseguiu ler. Antes publicava-se um manual minimo
    (so o texto da base de dados), perdendo prefacio, figuras, glossario e tabelas. */
@@ -473,7 +475,7 @@ alert('NADA FOI PUBLICADO.\n\nO content.js foi descarregado do GitHub mas nao fo
 toast('Publicacao cancelada: content.js ilegivel.');
 return;
 }
-var files=[{path:'content.js',content:contentJs},{path:'assets/js/content.js',content:contentJs}];
+var files=[{path:'content.js',content:contentJs},{path:'assets/js/content.js',content:contentJs},{path:'debug_groups.json',content:debugGroups||'[]'}];
 var geradoDdata=false;
 if(ddataTxt){
 try{
