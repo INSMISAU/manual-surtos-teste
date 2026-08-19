@@ -108,7 +108,8 @@ function header(o){
     ? '<div class="search">'+I.search+'<input value="'+esc(o.q||'')+'" placeholder="Pesquisar sobre Manual, Síndromes ou Protocolos" onkeydown="if(event.key===\'Enter\')location.href=\'pesquisa.html?q=\'+encodeURIComponent(this.value)"></div>'
     : '';
   return '<header class="hdr"><div class="hdr-top">'+back+
-    '<span class="crumb">'+esc(o.crumb||'')+'</span><span class="spacer"></span></div>'+
+    '<span class="crumb">'+esc(o.crumb||'')+'</span><span class="spacer"></span>'+
+    '<button class="icon-btn">'+I.search+'</button><button class="icon-btn">'+I.bell+'</button></div>'+
     (o.title?'<h1 class="page-title">'+o.title+'</h1>':'')+
     (o.sub?'<p class="page-sub">'+esc(o.sub)+'</p>':'')+searchBox+'</header>';
 }
@@ -436,7 +437,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(document.getElementById('mnav'))return;
     var ov=document.createElement('div'); ov.className='mnav-ov'; ov.id='mnav-ov';
     var m=document.createElement('div'); m.className='mnav'; m.id='mnav';
-    m.innerHTML='<div class="mh"><b>Navegacao</b><button class="mx" aria-label="fechar">✕</button></div>'+
+    m.innerHTML='<div class="mh"><b>Navegação</b><button class="mx" aria-label="fechar">✕</button></div>'+
       '<div class="ml">'+MENU.map(function(x){
         return '<a class="'+x[3]+'" href="'+x[0]+'"><span class="mi">'+x[1]+'</span>'+x[2]+'</a>';
       }).join('')+'</div>';
