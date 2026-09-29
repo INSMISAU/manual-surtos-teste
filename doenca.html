@@ -39,6 +39,7 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke
 .casebox.case-provavel .casefig{background:#fdede0}
 /* S4-1: altura fixa para as figuras nao saltarem ao trocar de separador */
 .casefig{line-height:0;background:#faf3ee;height:172px;display:flex;align-items:center;justify-content:center;padding:6px;box-sizing:border-box}
+.case-media-grid{display:flex;align-items:center;justify-content:center;gap:16px;width:100%;height:100%;line-height:1.3}.case-media-grid>div{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;max-width:46%;flex:1}.case-media-grid img,.case-media-grid svg{max-height:128px!important}.case-media-grid span{font-size:11px;color:#333;text-align:center;margin-top:4px}
 .casefig svg,.casefig img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
 .casetxt{padding:13px 15px;font-size:13.5px;line-height:1.65;color:#333;text-align:justify}
 .casebox .casetxt{border-top:1px solid var(--line)}
@@ -227,24 +228,6 @@ function renderFull(slug){var d=DISEASES[slug];var body='',cur=[];function flush
    Preservar o rodapé e não atribuir PCR a cultura, serologia ou outros critérios. */
 function formatConfirmedMedia(c){
  var m=c.media||'';
- /* Parotidite: IgM e PCR permanecem alternativas no texto clínico. */
- if(m.indexOf('Detecção de anticorpos IgM ou RNA por PCR')>=0 && /confirmad/i.test(c.label)){
-  var start=m.indexOf('<rect x="272" y="42"'),end=m.indexOf('<text x="180" y="156"',start);
-  if(start>=0 && end>start) return m.slice(0,start)+
-   '<rect x="272" y="42" width="60" height="48" rx="8" fill="#fff4f5" stroke="#B02040" stroke-width="1.8"/>'+
-   '<text x="302" y="62" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#B02040">IgM+ ou</text>'+
-   '<text x="302" y="79" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#B02040">PCR+</text>'+
-   '<text x="302" y="116" text-anchor="middle" font-family="Arial,sans-serif" font-size="9.5" font-weight="700" fill="#B02040">Confirmado</text>'+m.slice(end);
- }
- /* Germano, 28/09: filaríase confirmada por imunocromatografia (ICT+). */
- if(/confirmad/i.test(c.label) && m.indexOf('Confirmação laboratorial — serologia')>=0 &&
-    m.indexOf('>Serologia</text>')>=0 && m.indexOf('>Resultado positivo</text>')>=0){
-  var start=m.indexOf('<rect x="272" y="44"'),end=m.indexOf('<text x="180" y="156"',start);
-  if(start>=0 && end>start) return m.slice(0,start)+
-   '<rect x="272" y="44" width="60" height="46" rx="8" fill="#fff4f5" stroke="#B02040" stroke-width="1.8"/>'+
-   '<text x="302" y="74" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#B02040">ICT+</text>'+
-   '<text x="302" y="116" text-anchor="middle" font-family="Arial,sans-serif" font-size="9.5" font-weight="700" fill="#B02040">Confirmado</text>'+m.slice(end);
- }
  if(!/confirmad/i.test(c.label)||m.indexOf('Confirmação laboratorial — PCR')<0||m.indexOf('Resultado positivo')<0)return m;
  var start=m.indexOf('<rect x="272" y="44"'),end=m.indexOf('<text x="180" y="156"',start);
  if(start<0||end<0)return m;
