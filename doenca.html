@@ -130,6 +130,15 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke
 .riskrow.risk-illustrated .ill{width:108px;height:108px;padding:0;background:#fffaf0;overflow:hidden}
 .riskrow.risk-illustrated .tx{min-width:0;text-align:left}
 @media(max-width:360px){.riskrow.risk-illustrated{gap:10px}.riskrow.risk-illustrated .ill{width:88px;height:88px}}
+
+.review-case-diagram{padding:14px;box-sizing:border-box;color:#174b43}
+.review-case-diagram figcaption{font-size:17px;font-weight:700;line-height:1.45;text-align:center;background:#eaf4ef;padding:12px 8px;border-radius:10px}
+.review-case-rows{padding-top:12px}
+.review-case-row{display:flex;gap:14px;align-items:center;padding:10px;background:#f9fbf9;border:1px solid #dde8e2;border-radius:10px}
+.casebox.case-illustrated .casefig .review-case-row img{flex:none;width:90px;height:90px;object-fit:contain;border-radius:8px}
+.review-case-row p{margin:0;min-width:0;font-size:14px;line-height:1.5;text-align:left;overflow-wrap:break-word}
+.review-case-connector{font-size:12px;line-height:24px;text-align:center;font-weight:700;min-height:8px}
+@media(max-width:360px){.review-case-diagram{padding:10px}.review-case-row{gap:9px;padding:8px}.casebox.case-illustrated .casefig .review-case-row img{width:68px;height:68px}}
 </style></head>
 <body><div class="app"><div id="app"></div></div>
 <script src="ddata.js"></script>
@@ -238,7 +247,7 @@ function renderDisease(slug){var d=applyOv(slug);window.CUR=d;
  var casesBlock='';if(d.cases&&d.cases.length){var bar='';d.cases.forEach(function(c,i){bar+='<button class="casebtn'+(i===0?' on':'')+'" onclick="setCase(\''+slug+'\','+i+',this)">'+c.label+'</button>';});
   casesBlock='<div class="sec-h carmim"><svg class="i" viewBox="0 0 24 24"><path d="M8 15a6 6 0 0 0 12 0v-3M8 15V9a4 4 0 1 1 8 0v3M8 15H5a2 2 0 0 0 0 4h1"/></svg> Definição de caso</div><div class="casebar">'+bar+'</div><div class="casebox" id="casebox"><div class="casefig" id="casefig"></div><div class="casetxt"><span class="casetag" id="casetag"></span><div id="casebody"></div></div></div>';}
  var evo='';if(d.evolution){evo='<div class="sec-h"><svg class="i" viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg> Evolução das lesões</div><div class="evo">'+d.evolution+'</div>';}
- var risksBlock='';if(d.risks&&d.risks.length){var rr='';d.risks.forEach(function(r){if(r.wide){rr+='<div class="riskitem"><div class="rtext">'+riskHTML(r.text)+'</div><div class="rbanner">'+r.media+'</div></div>';}else{rr+='<div class="riskrow'+(r.media.indexOf('colera-risk-image')>=0?' risk-illustrated':'')+'"><div class="ill">'+r.media+'</div><div class="tx">'+riskHTML(r.text)+'</div></div>';}});risksBlock='<div class="sec-h"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 21c0-3.3 2.7-5.5 6-5.5M16 11l2 2 4-4"/></svg> Grupos de risco</div>'+rr;}else{var gs=secByTitle(d,'Grupos de risco');if(gs)risksBlock='<div class="sec-h"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 21c0-3.3 2.7-5.5 6-5.5M16 11l2 2 4-4"/></svg> Grupos de risco</div><div class="acc" style="padding:2px 4px">'+renderItems(gs.items)+'</div>';}
+ var risksBlock='';if(d.risks&&d.risks.length){var rr='';d.risks.forEach(function(r){if(r.wide){rr+='<div class="riskitem"><div class="rtext">'+riskHTML(r.text)+'</div><div class="rbanner">'+r.media+'</div></div>';}else{rr+='<div class="riskrow'+(/colera-risk-image|review-risk-image/.test(r.media)?' risk-illustrated':'')+'"><div class="ill">'+r.media+'</div><div class="tx">'+riskHTML(r.text)+'</div></div>';}});risksBlock='<div class="sec-h"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 21c0-3.3 2.7-5.5 6-5.5M16 11l2 2 4-4"/></svg> Grupos de risco</div>'+rr;}else{var gs=secByTitle(d,'Grupos de risco');if(gs)risksBlock='<div class="sec-h"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 21c0-3.3 2.7-5.5 6-5.5M16 11l2 2 4-4"/></svg> Grupos de risco</div><div class="acc" style="padding:2px 4px">'+renderItems(gs.items)+'</div>';}
  var secs='';DETAIL.forEach(function(t){var s=secByTitle(d,t);if(!s)return;var ic=ICONS[t]||'';
   var fig=s.img?('<figure class="secimg"><img src="'+s.img+'" alt="" loading="lazy">'+(s.alt?'<figcaption>'+s.alt+'</figcaption>':'')+'</figure>'):'';
   secs+='<details class="acc"><summary><span class="ic"><svg class="i" viewBox="0 0 24 24">'+ic+'</svg></span>'+t+chev+'</summary><div class="inner">'+fig+renderItems(s.items)+'</div></details>';});

@@ -23,9 +23,12 @@ const I = {
 };
 const ICON_FILES=new Set(['sindrome_febris','neurologicas','conjutivite','gastro','sindromes',
   'historico','respiratorias','epidemiologic','sindrome']);
-function groupIcon(slug){
-  const f=ICON_FILES.has(slug)?slug:'sindrome';
-  return '<img class="dico" src="assets/icons/'+f+'.png" alt="" loading="lazy">';
+function groupIcon(slug,id){
+  const icons={conjutivite:'conjuntivite',sindrome_febris:'exantematica',sindrome:'cutanea',neurologicas:'neurologica',sindromes:'hemorragica',historico:'icterica',respiratorias:'respiratoria',epidemiologic:'zoonoses'};
+  if(slug==='gastro')return '<img class="dico" src="assets/icons/gastro.png" alt="" loading="lazy">';
+  const name=id===4?'paralisia':icons[slug];
+  if(name)return '<img class="dico" src="assets/ilustracoes/revisao-completa/syndrome-'+name+'.svg" alt="" loading="lazy">';
+  return '<img class="dico" src="assets/icons/sindrome.png" alt="" loading="lazy">';
 }
 function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function deaccent(s){return (s||'').toLowerCase()
@@ -227,7 +230,7 @@ function pageSeccao(){
 }
 function pageExplorarSindrome(){
   const cards=(M.groups||[]).map(g=>
-    '<div class="syn" onclick="location.href=\'sindrome.html?id='+g.id+'\'"><div class="ico">'+groupIcon(g.icon)+'</div><div class="nm">'+esc(g.name)+'</div></div>').join('');
+    '<div class="syn" onclick="location.href=\'sindrome.html?id='+g.id+'\'"><div class="ico">'+groupIcon(g.icon,g.id)+'</div><div class="nm">'+esc(g.name)+'</div></div>').join('');
   const si=(M.meta&&M.meta.sindromesIntro)||[];
   const intro='';
   const t1=(M.meta&&M.meta.tabela1)||null;
