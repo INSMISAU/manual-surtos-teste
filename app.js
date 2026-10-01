@@ -27,7 +27,7 @@ function groupIcon(slug,id){
   const icons={conjutivite:'conjuntivite',sindrome_febris:'exantematica',sindrome:'cutanea',neurologicas:'neurologica',sindromes:'hemorragica',historico:'icterica',respiratorias:'respiratoria',epidemiologic:'zoonoses'};
   if(slug==='gastro')return '<img class="dico" src="assets/icons/gastro.png" alt="" loading="lazy">';
   const name=id===4?'paralisia':icons[slug];
-  if(name)return '<img class="dico" src="assets/ilustracoes/revisao-completa/syndrome-'+name+'.svg" alt="" loading="lazy">';
+  if(name)return '<img class="dico" src="assets/ilustracoes/syndrome-'+name+'.svg" alt="" loading="lazy">';
   return '<img class="dico" src="assets/icons/sindrome.png" alt="" loading="lazy">';
 }
 function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
