@@ -1,9 +1,14 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v79-parotidite-risco-20261005";
+const CACHE_VERSION = "surtos-v80-rubeola-sarampo-polio-20261006";
 
 const CORE = [
+"./assets/ilustracoes/polio-criancas-vacinacao.png",
+"./assets/ilustracoes/polio-comunidade-saneamento.png",
+"./assets/ilustracoes/polio-provavel-horizontal.svg",
+"./assets/ilustracoes/risco-imunocomprometidos.png",
+"./assets/ilustracoes/rubeola-viagens-internacionais.png",
 "./assets/ilustracoes/parotidite-escola-quartel.png",
 "./assets/ilustracoes/mpox-contacto-escola-saude.png",
 "./assets/fig/fig6.png",
@@ -69,5 +74,6 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
