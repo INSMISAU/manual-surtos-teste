@@ -1,7 +1,7 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v82-aviao-polio-20261006";
+const CACHE_VERSION = "surtos-v81-imagens-compactas-20261006";
 
 const CORE = [
 "./assets/ilustracoes/polio-criancas-vacinacao.png",
