@@ -147,6 +147,12 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke
 .rbanner img[src$="risco-imunocomprometidos.png"],
 .rbanner img[src$="polio-criancas-vacinacao.png"],
 .rbanner img[src$="polio-comunidade-saneamento.png"]{width:auto;max-width:100%;height:auto;max-height:150px;object-fit:contain;margin:8px auto;}
+
+/* Formato aprovado: ilustração à esquerda, texto à direita. */
+.riskrow:has(.compact-risk-image){align-items:center;gap:12px}
+.riskrow:has(.compact-risk-image) .ill{width:clamp(108px,32vw,140px);height:auto;padding:0;border:0;background:transparent}
+.riskrow:has(.compact-risk-image) .ill img{width:100%;height:auto;max-height:150px;object-fit:contain;border-radius:8px}
+.riskrow:has(.compact-risk-image) .tx{flex:1;min-width:0;text-align:left}
 </style></head>
 <body><div class="app"><div id="app"></div></div>
 <script src="ddata.js"></script>
@@ -309,4 +315,5 @@ function resolveSlug(s){if(!s)return null;if(DISEASES[s])return s;if(ALIAS[s]&&D
 try{ADMIN=(LS()&&LS().getItem('ins_admin')==='1')||false}catch(e){}
 (function(){var s=resolveSlug(slugFromURL());if(s){renderDisease(s);}else{document.getElementById('app').innerHTML='<header class="hdr"><div class="hdr-top"><button class="backlink" onclick="location.href=\'index.html\'"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Manual</button><span class="spacer"></span></div><h1 class="page-title">Ficha</h1></header><main class="body"><div class="note">Ficha não encontrada. <a href="index.html" style="color:var(--petrol-d);font-weight:700">Voltar ao manual</a>.</div></main>';}})();
 </script></body></html>
+
 

@@ -1,9 +1,13 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v81-imagens-compactas-20261006";
+const CACHE_VERSION = "surtos-v84-layout-aprovado-20261006";
 
 const CORE = [
+"./assets/ilustracoes/cha-circulacao.png",
+"./assets/ilustracoes/cha-saneamento.png",
+"./assets/ilustracoes/cha-contacto.png",
+"./assets/ilustracoes/cha-comunidade.png",
 "./assets/ilustracoes/polio-criancas-vacinacao.png",
 "./assets/ilustracoes/polio-comunidade-saneamento.png",
 "./assets/ilustracoes/polio-provavel-horizontal.svg",
@@ -74,6 +78,7 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
 
