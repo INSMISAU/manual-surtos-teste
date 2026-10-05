@@ -1,9 +1,10 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v78-mpox-contacto-20261005";
+const CACHE_VERSION = "surtos-v79-parotidite-risco-20261005";
 
 const CORE = [
+"./assets/ilustracoes/parotidite-escola-quartel.png",
 "./assets/ilustracoes/mpox-contacto-escola-saude.png",
 "./assets/fig/fig6.png",
 "./assets/fig/fig5.png",
@@ -68,4 +69,5 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
