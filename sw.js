@@ -1,9 +1,12 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v89-rotavirus-20261006";
+const CACHE_VERSION = "surtos-v93-tifoide-actividades-20261006";
 
 const CORE = [
+"./assets/ilustracoes/tifoide-risco-saneamento-agua.webp",
+"./assets/ilustracoes/tifoide-risco-alimentos-agua.webp",
+"./assets/ilustracoes/tifoide-risco-profissionais-actividades.webp",
 "./assets/ilustracoes/rotavirus-risco-crianca-saneamento.webp",
 "./assets/ilustracoes/rotavirus-suspeito-crianca.webp",
 "./assets/ilustracoes/infeccoes-agua-sem-acesso.png",
