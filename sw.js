@@ -1,9 +1,10 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v85-cha-familiares-20261006";
+const CACHE_VERSION = "surtos-v86-infeccoes-20261006";
 
 const CORE = [
+"./assets/ilustracoes/infeccoes-agua-sem-acesso.png",
 "./assets/ilustracoes/cha-familiares.png",
 "./assets/ilustracoes/cha-circulacao.png",
 "./assets/ilustracoes/cha-saneamento.png",
@@ -79,6 +80,7 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
 
