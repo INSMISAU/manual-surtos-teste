@@ -1,9 +1,13 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v93-tifoide-actividades-20261006";
+const CACHE_VERSION = "surtos-v94-dengue-20261006";
 
 const CORE = [
+"./assets/ilustracoes/dengue-suspeito.webp",
+"./assets/ilustracoes/dengue-area-risco.webp",
+"./assets/ilustracoes/dengue-aedes.webp",
+"./assets/ilustracoes/dengue-antecedentes.webp",
 "./assets/ilustracoes/tifoide-risco-saneamento-agua.webp",
 "./assets/ilustracoes/tifoide-risco-alimentos-agua.webp",
 "./assets/ilustracoes/tifoide-risco-profissionais-actividades.webp",
