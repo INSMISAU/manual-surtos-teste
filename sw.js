@@ -1,9 +1,10 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v99-crimeia-20261006";
+const CACHE_VERSION = "surtos-v100-marburg-20261007";
 
 const CORE = [
+"./assets/ilustracoes/marburg-suspeito.webp",
 "./assets/ilustracoes/crimeia-carracas.webp",
 "./assets/ilustracoes/crimeia-pecuaria-matadouro.webp",
 "./assets/ilustracoes/hanta-rural-floresta.webp",
@@ -109,6 +110,7 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
 
