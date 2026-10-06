@@ -85,9 +85,10 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke
 .rbanner svg,.rbanner img{display:block;width:100%;height:auto}
 /* S4-10: o texto dos grupos de risco herdava 16px do body; alinhar com o resto (13.3px) */
 .riskrow{display:flex;gap:12px;align-items:center;margin:12px 0}
-.riskrow .tx{font-size:13.3px;line-height:1.55;color:#3a3a3a;text-align:justify}
-.riskrow .ill{flex:none;width:78px;height:70px;background:#f7fbfa;border:1px solid #e7efec;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:5px}
-.riskrow .ill svg,.riskrow .ill img{width:100%;height:100%;display:block;object-fit:contain}
+.riskrow .tx{flex:1;min-width:0;font-size:13.3px;line-height:1.55;color:#3a3a3a;text-align:left}
+.riskrow{--risk-media-size:108px}
+.riskrow .ill{box-sizing:border-box;flex:none;width:var(--risk-media-size);height:var(--risk-media-size);padding:0;background:#f7fbfa;border:1px solid #e7efec;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.riskrow .ill svg,.riskrow .ill img{box-sizing:border-box;width:100%;height:100%;max-width:100%;max-height:100%;display:block;object-fit:contain;object-position:center}
 .rtext{font-size:13px;line-height:1.55;color:#3a3a3a;text-align:justify}
 .rtext b,.riskrow .tx b{color:var(--petrol-d)}
 .foot{color:var(--muted);font-size:11.5px;text-align:center;margin-top:22px;line-height:1.6}
@@ -127,9 +128,8 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke
 .mpox-or{width:32px;margin:4px auto;text-align:center;font-size:12px;line-height:24px;font-weight:700;color:#174b43;background:#eaf4ef;border-radius:20px}
 @media(max-width:360px){.mpox-epilink{padding:10px}.mpox-condition{grid-template-columns:76px minmax(0,1fr);gap:10px}.mpox-epiheading strong{font-size:17px}}
 
-.riskrow.risk-illustrated .ill{width:108px;height:108px;padding:0;background:#fffaf0;overflow:hidden}
-.riskrow.risk-illustrated .tx{min-width:0;text-align:left}
-@media(max-width:360px){.riskrow.risk-illustrated{gap:10px}.riskrow.risk-illustrated .ill{width:88px;height:88px}}
+/* A mesma área visual para ícones e ilustrações de todos os grupos. */
+@media(max-width:360px){.riskrow{--risk-media-size:88px;gap:10px}}
 
 .review-case-diagram{padding:14px;box-sizing:border-box;color:#174b43}
 .review-case-diagram figcaption{font-size:17px;font-weight:700;line-height:1.45;text-align:center;background:#eaf4ef;padding:12px 8px;border-radius:10px}
@@ -148,11 +148,6 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke
 .rbanner img[src$="polio-criancas-vacinacao.png"],
 .rbanner img[src$="polio-comunidade-saneamento.png"]{width:auto;max-width:100%;height:auto;max-height:150px;object-fit:contain;margin:8px auto;}
 
-/* Formato aprovado: ilustração à esquerda, texto à direita. */
-.riskrow:has(.compact-risk-image){align-items:center;gap:12px}
-.riskrow:has(.compact-risk-image) .ill{width:clamp(108px,32vw,140px);height:auto;padding:0;border:0;background:transparent}
-.riskrow:has(.compact-risk-image) .ill img{width:100%;height:auto;max-height:150px;object-fit:contain;border-radius:8px}
-.riskrow:has(.compact-risk-image) .tx{flex:1;min-width:0;text-align:left}
 </style></head>
 <body><div class="app"><div id="app"></div></div>
 <script src="ddata.js"></script>
@@ -315,5 +310,6 @@ function resolveSlug(s){if(!s)return null;if(DISEASES[s])return s;if(ALIAS[s]&&D
 try{ADMIN=(LS()&&LS().getItem('ins_admin')==='1')||false}catch(e){}
 (function(){var s=resolveSlug(slugFromURL());if(s){renderDisease(s);}else{document.getElementById('app').innerHTML='<header class="hdr"><div class="hdr-top"><button class="backlink" onclick="location.href=\'index.html\'"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Manual</button><span class="spacer"></span></div><h1 class="page-title">Ficha</h1></header><main class="body"><div class="note">Ficha não encontrada. <a href="index.html" style="color:var(--petrol-d);font-weight:700">Voltar ao manual</a>.</div></main>';}})();
 </script></body></html>
+
 
 
