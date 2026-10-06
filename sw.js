@@ -1,9 +1,12 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v97-rift-20261006";
+const CACHE_VERSION = "surtos-v98-hanta-20261006";
 
 const CORE = [
+"./assets/ilustracoes/hanta-rural-floresta.webp",
+"./assets/ilustracoes/hanta-ambientes-exposicao.webp",
+"./assets/ilustracoes/hanta-area-transmissao.webp",
 "./assets/ilustracoes/rift-suspeito.webp",
 "./assets/ilustracoes/rift-gado.webp",
 "./assets/ilustracoes/rift-leite.webp",
