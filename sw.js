@@ -1,9 +1,14 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v94-dengue-20261006";
+const CACHE_VERSION = "surtos-v95-ebola-20261006";
 
 const CORE = [
+"./assets/ilustracoes/ebola-area-surto.webp",
+"./assets/ilustracoes/ebola-profissionais.webp",
+"./assets/ilustracoes/ebola-contacto-cuidados.webp",
+"./assets/ilustracoes/ebola-enterro.webp",
+"./assets/ilustracoes/ebola-floresta.webp",
 "./assets/ilustracoes/dengue-suspeito.webp",
 "./assets/ilustracoes/dengue-area-risco.webp",
 "./assets/ilustracoes/dengue-aedes.webp",
