@@ -1,9 +1,11 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v106-raiva-20261007";
+const CACHE_VERSION = "surtos-v107-raiva-casos-20261007";
 
 const CORE = [
+"./assets/ilustracoes/raiva-sintomas.webp",
+"./assets/ilustracoes/raiva-progressao.webp",
 "./assets/ilustracoes/raiva-comunidade.webp",
 "./assets/ilustracoes/raiva-veterinarios.webp",
 "./assets/ilustracoes/raiva-animais.webp",
@@ -127,6 +129,7 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
 
