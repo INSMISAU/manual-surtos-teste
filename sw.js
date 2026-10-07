@@ -1,9 +1,13 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v103-amarela-20261007";
+const CACHE_VERSION = "surtos-v105-meningite-20261007";
 
 const CORE = [
+"./assets/ilustracoes/meningite-nao-vacinados.webp",
+"./assets/ilustracoes/meningite-imunidade-legenda.webp",
+"./assets/ilustracoes/meningite-suspeito.webp",
+"./assets/ilustracoes/meningite-idades.webp",
 "./assets/ilustracoes/amarela-comunidade.webp",
 "./assets/ilustracoes/amarela-viajantes.webp",
 "./assets/ilustracoes/amarela-historico-vacinal.webp",
@@ -120,6 +124,7 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
 
