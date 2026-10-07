@@ -1,9 +1,12 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v105-meningite-20261007";
+const CACHE_VERSION = "surtos-v106-raiva-20261007";
 
 const CORE = [
+"./assets/ilustracoes/raiva-comunidade.webp",
+"./assets/ilustracoes/raiva-veterinarios.webp",
+"./assets/ilustracoes/raiva-animais.webp",
 "./assets/ilustracoes/meningite-nao-vacinados.webp",
 "./assets/ilustracoes/meningite-imunidade-legenda.webp",
 "./assets/ilustracoes/meningite-suspeito.webp",
@@ -124,6 +127,7 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
 
