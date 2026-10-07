@@ -1,9 +1,12 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v107-raiva-casos-20261007";
+const CACHE_VERSION = "surtos-v109-gripe-20261007";
 
 const CORE = [
+"./assets/ilustracoes/gripe-aviaria-sintomas.webp",
+"./assets/ilustracoes/gripe-grupos-sazonal.webp",
+"./assets/ilustracoes/gripe-exposicao-aves.webp",
 "./assets/ilustracoes/raiva-sintomas.webp",
 "./assets/ilustracoes/raiva-progressao.webp",
 "./assets/ilustracoes/raiva-comunidade.webp",
@@ -129,20 +132,3 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
