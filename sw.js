@@ -1,9 +1,13 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v112-mers-correcao-20261008";
+const CACHE_VERSION = "surtos-v113-covid-20261008";
 
 const CORE = [
+"./assets/ilustracoes/covid-grupos-risco.svg",
+"./assets/ilustracoes/covid-prevencao-limitada.svg",
+"./assets/ilustracoes/covid-ligacao.svg",
+"./assets/ilustracoes/covid-inconclusivo.svg",
 "./assets/ilustracoes/mers-atendimento.webp",
 "./assets/ilustracoes/mers-condicoes-saude.svg",
 "./assets/ilustracoes/mers-resultado-inconclusivo.svg",
@@ -137,5 +141,6 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
