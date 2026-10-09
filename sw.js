@@ -1,9 +1,11 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v114-covid-humanas-20261008";
+const CACHE_VERSION = "surtos-v115-coqueluche-20261009";
 
 const CORE = [
+"./assets/ilustracoes/coqueluche-bebe.webp",
+"./assets/ilustracoes/coqueluche-vacinacao.webp",
 "./assets/ilustracoes/covid-acesso-prevencao.webp",
 "./assets/ilustracoes/covid-contacto-humano.webp",
 "./assets/ilustracoes/covid-historico-viagem.webp",
@@ -146,6 +148,7 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
 
