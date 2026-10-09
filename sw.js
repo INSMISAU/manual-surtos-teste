@@ -1,9 +1,13 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v116-tuberculose-20261009";
+const CACHE_VERSION = "surtos-v117-vsr-20261009";
 
 const CORE = [
+"./assets/ilustracoes/vsr-avaliacao-respiratoria.webp",
+"./assets/ilustracoes/vsr-criancas.webp",
+"./assets/ilustracoes/vsr-doencas-cronicas.webp",
+"./assets/ilustracoes/vsr-idosos-imunidade.webp",
 "./assets/ilustracoes/tb-contacto-mdr.webp",
 "./assets/ilustracoes/tb-densidade-populacional.webp",
 "./assets/ilustracoes/tb-imunidade-contacto.webp",
@@ -153,6 +157,7 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
 
