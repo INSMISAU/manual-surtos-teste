@@ -1,9 +1,14 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v119-peste-20261009";
+const CACHE_VERSION = "surtos-v120-zika-20261009";
 
 const CORE = [
+"./assets/ilustracoes/zika-suspeito-09out.webp",
+"./assets/ilustracoes/zika-viagem-consulta.webp",
+"./assets/ilustracoes/zika-ligacao-epidemiologica.webp",
+"./assets/ilustracoes/zika-comunidade.webp",
+
 "./assets/ilustracoes/peste-avaliacao-respiratoria.webp",
 "./assets/ilustracoes/peste-avaliacao-sistemica.webp",
 "./assets/ilustracoes/peste-bubao-drenagem.webp",
