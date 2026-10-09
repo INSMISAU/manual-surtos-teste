@@ -1,9 +1,13 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v120-zika-20261009";
+const CACHE_VERSION = "surtos-v121-dermatite-20261009";
 
 const CORE = [
+"./assets/ilustracoes/dermatite-descalcos-09out.webp",
+"./assets/ilustracoes/dermatite-crianca-areia-09out.webp",
+"./assets/ilustracoes/dermatite-trabalhadores-turistas-09out.webp",
+
 "./assets/ilustracoes/zika-suspeito-09out.webp",
 "./assets/ilustracoes/zika-viagem-consulta.webp",
 "./assets/ilustracoes/zika-ligacao-epidemiologica.webp",
