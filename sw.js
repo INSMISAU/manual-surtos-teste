@@ -1,9 +1,14 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v118-antrax-20261009";
+const CACHE_VERSION = "surtos-v119-peste-20261009";
 
 const CORE = [
+"./assets/ilustracoes/peste-avaliacao-respiratoria.webp",
+"./assets/ilustracoes/peste-avaliacao-sistemica.webp",
+"./assets/ilustracoes/peste-bubao-drenagem.webp",
+"./assets/ilustracoes/peste-bubao-suspeito.webp",
+"./assets/ilustracoes/peste-profissionais-risco.webp",
 "./assets/ilustracoes/antrax-avaliacao.webp",
 "./assets/ilustracoes/antrax-rural.webp",
 "./assets/ilustracoes/antrax-trabalhadores.webp",
@@ -161,6 +166,7 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
 
