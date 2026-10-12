@@ -1,9 +1,11 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v122-dermatite-aprovada-20261009";
+const CACHE_VERSION = "surtos-v123-escabiose-20261012";
 
 const CORE = [
+"./assets/ilustracoes/escabiose-contacto-proximo-12out.webp",
+"./assets/ilustracoes/escabiose-aglomeracao-12out.webp",
 "./assets/ilustracoes/dermatite-descalcos-09out.webp",
 "./assets/ilustracoes/dermatite-crianca-areia-09out.webp",
 "./assets/ilustracoes/dermatite-trabalhadores-turistas-aprovada.svg",
