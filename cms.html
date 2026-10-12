@@ -421,6 +421,11 @@ fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/ddata.js?_='
 fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/assets/js/content.js?_='+Date.now()).then(function(r){return r.ok?r.text():null;}).catch(function(){return null;})
 ]).then(function(res){
 var sind=res[0].data||[], doe=res[1].data||[], sec=res[2].data||[], ab=res[3].data||[], ddataTxt=res[4], contentTxt=res[5];
+/* Identificadores antigos no CMS: publicar com os caminhos existentes no leitor,
+   sem alterar os registos da base de dados ou as imagens aprovadas. */
+var slugLeitor={lepra:'lepra-hanseniase',carbunculo:'carbunculo-antrax',tungiase:'tungiase-matequenha',parotidite:'parotidite-papeira','doenca-do-virus-zika':'doenca-pelo-zika',pertussis:'pertussis-coqueluche','sindrome-respiratoria-do-medio-oriente':'sindrome-respiratoria-do-medio-oriente-mers','infeccao-respiratoria-aguda-por-virus-sincicial-respiratorio':'virus-sincicial-respiratorio-vsr'};
+doe=doe.map(function(d){if(!slugLeitor[d.slug])return d;var copia={};Object.keys(d).forEach(function(k){copia[k]=d[k];});copia.slug=slugLeitor[d.slug];return copia;});
+
 /* Sem estes dois ficheiros do GitHub nao ha manual completo: o content.js traz o
    prefacio, as figuras e o glossario; o ddata.js traz os icones das fichas.
    Se falharem, PARAR. Antes gerava-se um manual mutilado sem avisar ninguem. */
