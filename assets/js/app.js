@@ -77,6 +77,9 @@ function renderBody(blocks,figs){
   const arr=blocks||[];
   for(let i=0;i<arr.length;i++){
     const b=arr[i];
+    /* Subtítulos escritos em Markdown pelo CMS: renderizar como títulos. */
+    const mdHeading=String((b&&b.text)||'').match(/^\s*(#{1,6})\s+(.+?)\s*$/);
+    if(mdHeading && b.type!=='li' && b.type!=='oli'){ closeList(); const tag=mdHeading[1].length<=3?'h3':'h4'; html+='<'+tag+'>'+esc(mdHeading[2])+'</'+tag+'>'; continue; }
     if(isTableRow(b)){ const t=[]; while(i<arr.length&&isTableRow(arr[i])){ t.push(arr[i].text); i++; } i--; closeList(); html+=tableHtml(t); continue; }
     /* Linha que É a legenda de uma figura ("Figura N. …"): mostra a figura uma só vez
        (com a sua própria legenda) e não repete o texto por cima. */
