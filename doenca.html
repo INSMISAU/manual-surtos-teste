@@ -279,7 +279,17 @@ function renderDisease(slug){var d=applyOv(slug);window.CUR=d;
  document.getElementById('app').innerHTML='<header class="hdr"><div class="hdr-top"><button class="backlink" onclick="goBack()"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Manual</button><span>'+d.grp+'</span><span class="spacer"></span></div><h1 class="page-title">'+d.name+'</h1></header><main class="body"><button class="fullbtn" onclick="renderFull(\''+slug+'\')"><svg class="i" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 13h6M9 17h6"/></svg> Ver texto integral do manual</button>'+(ADMIN?adminEditBtn(slug):'')+keysBlock+casesBlock+(d.illus||'')+'<div style="height:12px"></div>'+evo+risksBlock+'<div style="height:12px"></div>'+secs+pagerHTML(slug)+'<p class="foot">Instituto Nacional de Saúde · MISAU</p></main>'+fab("goBack()");
  if(d.cases&&d.cases.length)setCase(slug,0,document.querySelector('.casebtn'));window.scrollTo(0,0);
 }
-function renderFull(slug){var d=DISEASES[slug];var body='',cur=[];function flush(){if(cur.length){body+=renderItems(cur);cur=[];}}(d.full||[]).forEach(function(it){if(it[0]==='h'){flush();body+='<div class="ft-h3">'+it[1]+'</div>';}else cur.push([it[0],it[1]]);});flush();
+/* O texto integral usa os mesmos blocos actualizados pelo CMS. Preserva títulos e secções sem correspondência. */
+function integralItems(d){
+ var aliases={'Limiar de notificação e surto':'Número de casos necessários para desencadear a notificação e a investigação','Laboratório e amostras':'Colheita e manuseio de amostras para o diagnóstico laboratorial'};
+ var out=[], a=d.full||[];
+ for(var i=0;i<a.length;){var it=a[i];if(it[0]!=='h'){out.push(it);i++;continue;}
+  var j=i+1;while(j<a.length&&a[j][0]!=='h')j++;
+  var sec=secByTitle(d,aliases[it[1]]||it[1]);out.push(it);
+  if(sec&&sec.items&&sec.items.length)sec.items.forEach(function(x){out.push([x[0],x[1]]);});else for(var n=i+1;n<j;n++)out.push(a[n]);i=j;
+ }return out;
+}
+function renderFull(slug){var d=DISEASES[slug];var body='',cur=[];function flush(){if(cur.length){body+=renderItems(cur);cur=[];}}integralItems(d).forEach(function(it){if(it[0]==='h'){flush();body+='<div class="ft-h3">'+it[1]+'</div>';}else cur.push([it[0],it[1]]);});flush();
  document.getElementById('app').innerHTML='<header class="hdr"><div class="hdr-top"><button class="backlink" onclick="renderDisease(\''+slug+'\')"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Ficha</button><span>Texto integral</span><span class="spacer"></span></div><h1 class="page-title">'+d.name+'</h1><p class="page-sub">Texto integral do Manual</p></header><main class="body">'+body+pagerHTML(slug)+'<p class="foot">INS · MISAU</p></main>'+fab("renderDisease('"+slug+"')");window.scrollTo(0,0);}
 /* Revisão de Germano, 24/09: nos esquemas que JÁ identificam PCR como método,
    mostrar PCR+ dentro da caixa e Confirmado por baixo, em carmim.
