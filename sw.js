@@ -1,9 +1,13 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v123-escabiose-20261012";
+const CACHE_VERSION = "surtos-v124-filariase-20261012";
 
 const CORE = [
+"./assets/ilustracoes/filariase-avaliacao-provavel-12out.webp",
+"./assets/ilustracoes/filariase-comunidade-mosquitos-12out.webp",
+"./assets/ilustracoes/filariase-cobertura-programas-12out.webp",
+
 "./assets/ilustracoes/escabiose-contacto-proximo-12out.webp",
 "./assets/ilustracoes/escabiose-aglomeracao-12out.webp",
 "./assets/ilustracoes/dermatite-descalcos-09out.webp",
