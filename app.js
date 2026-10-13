@@ -229,7 +229,7 @@ function pageSeccao(){
 }
 function pageExplorarSindrome(){
   const cards=(M.groups||[]).map(g=>
-    '<div class="syn" onclick="location.href=\'sindrome.html?id='+g.id+'\'"><div class="ico">'+groupIcon(g.icon,g.id)+'</div><div class="nm">'+esc(g.name)+'</div></div>').join('');
+    '<a class="syn" href="sindrome.html?id='+g.id+'" style="min-height:104px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:inherit"><div class="nm">'+esc(g.name)+'</div></a>').join('');
   const si=(M.meta&&M.meta.sindromesIntro)||[];
   const intro='';
   const t1=(M.meta&&M.meta.tabela1)||null;
