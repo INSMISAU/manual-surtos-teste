@@ -1,7 +1,7 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v137-legendas-finais-20261013";
+const CACHE_VERSION = "surtos-v138-figura5-20261013";
 
 const CORE = [
 "./assets/ilustracoes/filariase-avaliacao-provavel-12out.webp",
