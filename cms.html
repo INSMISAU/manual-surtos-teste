@@ -197,13 +197,15 @@ return;
 }
 var tabs=[['doencas','Doenças'],['sindromes','Síndromes'],['seccoes','Secções']];
 if(PERFIL.papel==='admin')tabs.push(['utilizadores','Utilizadores']);
+tabs.push(['ajuda','Ajuda']);
 var nav='<div class="row" style="gap:6px;margin-bottom:12px;align-items:center">'+tabs.map(function(t){return '<button class="'+(VIEW===t[0]?'btn-p':'btn-o')+'" onclick="irPara(\''+t[0]+'\')">'+t[1]+'</button>';}).join('')+'<span style="flex:1"></span><button class="btn-o" onclick="loadEmendas()">Ver emendas</button></div>';
 /* Publicacao (solucao A'): o token vem de system_settings (Supabase, via RLS) e o
    commit e feito directamente. O utilizador autorizado so ve "Publicar". */
 var actions=(can('publish')?'<div class="row" style="margin-bottom:10px;align-items:center"><button class="btn-g" onclick="publicarSite()">↥ Publicar para o site</button></div>':'');
 c.innerHTML='<div class="card"><h1 style="margin:0 0 14px;font-size:19px;color:var(--azul2);text-align:center">Administração — Gestor de Conteúdos</h1>'+
 nav+actions+'<div id="viewbox">A carregar…</div></div>';
-if(VIEW==='utilizadores'&&PERFIL.papel==='admin') viewUtilizadores();
+if(VIEW==='ajuda')viewAjudaCMS();
+else if(VIEW==='utilizadores'&&PERFIL.papel==='admin') viewUtilizadores();
 else if(VIEW==='sindromes') viewSindromes();
 else if(VIEW==='seccoes') viewSeccoes();
 else viewDoencas();
@@ -226,6 +228,7 @@ async function reporAcessoCMS(btn){
  }catch(e){box.textContent='Não foi possível concluir o pedido.';}finally{btn.disabled=false;}
 }
 
+function viewAjudaCMS(){document.getElementById('viewbox').innerHTML="<h2 style=\"font-size:20px\">Ajuda — Gestão de conteúdos</h2>\n<p>As opções disponíveis dependem do seu perfil: edição, revisão, publicação ou administração.</p>\n<h3>Alterar textos</h3>\n<ol><li>Em <b>Doenças</b>, abra a ficha e edite os campos necessários. Para capítulos, utilize <b>Secções</b>.</li><li><b>Guardar</b> conserva o trabalho. <b>Guardar &amp; submeter</b> envia-o à revisão.</li><li>O revisor usa <b>Aprovar</b> ou <b>Devolver</b>.</li><li>Após aprovação, o responsável usa <b>Publicar</b> na ficha.</li></ol>\n<h3>Substituir imagens</h3>\n<ol><li>Abra a ficha e desça até <b>Imagens da ficha</b>.</li><li>Em <b>Onde substituir a imagem</b>, escolha o caso ou grupo de risco exacto. Confira a imagem actualmente publicada.</li><li>Carregue <b>JPG, PNG ou WebP, até 3 MB</b>. Confira a pré-visualização e indique uma descrição breve quando necessária.</li><li>Se já existir uma substituição para a posição, remova a entrada anterior da lista antes de carregar a nova.</li><li>Guarde, submeta à revisão e siga a aprovação e publicação da ficha.</li></ol>\n<p>As proporções e as regras de tamanho do leitor são preservadas. As restantes posições não são substituídas automaticamente. Se o caso ou grupo de risco mudar, reabra a ficha e atribua a imagem à posição correcta antes de publicar.</p>\n<h3>Quando aparece no manual?</h3>\n<p><b>Guardar</b> grava no gestor. <b>Publicar</b> na ficha torna o conteúdo elegível para publicação. Para actualizar o leitor, o responsável clica em <b>Publicar para o site</b> no painel geral.</p>\n<p>Esse botão gera o conjunto dos conteúdos elegíveis. Confirme o destino indicado, aguarde a conclusão e depois verifique a ficha no leitor. Se ainda vir a imagem anterior, recarregue a página antes de repetir a edição.</p>\n<h3>Repor acesso — Administrador</h3>\n<p>Em <b>Utilizadores</b>, escolha a conta e clique em <b>Repor palavra-passe</b>. Confirme a identidade do titular e entregue a senha temporária em privado. Ao entrar, o titular deve definir a sua senha pessoal. A reposição não altera o perfil nem desbloqueia uma conta suspensa.</p>\n<p>Não partilhe senhas, links de acesso ou capturas com credenciais.</p>\n";}
 function viewDoencas(){
 var vb=document.getElementById('viewbox');
 vb.innerHTML='<div style="text-align:center;font-weight:700;font-size:16px;margin:0 0 8px">Doenças</div>'+(can('edit')?'<div style="text-align:center;margin:0 0 12px"><button class="btn-p" onclick="novaDoenca()">+ Nova doença</button></div>':'')+'<div id="novaBox"></div><div id="lista">A carregar…</div>';
