@@ -335,7 +335,53 @@ function slugFromURL(){var m=location.search.match(/[?&]slug=([^&]+)/);return m?
 function resolveSlug(s){if(!s)return null;if(DISEASES[s])return s;if(ALIAS[s]&&DISEASES[ALIAS[s]])return ALIAS[s];var t=s.split('-')[0];for(var k in DISEASES){if(k===t||k.split('-')[0]===t||k.indexOf(t)===0)return k;}return null;}
 try{ADMIN=(LS()&&LS().getItem('ins_admin')==='1')||false}catch(e){}
 (function(){var s=resolveSlug(slugFromURL());if(s){renderDisease(s);}else{document.getElementById('app').innerHTML='<header class="hdr"><div class="hdr-top"><button class="backlink" onclick="location.href=\'index.html\'"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Manual</button><span class="spacer"></span></div><h1 class="page-title">Ficha</h1></header><main class="body"><div class="note">Ficha não encontrada. <a href="index.html" style="color:var(--petrol-d);font-weight:700">Voltar ao manual</a>.</div></main>';}})();
-</script></body></html>
+</script><script>
+/* Progresso de leitura local, separado entre cópia de teste e manual real. */
+(function(){
+ function initReading(){
+  var file=location.pathname.split('/').pop()||'index.html';
+  var allowed=['manual.html','seccao.html','sindrome.html','doenca.html'];
+  var scope=location.pathname.slice(0,location.pathname.lastIndexOf('/')+1),key='ins-reading-v1:'+scope;
+  var store;try{store=window.localStorage;}catch(e){return;}
+  if(!store)return;
+  function load(){try{return JSON.parse(store.getItem(key)||'null');}catch(e){return null;}}
+  var saved=load(),url=file+location.search,last=saved&&saved.last;
+  function valid(v){return v&&typeof v.url==='string'&&/^(manual|seccao|sindrome|doenca)\.html(?:\?[^#]*)?$/.test(v.url)&&!/[<>\\]/.test(v.url);}
+  if(allowed.indexOf(file)<0){
+   if((file==='index.html'||file==='')&&valid(last)){
+    var main=document.querySelector('main')||document.querySelector('.body');if(!main)return;
+    var box=document.createElement('div');box.style.cssText='margin:12px 0;padding:14px;border:1px solid #a9e0cd;border-radius:12px;background:#e3f4ef';
+    var text=document.createElement('p');text.textContent='Continuar a leitura: '+(last.label||'Manual');text.style.margin='0 0 10px';
+    var link=document.createElement('a');link.href=last.url;link.textContent='Retomar leitura';link.className='pill';box.appendChild(text);box.appendChild(link);main.insertBefore(box,main.firstChild);
+   }return;
+  }
+  var prior=saved&&saved.pages&&saved.pages[url],restoring=!!valid(prior),moved=false,timer;
+  function snapshot(){
+   if(restoring)return;
+   var data=load()||{},sub=document.querySelector('.page-sub'),tag=document.querySelector('.casebtn.on');
+   var v={url:url,label:(document.querySelector('.page-title')||{}).textContent||document.title,y:Math.max(0,window.scrollY||0),open:Array.from(document.querySelectorAll('details')).map(d=>d.open),full:!!(sub&&/texto integral/i.test(sub.textContent)),caseIndex:tag?Array.from(document.querySelectorAll('.casebtn')).indexOf(tag):-1};
+   data.pages=data.pages||{};data.pages[url]=v;data.last=v;data.updated=Date.now();
+   var ks=Object.keys(data.pages);if(ks.length>80)delete data.pages[ks[0]];
+   try{store.setItem(key,JSON.stringify(data));}catch(e){}
+  }
+  function stop(){moved=true;restoring=false;}
+  ['wheel','touchstart','keydown'].forEach(n=>window.addEventListener(n,stop,{passive:true,once:true}));
+  if(restoring){
+   if(file==='doenca.html'&&prior.full&&typeof window.renderFull==='function')window.renderFull(window.resolveSlug(window.slugFromURL()));
+   else if(file==='doenca.html'&&prior.caseIndex>=0){var b=document.querySelectorAll('.casebtn')[prior.caseIndex];if(b)b.click();}
+   Array.from(document.querySelectorAll('details')).forEach((d,i)=>{if(prior.open&&typeof prior.open[i]==='boolean')d.open=prior.open[i];});
+   [0,150,500,1100].forEach((ms,i)=>setTimeout(function(){if(!moved)window.scrollTo(0,Number.isFinite(prior.y)?Math.max(0,prior.y):0);if(i===3){restoring=false;snapshot();}},ms));
+  }else snapshot();
+  window.addEventListener('scroll',function(){clearTimeout(timer);timer=setTimeout(snapshot,200);},{passive:true});
+  document.addEventListener('toggle',function(){if(!restoring)snapshot();},true);
+  window.addEventListener('pagehide',snapshot);
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')snapshot();});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initReading);else initReading();
+})();
+
+</script>
+</body></html>
 
 
 

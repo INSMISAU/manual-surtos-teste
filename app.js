@@ -286,16 +286,15 @@ function pageDoenca(){
   mount({back:true,crumb:'Síndrome · '+d.letter,title:esc(d.name),search:false},body,'map');
 }
 function pageGlossario(){
-  const ab=(M.glossary&&M.glossary.abbreviations)||[];
-  const concepts=((M.glossary&&M.glossary.concepts)||[]).map(c=>[c.term,c.def]);
-  const cBody=concepts.map(c=>'<h4>'+esc(c[0])+':</h4><p>'+esc(c[1])+'</p>').join('');
-  const abBody=ab.map(a=>'<div class="abbr"><span class="k">'+esc(a.abbr)+'</span><span class="v">'+esc(a.meaning)+'</span></div>').join('');
-  const gi=(M.glossary&&M.glossary.intro)?'<p style="margin:0 0 12px">'+esc(M.glossary.intro)+'</p>':'';
-  const body=(gi?'<p style="font-size:13px;color:#5a6b73;margin:6px 0 12px">'+esc(M.glossary.intro)+'</p>':'')+
-    '<details class="acc" open><summary><span class="dot"></span>Principais conceitos epidemiológicos<span class="chev">'+I.chev+'</span></summary>'+
-    '<div class="inner content">'+cBody+'</div></details>'+
-    '<h2 class="sec-h">Abreviaturas ('+ab.length+')</h2><div class="card" style="padding:6px 16px">'+abBody+'</div>';
+  const concepts=(M.glossary&&M.glossary.concepts)||[],ab=(M.glossary&&M.glossary.abbreviations)||[];
+  const entry=(title,def,kind)=>'<article class="gloss-entry" style="border:1px solid #dce5e9;border-radius:12px;padding:14px;margin:10px 0;background:#fff"><span style="font-size:12px;color:#5a6b73">'+kind+'</span><h3 style="margin:5px 0 8px">'+esc(title)+'</h3><p style="margin:0;line-height:1.65;text-align:left">'+esc(def)+'</p></article>';
+  const body=((M.glossary&&M.glossary.intro)?'<p style="line-height:1.6">'+esc(M.glossary.intro)+'</p>':'')+'<label for="gloss-filter" style="display:block;font-weight:700;margin-bottom:8px">Localizar no Glossário</label><input id="gloss-filter" type="search" placeholder="Pesquisar termo ou definição" autocomplete="off" style="box-sizing:border-box;width:100%;padding:12px;border:1px solid #b6cbd4;border-radius:10px;font:inherit" aria-controls="gloss-results"><p id="gloss-count" role="status" aria-live="polite"></p><div id="gloss-results">'+concepts.map(c=>entry(c.term,c.def,'Conceito')).join('')+ab.map(c=>entry(c.abbr,c.meaning,'Abreviatura')).join('')+'</div><p id="gloss-empty" hidden>Não foram encontrados termos. Experimente outra palavra.</p>';
   mount({crumb:'Glossário',title:'Glossário',search:false},body,'book');
+  const input=document.getElementById('gloss-filter'),cards=Array.from(document.querySelectorAll('.gloss-entry'));
+  const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const texts=cards.map(c=>norm(c.textContent));
+  function filter(){const words=norm(input.value).trim().split(/\s+/).filter(Boolean);let n=0;cards.forEach((c,i)=>{c.hidden=!words.every(w=>texts[i].includes(w));if(!c.hidden)n++;});document.getElementById('gloss-count').textContent=n+' de '+cards.length+' termos';document.getElementById('gloss-empty').hidden=n!==0;}
+  input.addEventListener('input',filter);filter();
 }
 function pageEmendas(){
   const body=
@@ -513,3 +512,47 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(document.readyState!=='loading') run(); else document.addEventListener('DOMContentLoaded',run);
 })();
 /* ===== FIM BLOCO MELHORIAS ===== */
+
+/* Progresso de leitura local, separado entre cópia de teste e manual real. */
+(function(){
+ function initReading(){
+  var file=location.pathname.split('/').pop()||'index.html';
+  var allowed=['manual.html','seccao.html','sindrome.html','doenca.html'];
+  var scope=location.pathname.slice(0,location.pathname.lastIndexOf('/')+1),key='ins-reading-v1:'+scope;
+  var store;try{store=window.localStorage;}catch(e){return;}
+  if(!store)return;
+  function load(){try{return JSON.parse(store.getItem(key)||'null');}catch(e){return null;}}
+  var saved=load(),url=file+location.search,last=saved&&saved.last;
+  function valid(v){return v&&typeof v.url==='string'&&/^(manual|seccao|sindrome|doenca)\.html(?:\?[^#]*)?$/.test(v.url)&&!/[<>\\]/.test(v.url);}
+  if(allowed.indexOf(file)<0){
+   if((file==='index.html'||file==='')&&valid(last)){
+    var main=document.querySelector('main')||document.querySelector('.body');if(!main)return;
+    var box=document.createElement('div');box.style.cssText='margin:12px 0;padding:14px;border:1px solid #a9e0cd;border-radius:12px;background:#e3f4ef';
+    var text=document.createElement('p');text.textContent='Continuar a leitura: '+(last.label||'Manual');text.style.margin='0 0 10px';
+    var link=document.createElement('a');link.href=last.url;link.textContent='Retomar leitura';link.className='pill';box.appendChild(text);box.appendChild(link);main.insertBefore(box,main.firstChild);
+   }return;
+  }
+  var prior=saved&&saved.pages&&saved.pages[url],restoring=!!valid(prior),moved=false,timer;
+  function snapshot(){
+   if(restoring)return;
+   var data=load()||{},sub=document.querySelector('.page-sub'),tag=document.querySelector('.casebtn.on');
+   var v={url:url,label:(document.querySelector('.page-title')||{}).textContent||document.title,y:Math.max(0,window.scrollY||0),open:Array.from(document.querySelectorAll('details')).map(d=>d.open),full:!!(sub&&/texto integral/i.test(sub.textContent)),caseIndex:tag?Array.from(document.querySelectorAll('.casebtn')).indexOf(tag):-1};
+   data.pages=data.pages||{};data.pages[url]=v;data.last=v;data.updated=Date.now();
+   var ks=Object.keys(data.pages);if(ks.length>80)delete data.pages[ks[0]];
+   try{store.setItem(key,JSON.stringify(data));}catch(e){}
+  }
+  function stop(){moved=true;restoring=false;}
+  ['wheel','touchstart','keydown'].forEach(n=>window.addEventListener(n,stop,{passive:true,once:true}));
+  if(restoring){
+   if(file==='doenca.html'&&prior.full&&typeof window.renderFull==='function')window.renderFull(window.resolveSlug(window.slugFromURL()));
+   else if(file==='doenca.html'&&prior.caseIndex>=0){var b=document.querySelectorAll('.casebtn')[prior.caseIndex];if(b)b.click();}
+   Array.from(document.querySelectorAll('details')).forEach((d,i)=>{if(prior.open&&typeof prior.open[i]==='boolean')d.open=prior.open[i];});
+   [0,150,500,1100].forEach((ms,i)=>setTimeout(function(){if(!moved)window.scrollTo(0,Number.isFinite(prior.y)?Math.max(0,prior.y):0);if(i===3){restoring=false;snapshot();}},ms));
+  }else snapshot();
+  window.addEventListener('scroll',function(){clearTimeout(timer);timer=setTimeout(snapshot,200);},{passive:true});
+  document.addEventListener('toggle',function(){if(!restoring)snapshot();},true);
+  window.addEventListener('pagehide',snapshot);
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')snapshot();});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initReading);else initReading();
+})();
