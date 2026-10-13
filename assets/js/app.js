@@ -126,7 +126,7 @@ function tabbar(active){
     '<a class="tab '+(active===t[1]?'active':'')+'" href="'+t[0]+'">'+I[t[1]]+'<span>'+t[2]+'</span></a>').join('')+'</nav>';
 }
 function mount(headerOpts, bodyHtml, activeTab){
-  document.body.innerHTML='<div class="app">'+header(headerOpts)+'<main class="body">'+bodyHtml+'</main></div>'+tabbar(activeTab);
+  document.body.innerHTML='<div class="app">'+header(headerOpts)+'<main class="body">'+bodyHtml+'<p style="text-align:center;margin:20px 0"><a href="como-utilizar.html">Como utilizar o manual</a></p></main></div>'+tabbar(activeTab);
   addClosers();
 }
 /* Comprimir sem voltar ao topo: botao "Fechar" no fim de cada bloco aberto. */
@@ -159,6 +159,7 @@ function pageHome(){
     card('explorar-seccao.html','Explorar por Secção')+
     card('explorar-sindrome.html','Explorar por Síndrome','<span class="ico"><img class="dico" src="assets/icons/sindromes.png" alt=""></span>')+
     card('explorar-abecedario.html','Explorar por Abecedário','<span class="az">A-Z</span>')+
+    card('como-utilizar.html','Como utilizar')+
     ''+
     '<p class="disclaimer" style="text-align:center;font-size:12px;color:var(--muted);margin-top:14px">Este manual digital não substitui o manual oficial do INS · MISAU.</p>';
   mount({crumb:'Estrutura de Exploração do Manual',title:'Estrutura de<br><span class="thin">Exploração do Manual</span>',search:true},body,'home');
