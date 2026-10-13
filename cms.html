@@ -341,12 +341,38 @@ if(res.error){toast('Erro: '+res.error.message);return;} toast('Estado: '+estado
 });
 });
 }
+var IMAGE_TARGETS=[],IMAGE_EDIT_ID=null;
+function imageReaderSlug(slug){var map={lepra:'lepra-hanseniase',carbunculo:'carbunculo-antrax',tungiase:'tungiase-matequenha',parotidite:'parotidite-papeira','doenca-do-virus-zika':'doenca-pelo-zika',pertussis:'pertussis-coqueluche','sindrome-respiratoria-do-medio-oriente':'sindrome-respiratoria-do-medio-oriente-mers','infeccao-respiratoria-aguda-por-virus-sincicial-respiratorio':'virus-sincicial-respiratorio-vsr'};return map[slug]||slug;}
+function imageRiskText(s){return String(s||'').replace(/\s+/g,' ').trim();}
+function targetsForDisease(d){var a=[];(d.cases||[]).forEach(function(c,i){a.push({label:'Caso '+c.label,target:{type:'case',index:i,label:c.label},media:c.media});});(d.risks||[]).forEach(function(r,i){a.push({label:'Grupo de risco '+(i+1)+' — '+String(r.text||'').replace(/<[^>]*>/g,'').slice(0,95),target:{type:'risk',index:i,text:imageRiskText(r.text)},media:r.media});});return a;}
+function targetToken(t){return t?JSON.stringify(t):'';}
+function imageTargetOptions(selected,empty){return '<option value="">'+esc(empty||'Imagem adicional (sem substituição)')+'</option>'+IMAGE_TARGETS.map(function(t,i){return '<option value="'+i+'" '+(targetToken(selected)===targetToken(t.target)?'selected':'')+'>'+esc(t.label)+'</option>';}).join('');}
+function assignImageTarget(i,value){var t=value===''?null:IMAGE_TARGETS[Number(value)];if(t&&CURRENT_IMGS.some(function(im,j){return j!==i&&targetToken(im.target)===targetToken(t.target);})){toast('Já existe uma imagem para esta posição. Remova a substituição anterior primeiro.');renderImgs();return;}if(t)CURRENT_IMGS[i].target=JSON.parse(JSON.stringify(t.target));else delete CURRENT_IMGS[i].target;renderImgs();}
+function previewImageSlot(){var sel=document.getElementById('imgTarget'),box=document.getElementById('imgOriginalPreview');var t=sel&&IMAGE_TARGETS[Number(sel.value)];box.innerHTML=sel&&sel.value!==''&&t?'<div class="mut">Imagem actualmente publicada</div><div style="max-width:280px;max-height:200px;overflow:auto">'+(t.media||'Sem imagem')+'</div>':'';box.querySelectorAll('img').forEach(function(im){im.style.maxWidth='100%';im.style.maxHeight='180px';im.style.objectFit='contain';im.style.height='auto';});}
+async function loadImageTargets(slug,id){IMAGE_EDIT_ID=id;IMAGE_TARGETS=[];try{var r=await fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/ddata.js?_='+Date.now());if(!r.ok)throw Error();var all=parseDdataAll(await r.text()),d=all.DISEASES&&all.DISEASES[imageReaderSlug(slug)];if(!d)throw Error();if(IMAGE_EDIT_ID!==id||!document.getElementById('imgTarget'))return;IMAGE_TARGETS=targetsForDisease(d);document.getElementById('imgTarget').innerHTML=imageTargetOptions(null,'Escolha o caso ou grupo de risco');document.getElementById('imgTarget').disabled=false;renderImgs();}catch(e){if(IMAGE_EDIT_ID===id&&document.getElementById('imgOriginalPreview'))document.getElementById('imgOriginalPreview').textContent='Não foi possível carregar as posições das imagens. Reabra a ficha antes de substituir uma imagem.';}}
+function applyCMSImages(d,images){
+ var used={};(images||[]).forEach(function(im){
+  if(!im.target)return;
+  var url;try{url=new URL(im.url);}catch(e){throw Error('Endereço de imagem inválido.');}
+  if(url.protocol!=='https:'||url.hostname!=='watlfdjcgfxmzymztmvc.supabase.co'||!url.pathname.startsWith('/storage/v1/object/public/imagens/'))throw Error('A imagem deve ser carregada pelo CMS.');
+  var t=im.target,key=t.type==='case'?'case:'+t.index:'risk:'+t.index;if(used[key])throw Error('Duas imagens atribuídas à mesma posição.');used[key]=true;
+  var item;
+  if(t.type==='case'){item=(d.cases||[])[t.index];if(item&&item.label!==t.label)throw Error('O caso mudou. Reatribua a imagem antes de publicar.');}
+  else if(t.type==='risk'){item=(d.risks||[])[t.index];if(item&&imageRiskText(item.text)!==t.text)throw Error('O grupo de risco mudou. Reatribua a imagem na ficha antes de publicar.');}
+  else throw Error('Posição de imagem inválida.');
+  if(!item)throw Error('A posição da imagem já não existe nesta ficha.');
+  var caption=String(im.caption||'').trim();
+  item.media=t.type==='case'?'<figure class="manual-figure"><img src="'+esc(im.url)+'" alt="'+esc(caption||'Caso '+item.label)+'" loading="lazy" decoding="async" style="width:100%;height:auto;object-fit:contain">'+(caption?'<figcaption>'+esc(caption)+'</figcaption>':'')+'</figure>':'<img class="review-risk-image" src="'+esc(im.url)+'" alt="'+esc(caption||'Grupo de risco')+'" loading="lazy" decoding="async" style="width:100%;height:auto;object-fit:contain">';
+ });return d;
+}
+
 var CURRENT_IMGS=[];
 function imgItemsHTML(){
 if(!CURRENT_IMGS.length) return '<div class="mut" style="font-size:13px">Sem imagens nesta ficha.</div>';
 return CURRENT_IMGS.map(function(im,i){
 return '<div class="row" style="align-items:center;margin-bottom:8px;border:1px solid var(--linha);border-radius:8px;padding:8px">'+
-'<img src="'+esc(im.url)+'" style="width:64px;height:64px;object-fit:cover;border-radius:6px">'+
+'<img src="'+esc(im.url)+'" style="width:64px;height:64px;object-fit:contain;border-radius:6px">'+
+'<select style="flex:1;min-width:200px" onchange="assignImageTarget('+i+',this.value)" '+(can('edit')?'':'disabled')+'>'+imageTargetOptions(im.target)+'</select>'+
 '<input style="flex:1" placeholder="Legenda (opcional)" value="'+esc(im.caption||'')+'" oninput="CURRENT_IMGS['+i+'].caption=this.value" '+(can('edit')?'':'readonly')+'>'+
 (can('edit')?'<button class="btn-r" onclick="removeImg('+i+')">Remover</button>':'')+
 '</div>';
@@ -356,13 +382,17 @@ function imgHTML(){
 return '<div class="field" style="border-top:1px solid var(--linha);padding-top:12px">'+
 '<label>Imagens da ficha</label>'+
 '<div id="imgList">'+imgItemsHTML()+'</div>'+
-(can('edit')?'<div style="margin-top:8px"><input type="file" accept="image/*" id="imgFile" onchange="uploadImg(this)"><div class="mut" style="font-size:12px;margin-top:4px">JPG ou PNG, até 3 MB. É carregada para o Supabase; depois clique em Guardar.</div></div>':'')+
+(can('edit')?'<div style="margin-top:8px"><label>Onde substituir a imagem</label><select id="imgTarget" disabled onchange="previewImageSlot()"><option>A carregar posições…</option></select><div id="imgOriginalPreview"></div><input type="file" accept="image/jpeg,image/png,image/webp" id="imgFile" onchange="uploadImg(this)"><div class="mut" style="font-size:12px;margin-top:4px">Escolha a posição e carregue JPG, PNG ou WebP, até 3 MB. Confira a imagem e guarde. A substituição aparece no leitor após aprovação e publicação para o site.</div></div>':'')+
 '</div>';
 }
 function renderImgs(){ var el=document.getElementById('imgList'); if(el) el.innerHTML=imgItemsHTML(); }
 function removeImg(i){ CURRENT_IMGS.splice(i,1); renderImgs(); }
 function uploadImg(inp){
 var file=inp.files&&inp.files[0]; if(!file)return;
+if(['image/jpeg','image/png','image/webp'].indexOf(file.type)<0){toast('Use JPG, PNG ou WebP.');inp.value='';return;}
+var select=document.getElementById('imgTarget'),chosen=select&&select.value!==''&&!select.disabled?IMAGE_TARGETS[Number(select.value)]:null;if(!chosen){toast('Escolha primeiro o caso ou grupo de risco.');inp.value='';return;}
+if(CURRENT_IMGS.some(function(im){return targetToken(im.target)===targetToken(chosen.target);})){toast('Remova a substituição anterior desta posição antes de carregar outra.');inp.value='';return;}
+var target=JSON.parse(JSON.stringify(chosen.target)),editId=IMAGE_EDIT_ID;
 if(file.size>3*1024*1024){ toast('Imagem muito grande (máx 3 MB)'); inp.value=''; return; }
 toast('A carregar imagem…');
 var ext=((file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,''))||'jpg';
@@ -370,7 +400,8 @@ var path='doencas/'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+'.'+ext
 sb.storage.from('imagens').upload(path,file).then(function(r){
 if(r.error){ toast('Erro no upload: '+r.error.message); return; }
 var pub=sb.storage.from('imagens').getPublicUrl(path);
-CURRENT_IMGS.push({url:pub.data.publicUrl,caption:''});
+if(IMAGE_EDIT_ID!==editId||!document.body.contains(inp))return;
+CURRENT_IMGS.push({url:pub.data.publicUrl,caption:'',target:target});
 renderImgs(); inp.value=''; toast('Imagem carregada. Clique em Guardar para gravar.');
 });
 }
@@ -416,6 +447,7 @@ document.getElementById('content').innerHTML=
 (can('review')?(d.estado==='revisao'?'<button class="btn-g" onclick="setEstado(\''+id+'\',\'aprovado\')">✔ Aprovar</button><button class="btn-r" onclick="setEstado(\''+id+'\',\'rascunho\')">↩ Devolver</button>':'<span class="mut" style="font-size:12px;margin-left:8px">Revisão: aguarda submissão</span>'):'')+
 (can('publish')?(d.estado==='aprovado'?'<button class="btn-p" onclick="setEstado(\''+id+'\',\'publicado\')">↥ Publicar</button>':'<span class="mut" style="font-size:12px;margin-left:8px">Publicação: aguarda aprovação</span>'):'')+
 '</div></div>';
+loadImageTargets(d.slug,id);
 });
 }
 function bump(v){var p=(v||'1.0').split('.');p[1]=(parseInt(p[1]||0)+1);return p[0]+'.'+p[1];}
@@ -535,7 +567,7 @@ var doeBy={}; doe.forEach(function(d){ doeBy[d.slug]=d; });
 /* REGRA UNICA: tudo o que e editavel no CMS reflecte-se no manual; o que nao e
    editavel (prefacio, figuras do manual, glossario, texto integral) fica do base. */
 /* Doencas: nome, letra, imagens e campos de conteudo. */
-baseMAN.diseases.forEach(function(dis){ var d=doeBy[dis.slug]; if(!d) return; if(d.nome) dis.name=d.nome; if(d.letra) dis.letter=d.letra; if(Array.isArray(d.imagens)) dis.images=d.imagens; dis.fields=LBL.filter(function(x){return d[x[0]];}).map(function(x){return {label:x[1],blocks:txtToBlocks(d[x[0]])};}); });
+baseMAN.diseases.forEach(function(dis){ var d=doeBy[imageReaderSlug(dis.slug)]; if(!d) return; if(d.nome) dis.name=d.nome; if(d.letra) dis.letter=d.letra; if(Array.isArray(d.imagens)) dis.images=d.imagens; dis.fields=LBL.filter(function(x){return d[x[0]];}).map(function(x){return {label:x[1],blocks:txtToBlocks(d[x[0]])};}); });
 /* Seccoes: titulo, conteudo e ORDEM da BD (figuras do base preservadas). */
 var secByOrd={}; sec.forEach(function(s){ secByOrd[s.ordem]=s; });
 (baseMAN.sections||[]).forEach(function(sc){ var s=secByOrd[sc.id]; if(!s) return; if(s.titulo) sc.title=s.titulo; if(s.conteudo && (''+s.conteudo).trim()) sc.blocks=txtToBlocks(s.conteudo); });
@@ -589,6 +621,7 @@ return [0,s];});
 });
 sincRiscos(base[slug]);
 sincCasos(base[slug]);
+applyCMSImages(base[slug],d.imagens);
 });
 var ddOut='var DISEASES='+JSON.stringify(base)+';\n';
 if(_all.ICONS!=null) ddOut+='var ICONS='+JSON.stringify(_all.ICONS)+';\n';
