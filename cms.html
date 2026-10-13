@@ -39,7 +39,7 @@
     <div class="field"><label>Email</label><input id="email" type="email" placeholder="nome@ins.gov.mz" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="field"><label>Palavra-passe</label><input id="pass" type="password" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <button class="btn-p login-btn" onclick="doLogin()">Entrar</button>
-    <p class="mut login-foot"><button class="btn-o" onclick="mostrarRecuperacao()">Esqueci a palavra-passe</button></p><p class="mut login-foot">As contas são criadas pelo Administrador do INS. Para contas bloqueadas ou outros problemas de acesso, contacte o Administrador.</p>
+    <p class="mut login-foot">Esqueceu a palavra-passe? Peça ao administrador que reponha o seu acesso.</p><p class="mut login-foot">As contas são criadas pelo Administrador do INS. Para contas bloqueadas ou outros problemas de acesso, contacte o Administrador.</p>
     <p class="mut login-foot" id="cfgLink" style="display:none"><a href="#" onclick="resetCfg();return false;">Trocar de projecto</a></p>
   </div>
 </div>
@@ -141,12 +141,19 @@ afterLogin(r.data.user);
 });
 }
 function doLogout(){ sb.auth.signOut().then(function(){ location.reload(); }); }
-function precisaTrocar(){ return !!(USER && USER.user_metadata && USER.user_metadata.senha_temporaria===true); }
+function precisaTrocar(){ return !!(USER && ((USER.app_metadata&&USER.app_metadata.cms_reset_required===true)||(USER.user_metadata&&USER.user_metadata.senha_temporaria===true))); }
 function trocarSenha(){
 var p1=document.getElementById('np1').value, p2=document.getElementById('np2').value;
 var e=document.getElementById('trocarErr'); e.classList.add('hide');
 if((p1||'').length<8){ e.textContent='A palavra-passe deve ter pelo menos 8 caracteres.'; e.classList.remove('hide'); return; }
 if(p1!==p2){ e.textContent='As palavras-passe não coincidem.'; e.classList.remove('hide'); return; }
+if(USER&&USER.app_metadata&&USER.app_metadata.cms_reset_required){
+ if(p1.length<12){e.textContent='A palavra-passe deve ter pelo menos 12 caracteres.';e.classList.remove('hide');return;}
+ sb.functions.invoke('cms-acessos',{body:{action:'complete',password:p1}}).then(function(r){
+  if(r.error||r.data.error){e.textContent=(r.data&&r.data.error)||'Não foi possível alterar a palavra-passe.';e.classList.remove('hide');return;}
+  sb.auth.signOut({scope:'local'}).then(function(){document.getElementById('np1').value='';document.getElementById('np2').value='';location.replace(location.pathname);});
+ });return;
+}
 sb.auth.updateUser({password:p1, data:{senha_temporaria:false}}).then(function(r){
 if(r.error){ e.textContent=r.error.message; e.classList.remove('hide'); return; }
 if(r.data && r.data.user) USER=r.data.user;
@@ -189,17 +196,36 @@ c.innerHTML='<div class="card"><div class="hint">A sua conta ainda não tem perm
 return;
 }
 var tabs=[['doencas','Doenças'],['sindromes','Síndromes'],['seccoes','Secções']];
+if(PERFIL.papel==='admin')tabs.push(['utilizadores','Utilizadores']);
 var nav='<div class="row" style="gap:6px;margin-bottom:12px;align-items:center">'+tabs.map(function(t){return '<button class="'+(VIEW===t[0]?'btn-p':'btn-o')+'" onclick="irPara(\''+t[0]+'\')">'+t[1]+'</button>';}).join('')+'<span style="flex:1"></span><button class="btn-o" onclick="loadEmendas()">Ver emendas</button></div>';
 /* Publicacao (solucao A'): o token vem de system_settings (Supabase, via RLS) e o
    commit e feito directamente. O utilizador autorizado so ve "Publicar". */
 var actions=(can('publish')?'<div class="row" style="margin-bottom:10px;align-items:center"><button class="btn-g" onclick="publicarSite()">↥ Publicar para o site</button></div>':'');
 c.innerHTML='<div class="card"><h1 style="margin:0 0 14px;font-size:19px;color:var(--azul2);text-align:center">Administração — Gestor de Conteúdos</h1>'+
 nav+actions+'<div id="viewbox">A carregar…</div></div>';
-if(VIEW==='sindromes') viewSindromes();
+if(VIEW==='utilizadores'&&PERFIL.papel==='admin') viewUtilizadores();
+else if(VIEW==='sindromes') viewSindromes();
 else if(VIEW==='seccoes') viewSeccoes();
 else viewDoencas();
 }
 function toggleDef(){ var d=document.getElementById('defBox'); if(d) d.style.display=(d.style.display==='none'||!d.style.display)?'block':'none'; }
+async function viewUtilizadores(){
+ var vb=document.getElementById('viewbox');vb.textContent='A carregar…';
+ var r=await sb.functions.invoke('cms-acessos',{body:{action:'list'}});
+ if(r.error||r.data.error){vb.textContent='Não foi possível carregar utilizadores. Verifique a sessão e as permissões.';return;}
+ vb.innerHTML='<h2 style="font-size:17px">Utilizadores</h2><p class="mut">Reponha o acesso de uma conta existente. Entregue a senha temporária apenas ao titular confirmado.</p><div id="resetResult" role="status"></div><table><thead><tr><th>Utilizador</th><th>Perfil</th><th></th></tr></thead><tbody>'+r.data.users.map(function(u){return '<tr><td>'+esc(u.nome||u.email)+'<br><span class="mut">'+esc(u.email)+'</span></td><td>'+esc(u.papel)+'</td><td>'+(u.id!==USER.id?'<button class="btn-o" data-id="'+esc(u.id)+'" onclick="reporAcessoCMS(this)">Repor palavra-passe</button>':'')+'</td></tr>';}).join('')+'</tbody></table>';
+}
+async function reporAcessoCMS(btn){
+ if(!confirm('Confirmou a identidade do titular? A senha actual será substituída por uma temporária.'))return;
+ btn.disabled=true;var box=document.getElementById('resetResult');box.textContent='A repor…';
+ try{
+  var r=await sb.functions.invoke('cms-acessos',{body:{action:'reset',id:btn.getAttribute('data-id')}});
+  if(r.error||r.data.error){box.textContent=(r.data&&r.data.error)||'Não foi possível repor o acesso.';return;}
+  box.innerHTML='<div class="hint"><b>Senha temporária para '+esc(r.data.email)+'</b><input id="temporaryPassword" readonly autocomplete="off"><p>Copie e entregue apenas ao titular. Ao entrar no CMS, deverá definir uma senha pessoal.</p><button class="btn-o" onclick="document.getElementById(\'resetResult\').textContent=\'\'">Ocultar</button></div>';
+  document.getElementById('temporaryPassword').value=r.data.password;
+ }catch(e){box.textContent='Não foi possível concluir o pedido.';}finally{btn.disabled=false;}
+}
+
 function viewDoencas(){
 var vb=document.getElementById('viewbox');
 vb.innerHTML='<div style="text-align:center;font-weight:700;font-size:16px;margin:0 0 8px">Doenças</div>'+(can('edit')?'<div style="text-align:center;margin:0 0 12px"><button class="btn-p" onclick="novaDoenca()">+ Nova doença</button></div>':'')+'<div id="novaBox"></div><div id="lista">A carregar…</div>';
