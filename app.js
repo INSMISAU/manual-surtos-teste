@@ -184,21 +184,7 @@ function pageExplorarSeccao(){
   }).join('');
   mount({crumb:'Explorar',title:'Explorar<br><span class="thin">por Secção</span>'},body,'map');
 }
-var IMAGE_CREDITS={
-  "assets/ilustracoes/dermatite-descalcos-09out.webp": "Ilustração produzida para a revisão digital do manual, Outubro de 2026.",
-  "assets/ilustracoes/dermatite-crianca-areia-09out.webp": "Ilustração produzida para a revisão digital do manual, Outubro de 2026.",
-  "assets/ilustracoes/escabiose-contacto-proximo-12out.webp": "Ilustração produzida para a revisão digital do manual, Outubro de 2026.",
-  "assets/ilustracoes/escabiose-aglomeracao-12out.webp": "Ilustração produzida para a revisão digital do manual, Outubro de 2026.",
-  "assets/ilustracoes/filariase-avaliacao-provavel-12out.webp": "Ilustração produzida para a revisão digital do manual, Outubro de 2026.",
-  "assets/ilustracoes/filariase-comunidade-mosquitos-12out.webp": "Ilustração produzida para a revisão digital do manual, Outubro de 2026.",
-  "assets/ilustracoes/filariase-cobertura-programas-12out.webp": "Ilustração produzida para a revisão digital do manual, Outubro de 2026.",
-  "assets/fig/fig1.svg": "Adaptado do Manual para Detecção e Investigação de Surtos em Moçambique, INS/MISAU, Maio de 2026.",
-  "assets/fig/fig2.png": "Adaptado do Manual para Detecção e Investigação de Surtos em Moçambique, INS/MISAU, Maio de 2026.",
-  "assets/fig/fig3.png": "Adaptado do Manual para Detecção e Investigação de Surtos em Moçambique, INS/MISAU, Maio de 2026.",
-  "assets/fig/fig4.png": "Adaptado do Manual para Detecção e Investigação de Surtos em Moçambique, INS/MISAU, Maio de 2026.",
-  "assets/fig/fig5.png": "Adaptado do Manual para Detecção e Investigação de Surtos em Moçambique, INS/MISAU, Maio de 2026.",
-  "assets/fig/fig6.png": "Adaptado do Manual para Detecção e Investigação de Surtos em Moçambique, INS/MISAU, Maio de 2026."
-};
+var IMAGE_CREDITS={};
 function figHtml(f){const credit=IMAGE_CREDITS[f.file];return '<figure class="fig"><img src="'+f.file+'" alt="'+esc(f.caption||'')+'" loading="lazy">'+
   '<figcaption><b>Figura '+f.num+'.</b> '+esc(f.caption.replace(/^Figura\s+\d+\.\s*/,''))+(credit&&!/fonte/i.test(f.caption)?'<div style="font-size:11px;line-height:1.5;margin-top:5px;color:#52616a">Fonte: '+esc(credit)+'</div>':'')+'</figcaption></figure>';}
 function renderSectionContent(sec){ return renderBody((sec.blocks||[]),(sec.figures||[])); }
