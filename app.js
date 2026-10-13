@@ -160,6 +160,7 @@ function pageHome(){
     card('explorar-sindrome.html','Explorar por Síndrome','<span class="ico"><img class="dico" src="assets/icons/sindromes.png" alt=""></span>')+
     card('explorar-abecedario.html','Explorar por Abecedário','<span class="az">A-Z</span>')+
     card('como-utilizar.html','Como utilizar')+
+    card('imagens.html','Ver todas as imagens')+
     ''+
     '<p class="disclaimer" style="text-align:center;font-size:12px;color:var(--muted);margin-top:14px">Este manual digital não substitui o manual oficial do INS · MISAU.</p>';
   mount({crumb:'Estrutura de Exploração do Manual',title:'Estrutura de<br><span class="thin">Exploração do Manual</span>',search:true},body,'home');
