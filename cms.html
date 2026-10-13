@@ -316,6 +316,29 @@ CURRENT_IMGS.push({url:pub.data.publicUrl,caption:''});
 renderImgs(); inp.value=''; toast('Imagem carregada. Clique em Guardar para gravar.');
 });
 }
+function validarCorreccaoFicha(p,slug){
+ if(!p||Array.isArray(p)||p.formato!=='ins-correccao-ficha-v1')throw new Error('Formato de correcção inválido.');
+ if(typeof p.slug!=='string'||p.slug!==slug)throw new Error('Este ficheiro não corresponde à ficha aberta.');
+ if(p.campo!=='pontos_chave')throw new Error('Este carregamento só permite corrigir Pontos-chave.');
+ if(typeof p.texto!=='string'||!p.texto.trim()||p.texto.length>20000||/[<>]/.test(p.texto))throw new Error('Texto de correcção inválido.');
+ if(Object.keys(p).some(function(k){return ['formato','slug','campo','texto'].indexOf(k)<0;}))throw new Error('O ficheiro contém campos não permitidos.');
+ return p.texto;
+}
+function carregarCorreccaoFicha(inp){
+ if(!can('edit')){toast('Sem permissão para editar.');inp.value='';return;}
+ var file=inp.files&&inp.files[0],slug=inp.getAttribute('data-slug');
+ if(!file)return;
+ if(file.size>50000){toast('Ficheiro demasiado grande.');inp.value='';return;}
+ file.text().then(function(text){
+  var valor=validarCorreccaoFicha(JSON.parse(text),slug);
+  if(!document.body.contains(inp))return;
+  var field=document.getElementById('f_pontos_chave');if(!field)throw new Error('Abra novamente a ficha.');
+  field.value=valor;
+  var status=document.getElementById('correccaoStatus');if(status)status.textContent='Pontos-chave carregados. Confira o texto abaixo e clique em Guardar.';
+  toast('Correcção carregada — falta Guardar.');
+ }).catch(function(e){toast(e.message||'Não foi possível ler a correcção.');}).finally(function(){inp.value='';});
+}
+
 function editDoe(id){
 sb.from('doencas').select('*').eq('id',id).single().then(function(r){
 if(r.error){toast('Erro a carregar');return;}
@@ -328,7 +351,8 @@ document.getElementById('content').innerHTML=
 '<div class="card"><div class="row"><button class="btn-o" onclick="render()">← Voltar</button>'+
 '<h1 style="flex:1;margin:0;font-size:18px">'+esc(d.nome)+'</h1>'+badge(d.estado)+' <span class="mut">v'+d.versao+'</span></div></div>'+
 '<div class="card">'+
-'<div class="field"><label>Nome</label><input id="f_nome" value="'+esc(d.nome)+'" '+(can('edit')?'':'readonly')+'></div>'+f+imgHTML()+
+'<div class="field"><label>Nome</label><input id="f_nome" value="'+esc(d.nome)+'" '+(can('edit')?'':'readonly')+'></div>'+
+(can('edit')?'<div class="field"><label>Carregar correcção de pontos-chave</label><input type="file" accept=".json,application/json" data-slug="'+esc(d.slug)+'" onchange="carregarCorreccaoFicha(this)"><div id="correccaoStatus" class="mut">Seleccione o ficheiro da ficha. O texto será preenchido para conferir antes de Guardar.</div></div>':'')+f+imgHTML()+
 '<div class="row" style="border-top:1px solid var(--linha);padding-top:12px;margin-top:6px;flex-wrap:wrap;gap:6px;align-items:center">'+
 (can('edit')?'<button class="btn-o" onclick="saveDoe(\''+id+'\',null)">Guardar</button><button class="btn-w" onclick="saveDoe(\''+id+'\',\'revisao\')">Guardar &amp; submeter</button>':'')+
 (can('review')?(d.estado==='revisao'?'<button class="btn-g" onclick="setEstado(\''+id+'\',\'aprovado\')">✔ Aprovar</button><button class="btn-r" onclick="setEstado(\''+id+'\',\'rascunho\')">↩ Devolver</button>':'<span class="mut" style="font-size:12px;margin-left:8px">Revisão: aguarda submissão</span>'):'')+
