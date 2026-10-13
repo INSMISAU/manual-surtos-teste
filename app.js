@@ -37,7 +37,7 @@ function deaccent(s){return (s||'').toLowerCase()
 function boldLabel(t){
   let html;
   const m=t.match(/^([^:]{2,80}):\s+(.+)$/);
-  if(m) html='<b>'+esc(m[1])+':</b> '+esc(m[2]);
+  if(m) html='<b>'+esc(m[1])+'</b><br>'+esc(m[2]);
   else html=esc(t);
   return html.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>'); /* negrito inline **...** */
 }
@@ -159,12 +159,7 @@ function pageHome(){
     card('explorar-seccao.html','Explorar por Secção')+
     card('explorar-sindrome.html','Explorar por Síndrome','<span class="ico"><img class="dico" src="assets/icons/sindromes.png" alt=""></span>')+
     card('explorar-abecedario.html','Explorar por Abecedário','<span class="az">A-Z</span>')+
-    '<div style="height:6px"></div>'+
-    '<a class="hero" href="doenca.html?slug=colera"><img src="assets/img/hero-colera.jpg" alt="">'+
-      '<div class="scrim"></div><div class="ct"><h3>Atualização<br>do Protocolo<br>de Cólera</h3><span class="tag">Emenda</span></div></a>'+
-    '<p class="hero-meta">Veja as últimas V1.0 — Atualização do Protocolo de Cólera<br>Publicado em: 20/05/2026 · Secção 4</p>'+
-    '<button class="pill carmine" onclick="location.href=\'doenca.html?slug=colera\'">'+I.download+' Baixar PDF</button>'+
-    '<div class="recent">Os seus registos de leitura recente aparecerão aqui</div>'+
+    ''+
     '<p class="disclaimer" style="text-align:center;font-size:12px;color:var(--muted);margin-top:14px">Este manual digital não substitui o manual oficial do INS · MISAU.</p>';
   mount({crumb:'Estrutura de Exploração do Manual',title:'Estrutura de<br><span class="thin">Exploração do Manual</span>',search:true},body,'home');
 }
@@ -189,12 +184,12 @@ function pageExplorarSeccao(){
   }).join('');
   mount({crumb:'Explorar',title:'Explorar<br><span class="thin">por Secção</span>'},body,'map');
 }
-function figHtml(f){return '<figure class="fig"><img src="'+f.file+'" alt="'+esc(f.caption)+'" loading="lazy">'+
+function figHtml(f){return '<figure class="fig"><img src="'+f.file+'" alt="" loading="lazy">'+
   '<figcaption><b>Figura '+f.num+'.</b> '+esc(f.caption.replace(/^Figura\s+\d+\.\s*/,''))+'</figcaption></figure>';}
 function renderSectionContent(sec){ return renderBody((sec.blocks||[]),(sec.figures||[])); }
 function coverBlock(){
   return '<div class="cover"><img class="ph" src="assets/img/cover.jpg" alt="Capa oficial do manual">'+
-    '<div class="cv-title"><b>Manual para Detecção e Investigação de Surtos em Moçambique</b>'+
+    '<div class="cv-title"><b><a href="manual.html" style="color:inherit;text-decoration:none">Manual de Detecção e Investigação de Surtos em Moçambique</a></b>'+
     '<span>Instituto Nacional de Saúde · Ministério da Saúde</span></div></div>';
 }
 /* Navegacao continua (Anterior / Seguinte) — segue a ordem do manual. */
@@ -226,9 +221,7 @@ function pageSeccao(){
   const id=+param('id');
   const s=(M.sections||[]).find(s=>s.id===id);
   if(!s){mount({back:true,title:'Secção'},'<div class="card">Secção não encontrada.</div>','map');return;}
-  const body=''+
-    '<details class="acc" open><summary><span class="dot"></span>'+esc(s.title)+'<span class="chev">'+I.chev+'</span></summary>'+
-    '<div class="inner content">'+renderSectionContent(s)+'</div></details>'+seccaoPager(id);
+  const body='<div class="content">'+renderSectionContent(s)+'</div>'+seccaoPager(id);
   mount({back:true,crumb:'Secção '+id,title:'SECÇÃO '+id+'<br><span class="thin">'+esc(s.title)+'</span>',search:false},body,'map');
 }
 function pageExplorarSindrome(){
@@ -244,8 +237,8 @@ function pageExplorarSindrome(){
     '</tbody></table></div></div></details>'):'';
   const body=intro+'<div class="grid">'+cards+'</div>'+tabela+
     '<div class="card" style="margin-top:16px;display:flex;gap:14px;align-items:center">'+
-    '<img src="assets/img/foto1.jpg" style="width:84px;height:84px;object-fit:cover;border-radius:12px" alt="">'+
-    '<div><div style="font-family:Poppins;font-weight:700;color:var(--petrol);font-size:14px">Manual para Detecção e Investigação de Surtos em Moçambique</div>'+
+    '<img src="assets/img/cover.jpg" style="width:84px;height:84px;object-fit:cover;border-radius:12px" alt="Capa oficial do manual">'+
+    '<div><div style="font-family:Poppins;font-weight:700;color:var(--petrol);font-size:14px"><a href="manual.html" style="color:inherit;text-decoration:none">Manual de Detecção e Investigação de Surtos em Moçambique</a></div>'+
     '<div style="font-size:12px;color:var(--muted);margin:4px 0 8px">Obtenha mais informações sobre as síndromes no manual completo.</div>'+
     '<button class="pill carmine" onclick="location.href=\'explorar-abecedario.html\'">'+I.book+' Ver doenças</button></div></div>';
   mount({crumb:'Explorar',title:'Explorar<br><span class="thin">por Síndrome</span>'},body,'map');
@@ -258,8 +251,7 @@ function pageSindrome(){
   const rows=ds.map(d=>'<a class="abc-row" href="doenca.html?slug='+d.slug+'"><span class="ltr">'+esc(d.letter)+'</span>'+esc(d.name)+'<span style="float:right;color:var(--petrol)">'+I.arrow+'</span></a>').join('')
     || '<div class="abc-row dim">Sem fichas nesta categoria.</div>';
   const intro=(g.intro&&g.intro.length)
-    ? '<details class="acc" open><summary><span class="dot"></span>Introdução<span class="chev">'+I.chev+'</span></summary>'+
-      '<div class="inner content">'+g.intro.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div></details>'
+    ? '<div class="content">'+g.intro.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div>'
     : '';
   const hero=g.img?('<figure class="synhero"><img src="'+g.img+'" alt="'+esc(g.imgAlt||g.name)+'" loading="lazy">'+(g.imgAlt?'<figcaption>'+esc(g.imgAlt)+'</figcaption>':'')+'</figure>'):'';
   const obs='';
@@ -300,15 +292,10 @@ function pageEmendas(){
   const body=
     '<div class="ver-now"><div class="ok">'+I.check+'</div>'+
     '<div style="font-size:14px">Você está a usar a versão atual:</div>'+
-    '<div class="big">V1.0</div><div style="font-size:12.5px;opacity:.9">Última verificação: Hoje</div></div>'+
-    '<h2 class="sec-h">Emendas e Atualizações</h2>'+
-    '<a class="hero" href="doenca.html?slug=colera" style="min-height:150px"><img src="assets/img/hero-colera.jpg" alt="">'+
-    '<div class="scrim"></div><div class="ct"><h3 style="font-size:20px">Atualização do<br>Protocolo de Cólera</h3><span class="tag">Emenda</span></div></a>'+
-    '<p class="hero-meta" style="margin:6px 2px 12px;font-size:12.5px;color:var(--muted)">Data: 20 de Maio de 2026 · Secção 4</p>'+
-    '<h2 class="sec-h">Versões anteriores</h2>'+
-    '<div class="ver-item"><div class="vn">V1.0</div><div class="vd">20 Maio 2026</div>'+
-    '<div class="chg"><b>Adicionado:</b> Digitalização integral do Manual Nacional (6 secções, 37 fichas de doença).</div>'+
-    '<div class="chg"><b>Pendente:</b> Validação clínica e do design pelo INS.</div></div>'+
+    '<div class="big">V1.0</div><div style="font-size:12.5px;opacity:.9">Junho de 2026</div></div>'+
+    '<h2 class="sec-h">Versões</h2>'+
+    '<div class="ver-item"><div class="vn">V1.0</div><div class="vd">Junho de 2026</div>'+
+    '<div class="chg"><b>Publicado:</b> Digitalização integral do Manual de Detecção e Investigação de Surtos em Moçambique (6 secções, 39 fichas de doença, glossário e abreviaturas).</div></div>'+
     '';
   mount({crumb:'Emendas',title:'Histórico<br><span class="thin">de Versões</span>',search:false},body,'doc');
 }
@@ -368,8 +355,7 @@ function pagePerfil(){
     '<p><b>Conteúdo:</b> '+(M.sections||[]).length+' secções narrativas, '+(M.groups||[]).length+' grupos sindrómicos, '+(M.diseases||[]).length+' fichas de doença e '+((M.glossary&&M.glossary.abbreviations)||[]).length+' abreviaturas.</p>'+
     '<p><b>Funcionamento:</b> aplicação estática, funciona offline (sem necessidade de internet).</p></div>'+
     '<div class="card content"><h4 style="margin-top:2px">Sobre</h4>'+
-    '<p>Digitalização do Manual Nacional para Detecção e Investigação de Surtos, do Instituto Nacional de Saúde (INS) / Ministério da Saúde (MISAU).</p>'+
-    '<p>Protótipo para validação de design e estrutura. Conteúdo clínico pendente de validação do INS.</p></div>'+
+    '<p>Digitalização do Manual de Detecção e Investigação de Surtos em Moçambique, do Instituto Nacional de Saúde (INS) / Ministério da Saúde (MISAU).</p></div>'+
     '';
   mount({crumb:'Perfil',title:'Perfil',search:false},body,'user');
 }
@@ -456,7 +442,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(document.getElementById('mnav'))return;
     var ov=document.createElement('div'); ov.className='mnav-ov'; ov.id='mnav-ov';
     var m=document.createElement('div'); m.className='mnav'; m.id='mnav';
-    m.innerHTML='<div class="mh"><b>Navegacao</b><button class="mx" aria-label="fechar">✕</button></div>'+
+    m.innerHTML='<div class="mh"><b>Navegação</b><button class="mx" aria-label="fechar">✕</button></div>'+
       '<div class="ml">'+MENU.map(function(x){
         return '<a class="'+x[3]+'" href="'+x[0]+'"><span class="mi">'+x[1]+'</span>'+x[2]+'</a>';
       }).join('')+'</div>';
@@ -489,9 +475,6 @@ document.addEventListener('DOMContentLoaded',()=>{
       f.appendChild(back); f.appendChild(up); f.appendChild(dn); f.appendChild(men);
       document.body.appendChild(f);
     }
-    var btns=document.querySelectorAll('button');
-    for(var j=0;j<btns.length;j++){ if(/Baixar PDF/i.test(btns[j].textContent||'')) btns[j].style.display='none'; }
-    var rec=document.querySelector('.recent'); if(rec) rec.style.display='none';
     var blocks=document.querySelectorAll('.content.card');
     for(var i=0;i<blocks.length;i++){ collapseLong(blocks[i]); }
   }
