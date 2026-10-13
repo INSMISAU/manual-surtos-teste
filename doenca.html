@@ -345,13 +345,14 @@ try{ADMIN=(LS()&&LS().getItem('ins_admin')==='1')||false}catch(e){}
   var store;try{store=window.localStorage;}catch(e){return;}
   if(!store)return;
   function load(){try{return JSON.parse(store.getItem(key)||'null');}catch(e){return null;}}
+  function readingLabel(s){return String(s||'Manual').replace(/\s+/g,' ').trim().replace(/^(SECÇÃO\s+\d+)\s*[—–-]?\s*/i,'$1 — ');}
   var saved=load(),url=file+location.search,last=saved&&saved.last;
   function valid(v){return v&&typeof v.url==='string'&&/^(manual|seccao|sindrome|doenca)\.html(?:\?[^#]*)?$/.test(v.url)&&!/[<>\\]/.test(v.url);}
   if(allowed.indexOf(file)<0){
    if((file==='index.html'||file==='')&&valid(last)){
     var main=document.querySelector('main')||document.querySelector('.body');if(!main)return;
     var box=document.createElement('div');box.style.cssText='margin:12px 0;padding:14px;border:1px solid #a9e0cd;border-radius:12px;background:#e3f4ef';
-    var text=document.createElement('p');text.textContent='Continuar a leitura: '+(last.label||'Manual');text.style.margin='0 0 10px';
+    var text=document.createElement('p');text.textContent='Continuar a leitura: '+readingLabel(last.label);text.style.margin='0 0 10px';
     var link=document.createElement('a');link.href=last.url;link.textContent='Retomar leitura';link.className='pill';box.appendChild(text);box.appendChild(link);main.insertBefore(box,main.firstChild);
    }return;
   }
@@ -359,7 +360,7 @@ try{ADMIN=(LS()&&LS().getItem('ins_admin')==='1')||false}catch(e){}
   function snapshot(){
    if(restoring)return;
    var data=load()||{},sub=document.querySelector('.page-sub'),tag=document.querySelector('.casebtn.on');
-   var v={url:url,label:(document.querySelector('.page-title')||{}).textContent||document.title,y:Math.max(0,window.scrollY||0),open:Array.from(document.querySelectorAll('details')).map(d=>d.open),full:!!(sub&&/texto integral/i.test(sub.textContent)),caseIndex:tag?Array.from(document.querySelectorAll('.casebtn')).indexOf(tag):-1};
+   var v={url:url,label:readingLabel((document.querySelector('.page-title')||{}).textContent||document.title),y:Math.max(0,window.scrollY||0),open:Array.from(document.querySelectorAll('details')).map(d=>d.open),full:!!(sub&&/texto integral/i.test(sub.textContent)),caseIndex:tag?Array.from(document.querySelectorAll('.casebtn')).indexOf(tag):-1};
    data.pages=data.pages||{};data.pages[url]=v;data.last=v;data.updated=Date.now();
    var ks=Object.keys(data.pages);if(ks.length>80)delete data.pages[ks[0]];
    try{store.setItem(key,JSON.stringify(data));}catch(e){}
