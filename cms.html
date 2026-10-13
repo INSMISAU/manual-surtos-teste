@@ -39,15 +39,16 @@
     <div class="field"><label>Email</label><input id="email" type="email" placeholder="nome@ins.gov.mz" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="field"><label>Palavra-passe</label><input id="pass" type="password" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <button class="btn-p login-btn" onclick="doLogin()">Entrar</button>
-    <p class="mut login-foot">As contas são criadas pelo <b>Administrador</b> do INS. Se não consegue entrar, contacte o Administrador.</p>
+    <p class="mut login-foot"><button class="btn-o" onclick="mostrarRecuperacao()">Esqueci a palavra-passe</button></p><p class="mut login-foot">As contas são criadas pelo Administrador do INS. Para contas bloqueadas ou outros problemas de acesso, contacte o Administrador.</p>
     <p class="mut login-foot" id="cfgLink" style="display:none"><a href="#" onclick="resetCfg();return false;">Trocar de projecto</a></p>
   </div>
 </div>
 
+<div id="recuperar" class="wrap hide"><div class="card"><h1>Recuperar acesso</h1><p class="mut">Indique o e-mail da sua conta para receber um link de recuperação.</p><div class="field"><label for="recoveryEmail">E-mail</label><input id="recoveryEmail" type="email" autocomplete="email"></div><p id="recoveryMsg" class="mut" role="status" aria-live="polite"></p><div class="row"><button id="recoverySend" class="btn-p" onclick="pedirRecuperacao()">Enviar link</button><button class="btn-o" onclick="show('login')">Voltar à entrada</button></div></div></div>
 <div id="trocar" class="wrap hide">
   <div class="card">
     <h1>Definir nova palavra-passe</h1>
-    <p class="mut">É a sua primeira entrada. Por segurança, defina uma palavra-passe pessoal antes de continuar.</p>
+    <p class="mut" id="trocarIntro">É a sua primeira entrada. Por segurança, defina uma palavra-passe pessoal antes de continuar.</p>
     <div id="trocarErr" class="hint hide"></div>
     <div class="field"><label>Nova palavra-passe</label><input id="np1" type="password" placeholder="mínimo 8 caracteres"></div>
     <div class="field"><label>Confirmar palavra-passe</label><input id="np2" type="password"></div>
@@ -85,7 +86,7 @@ var FIELDS=[
 ['protocolo_investigacao','Protocolo de investigação'],['colheita_manuseio_amostras','Colheita e manuseio de amostras para o diagnóstico laboratorial']
 ];
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2800);}
-function show(id){['cfg','login','trocar','app'].forEach(function(x){document.getElementById(x).classList.toggle('hide',x!==id);});}
+function show(id){['cfg','login','recuperar','trocar','app'].forEach(function(x){document.getElementById(x).classList.toggle('hide',x!==id);});}
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function badge(e){var m={publicado:'pub',revisao:'rev',rascunho:'rasc',aprovado:'aprov'};return '<span class="badge '+(m[e]||'rasc')+'">'+e+'</span>';}
 function loadCfg(){ if(HARD_URL && HARD_KEY) return {url:HARD_URL,key:HARD_KEY}; try{return JSON.parse(localStorage.getItem(CFG_KEY));}catch(e){return null;} }
@@ -96,11 +97,40 @@ localStorage.setItem(CFG_KEY,JSON.stringify({url:url,key:key})); initSb();
 }
 function resetCfg(){ if(!confirm('Isto apaga a ligacao guardada ao Supabase e volta ao ecra de configuracao. Continuar?')) return; localStorage.removeItem(CFG_KEY); location.reload(); }
 if(/[?&]config=1/.test(location.search)){ var _cl=document.getElementById('cfgLink'); if(_cl) _cl.style.display='block'; }
+var RECOVERY_MODE=false;
+var RECOVERY_REQUESTED=new URLSearchParams(location.search).get('recuperar')==='1'||new URLSearchParams(location.hash.replace(/^#/, '')).get('type')==='recovery';
+function mostrarRecuperacao(){
+ document.getElementById('recoveryEmail').value=document.getElementById('email').value.trim();
+ document.getElementById('recoveryMsg').textContent='';show('recuperar');
+}
+async function pedirRecuperacao(){
+ var email=document.getElementById('recoveryEmail'),msg=document.getElementById('recoveryMsg'),btn=document.getElementById('recoverySend');
+ if(!email.value.trim()||!email.checkValidity()){msg.textContent='Introduza um e-mail válido.';return;}
+ if(btn.disabled)return;btn.disabled=true;msg.textContent='A processar…';
+ try{
+  var destino=new URL(location.href);destino.hash='';destino.search='?recuperar=1';
+  var r=await sb.auth.resetPasswordForEmail(email.value.trim(),{redirectTo:destino.href});
+  if(r.error){msg.textContent='Não foi possível enviar o pedido. Tente mais tarde ou contacte o administrador.';return;}
+  msg.textContent='Se o e-mail corresponder a uma conta, receberá um link para definir uma nova palavra-passe. Verifique também o correio não solicitado.';
+ }catch(e){msg.textContent='Não foi possível enviar o pedido. Verifique a ligação e tente novamente.';}
+ finally{btn.disabled=false;}
+}
+function abrirNovaSenha(user){
+ USER=user;RECOVERY_MODE=true;
+ document.getElementById('trocarIntro').textContent='Defina e confirme a sua nova palavra-passe.';
+ document.getElementById('trocarErr').classList.add('hide');
+ document.getElementById('np1').value='';document.getElementById('np2').value='';
+ show('trocar');
+}
+
 function initSb(){
 var c=loadCfg(); if(!c){show('cfg');return;}
 sb=supabase.createClient(c.url,c.key);
+sb.auth.onAuthStateChange(function(event,session){
+ if(event==='PASSWORD_RECOVERY'&&session){abrirNovaSenha(session.user);}
+});
 sb.auth.getSession().then(function(r){
-if(r.data.session){ afterLogin(r.data.session.user); } else { show('login'); }
+if(r.data.session){if(RECOVERY_MODE||RECOVERY_REQUESTED){abrirNovaSenha(r.data.session.user);}else{afterLogin(r.data.session.user);}}else{show('login');if(RECOVERY_REQUESTED){var e=document.getElementById('loginErr');e.textContent='O link de recuperação não é válido ou expirou. Peça um novo link em Esqueci a palavra-passe.';e.classList.remove('hide');}}
 });
 }
 function doLogin(){
@@ -120,11 +150,13 @@ if(p1!==p2){ e.textContent='As palavras-passe não coincidem.'; e.classList.remo
 sb.auth.updateUser({password:p1, data:{senha_temporaria:false}}).then(function(r){
 if(r.error){ e.textContent=r.error.message; e.classList.remove('hide'); return; }
 if(r.data && r.data.user) USER=r.data.user;
+if(RECOVERY_MODE){sb.auth.signOut({scope:'local'}).then(function(){USER=null;RECOVERY_MODE=false;RECOVERY_REQUESTED=false;history.replaceState(null,'',location.pathname);document.getElementById('pass').value='';document.getElementById('np1').value='';document.getElementById('np2').value='';show('login');var msg=document.getElementById('loginErr');msg.textContent='Palavra-passe actualizada. Entre com a nova palavra-passe.';msg.classList.remove('hide');});return;}
 toast('Palavra-passe actualizada.'); carregarPerfil();
 });
 }
 function afterLogin(user){
 USER=user;
+if(RECOVERY_MODE){abrirNovaSenha(user);return;}
 if(precisaTrocar()){ show('trocar'); return; }
 carregarPerfil();
 }
