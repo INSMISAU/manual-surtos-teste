@@ -1,9 +1,30 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v155-fotos-reais-lote4-20261014";
+const CACHE_VERSION = "surtos-v156-fotos-reais-cd-20261014";
 
 const CORE = [
+"./assets/ilustracoes/idosos-contexto-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/diabetes-glicemia-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/contacto-familiar-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/escola-circulacao-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/saneamento-latrina-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/inundacao-comunidade-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/agua-exposicao-colera-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/dengue-investigacao-area-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/historico-registos-clinicos-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/gado-contacto-profissional-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/carne-processamento-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/viagem-avaliacao-sanitaria-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/covid-qualidade-testes-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/zika-investigacao-registos-cdc-real-cd-20261014.jpg",
+"./assets/ilustracoes/covid-sintomas-respiratorios-real-cd-20261014.jpg",
+"./assets/ilustracoes/comunidade-maputo-real-cd-20261014.jpg",
+"./assets/ilustracoes/covid-distanciamento-transporte-real-cd-20261014.jpg",
+"./assets/ilustracoes/dermatite-pes-areia-real-cd-20261014.jpg",
+"./assets/ilustracoes/dermatite-crianca-areia-real-cd-20261014.jpg",
+"./assets/ilustracoes/dermatite-praia-tofo-real-cd-20261014.jpg",
+
 "./assets/ilustracoes/conjuntivite-hemorragica-real-lote4-20261014.jpg",
 "./assets/ilustracoes/leptospirose-sufusao-conjuntival-real-lote4-20261014.jpg",
 "./assets/ilustracoes/hepatite-ictericia-ocular-real-lote4-20261014.jpg",
