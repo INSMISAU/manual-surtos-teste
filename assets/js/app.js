@@ -229,7 +229,7 @@ function pageSeccao(){
 }
 function pageExplorarSindrome(){
   const cards=(M.groups||[]).map(g=>
-    '<a class="syn" href="sindrome.html?id='+g.id+'" style="min-height:104px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:inherit"><div class="nm">'+esc(g.name)+'</div></a>').join('');
+    '<a class="syn" href="sindrome.html?id='+g.id+'" style="min-height:104px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;text-decoration:none;color:inherit">'+(g.id===4?'<img src="assets/icones/helder-20261014/paralisia.svg" width="64" height="64" style="object-fit:contain" alt="">':g.id===2?'<img src="assets/icones/helder-20261014/exantematicas.svg" width="64" height="64" style="object-fit:contain" alt="">':'')+'<div class="nm">'+esc(g.name)+'</div></a>').join('');
   const si=(M.meta&&M.meta.sindromesIntro)||[];
   const intro='';
   const t1=(M.meta&&M.meta.tabela1)||null;
@@ -543,3 +543,5 @@ document.addEventListener('DOMContentLoaded',()=>{
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initReading);else initReading();
 })();
+
+(function(){if(!document.querySelector('script[data-ins-photo-privacy]')){var s=document.createElement('script');s.src='assets/js/photo-privacy.js';s.setAttribute('data-ins-photo-privacy','1');document.head.appendChild(s);}})();
