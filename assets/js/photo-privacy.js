@@ -3,6 +3,8 @@
 'use strict';
 if(window.__insPhotoPrivacy)return;window.__insPhotoPrivacy=true;
 var areas={
+'lassa-cdc-real-lote3-20261014.jpg':[[69,21,12,11]],
+'crimeia-cdc-real-lote3-20261014.jpg':[[22,27,24,15]],
 'peste-cdc-real-20261014.jpg':[[86,0,14,25]],
 'polio-misau-2009-capa.png':[[48,0,28,20]],
 'sarampo-misau-2009-p91.jpg':[[7,42,82,15],[91,3,9,36]],
