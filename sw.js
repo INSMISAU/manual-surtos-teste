@@ -1,9 +1,19 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v153-fotos-reais-lote2-20261014";
+const CACHE_VERSION = "surtos-v154-fotos-reais-lote3-20261014";
 
 const CORE = [
+"./assets/js/photo-privacy.js",
+"./assets/ilustracoes/chikungunya-cdc-real-lote3-20261014.jpg",
+"./assets/ilustracoes/zika-cdc-real-lote3-20261014.jpg",
+"./assets/ilustracoes/dengue-cdc-real-lote3-20261014.jpg",
+"./assets/ilustracoes/tifoide-cdc-real-lote3-20261014.jpg",
+"./assets/ilustracoes/pertussis-cdc-real-lote3-20261014.jpg",
+"./assets/ilustracoes/marburg-cdc-real-lote3-20261014.jpg",
+"./assets/ilustracoes/lassa-cdc-real-lote3-20261014.jpg",
+"./assets/ilustracoes/crimeia-cdc-real-lote3-20261014.jpg",
+"./assets/ilustracoes/colera-cdc-real-lote3-20261014.jpg",
 "./imagens.html",
 "./assets/js/galeria.js",
 "./como-utilizar.html",
