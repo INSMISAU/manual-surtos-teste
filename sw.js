@@ -1,9 +1,22 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v154-fotos-reais-lote3-20261014";
+const CACHE_VERSION = "surtos-v155-fotos-reais-lote4-20261014";
 
 const CORE = [
+"./assets/ilustracoes/conjuntivite-hemorragica-real-lote4-20261014.jpg",
+"./assets/ilustracoes/leptospirose-sufusao-conjuntival-real-lote4-20261014.jpg",
+"./assets/ilustracoes/hepatite-ictericia-ocular-real-lote4-20261014.jpg",
+"./assets/ilustracoes/ebola-cuidados-cdc-real-lote4-20261014.jpg",
+"./assets/ilustracoes/tuberculose-rastreio-cdc-real-lote4-20261014.jpg",
+"./assets/ilustracoes/gravidez-contexto-real-lote4-20261014.jpg",
+"./assets/ilustracoes/aedes-aegypti-cdc-real-lote4-20261014.jpg",
+"./assets/ilustracoes/aedes-larvas-criadouro-cdc-real-lote4-20261014.jpg",
+"./assets/ilustracoes/lassa-mastomys-real-lote4-20261014.jpg",
+"./assets/ilustracoes/rattus-norvegicus-cdc-real-lote4-20261014.jpg",
+"./assets/ilustracoes/crimeia-hyalomma-real-lote4-20261014.jpg",
+"./assets/ilustracoes/rift-colheita-ovino-cdc-real-lote4-20261014.jpg",
+
 "./assets/js/photo-privacy.js",
 "./assets/ilustracoes/chikungunya-cdc-real-lote3-20261014.jpg",
 "./assets/ilustracoes/zika-cdc-real-lote3-20261014.jpg",
