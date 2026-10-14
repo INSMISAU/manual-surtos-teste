@@ -1,9 +1,27 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v156-fotos-reais-cd-20261014";
+const CACHE_VERSION = "surtos-v157-fotos-reais-ef-20261015";
 
 const CORE = [
+"./assets/ilustracoes/filariase-elefantiase-perna-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/rift-retinite-clinica-real-ef-20261015.jpg",
+"./assets/ilustracoes/hfrs-tomografia-renal-real-ef-20261015.jpg",
+"./assets/ilustracoes/alimentos-venda-ambulante-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/ordenha-leite-cru-real-ef-20261015.jpg",
+"./assets/ilustracoes/lassa-exame-profissional-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/ebola-formacao-epi-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/ebola-yambuku-area-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/amarela-vacinacao-angola-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/filariase-culex-vector-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/filariase-avaliacao-cobertura-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/sangue-colheita-profissional-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/ebola-resposta-obito-epi-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/floresta-costeira-pemba-real-ef-20261015.jpg",
+"./assets/ilustracoes/ambiente-rural-xai-xai-real-ef-20261015.jpg",
+"./assets/ilustracoes/roedores-graos-excrecoes-cdc-real-ef-20261015.jpg",
+"./assets/ilustracoes/roedores-excrecoes-habitacao-cdc-real-ef-20261015.jpg",
+
 "./assets/ilustracoes/idosos-contexto-cdc-real-cd-20261014.jpg",
 "./assets/ilustracoes/diabetes-glicemia-cdc-real-cd-20261014.jpg",
 "./assets/ilustracoes/contacto-familiar-cdc-real-cd-20261014.jpg",
