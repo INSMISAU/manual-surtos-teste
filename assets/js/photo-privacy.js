@@ -3,6 +3,9 @@
 'use strict';
 if(window.__insPhotoPrivacy)return;window.__insPhotoPrivacy=true;
 var areas={
+"cdc-phil-5301-fontes-20261015.jpg":[[39, 47, 16, 8]],
+"cdc-phil-27015-fontes-20261015.jpg":[[66, 60, 8, 8]],
+"cdc-phil-23090-fontes-20261015.jpg":[[80, 52, 9, 8]],
 'febre-amarela-doente-angola-2016-real-final-20261015.jpg':[[63,44,12,11],[62,23,6,4]],
 
 'lassa-cdc-real-lote3-20261014.jpg':[[69,21,12,11]],
