@@ -1,11 +1,17 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v165-revisao2-20261015";
+const CACHE_VERSION = "surtos-v166-restauro-ins-20261015";
 const CACHE_PREFIX = "ins-manual:" + new URL(self.registration.scope).pathname + ":";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 const CORE = [
+"./assets/ilustracoes/polio-misau-2009-capa.png",
+"./assets/ilustracoes/sarampo-misau-2009-p91.jpg",
+"./assets/ilustracoes/raiva-cism-documento.png",
+"./assets/ilustracoes/mpox-ins-2025-documento.png",
+"./assets/ilustracoes/colera-misau-2009-p12.jpg",
+"./assets/ilustracoes/colera-misau-2009-p32.jpg",
 "./assets/ilustracoes/dengue-grave-cdc-24878-r2-20261015.jpg",
 "./assets/ilustracoes/mpox-evolucao-cdc-mmwr-2025.gif",
 "./assets/ilustracoes/cdc-phil-10705-revisao-20261015.jpg",
