@@ -3,15 +3,11 @@
 'use strict';
 if(window.__insPhotoPrivacy)return;window.__insPhotoPrivacy=true;
 var areas={
-'polio-sequelas-real-pv-20261015.jpg':[[52,16,12,4]],
-'sarampo-exantema-real-pv-20261015.jpg':[[54,36,10,12],[63,15,8,11]],
 'febre-amarela-doente-angola-2016-real-final-20261015.jpg':[[63,44,12,11],[62,23,6,4]],
 
 'lassa-cdc-real-lote3-20261014.jpg':[[69,21,12,11]],
 'crimeia-cdc-real-lote3-20261014.jpg':[[22,27,24,15]],
 'peste-cdc-real-20261014.jpg':[[86,0,14,25]],
-'polio-misau-2009-capa.png':[[48,0,28,20]],
-'sarampo-misau-2009-p91.jpg':[[7,42,82,15],[91,3,9,36]],
 'colera-misau-2009-p32.jpg':[[55,48,8,7]],
 'parotidite-caso.jpg':[[31,27,40,12]],
 'varicela-caso.jpg':[[5,13,22,13],[43,11,22,15],[75,13,22,14]],

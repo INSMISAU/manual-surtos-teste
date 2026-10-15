@@ -187,8 +187,11 @@ function pageExplorarSeccao(){
   mount({crumb:'Explorar',title:'Explorar<br><span class="thin">por Secção</span>'},body,'map');
 }
 var IMAGE_CREDITS={};
-function figHtml(f){const credit=IMAGE_CREDITS[f.file];return '<figure class="fig"><img src="'+f.file+'" alt="'+esc(f.caption||'')+'" loading="lazy">'+
-  '<figcaption><b>Figura '+f.num+'.</b> '+esc(f.caption.replace(/^Figura\s+\d+\.\s*/,''))+(credit&&!/fonte/i.test(f.caption)?'<div style="font-size:11px;line-height:1.5;margin-top:5px;color:#52616a">Fonte: '+esc(credit)+'</div>':'')+'</figcaption></figure>';}
+function figHtml(f){
+ const parts=(f.caption||'').replace(/^Figura\s+\d+\.\s*/,'').split(/\s+Fonte\s*:\s*/i);
+ const desc=parts.shift(),credit=parts.join(' Fonte: ')||IMAGE_CREDITS[f.file]||'';
+ return '<figure class="fig"><img src="'+f.file+'" alt="'+esc(desc)+'" loading="lazy"><figcaption><span class="photo-caption-text"><b>Figura '+f.num+'.</b> '+esc(desc)+'</span>'+(credit?'<span class="photo-source"><b>Fonte:</b> '+esc(credit)+'</span>':'')+'</figcaption></figure>';
+}
 function renderSectionContent(sec){ return renderBody((sec.blocks||[]),(sec.figures||[])); }
 function coverBlock(){
   return '<div class="cover"><img class="ph" src="assets/img/cover.jpg" alt="Capa oficial do manual">'+
@@ -282,7 +285,7 @@ function pageDoenca(){
 }
 function pageGlossario(){
   const concepts=(M.glossary&&M.glossary.concepts)||[],ab=(M.glossary&&M.glossary.abbreviations)||[];
-  const entry=(title,def,kind)=>'<article class="gloss-entry" style="border:1px solid #dce5e9;border-radius:12px;padding:14px;margin:10px 0;background:#fff"><span style="font-size:12px;color:#5a6b73">'+kind+'</span><h3 style="margin:5px 0 8px">'+esc(title)+'</h3><p style="margin:0;line-height:1.65;text-align:left">'+esc(def)+'</p></article>';
+  const entry=(title,def,kind)=>'<article class="gloss-entry" style="border:1px solid #dce5e9;border-radius:12px;padding:14px;margin:10px 0;background:#fff"><span style="font-size:12px;color:#5a6b73">'+kind+'</span><h3 style="margin:5px 0 8px">'+esc(title)+'</h3><p style="margin:0;line-height:1.65;text-align:justify">'+esc(def)+'</p></article>';
   const body=((M.glossary&&M.glossary.intro)?'<p style="line-height:1.6">'+esc(M.glossary.intro)+'</p>':'')+'<label for="gloss-filter" style="display:block;font-weight:700;margin-bottom:8px">Localizar no Glossário</label><input id="gloss-filter" type="search" placeholder="Pesquisar termo ou definição" autocomplete="off" style="box-sizing:border-box;width:100%;padding:12px;border:1px solid #b6cbd4;border-radius:10px;font:inherit" aria-controls="gloss-results"><p id="gloss-count" role="status" aria-live="polite"></p><div id="gloss-results">'+concepts.map(c=>entry(c.term,c.def,'Conceito')).join('')+ab.map(c=>entry(c.abbr,c.meaning,'Abreviatura')).join('')+'</div><p id="gloss-empty" hidden>Não foram encontrados termos. Experimente outra palavra.</p>';
   mount({crumb:'Glossário',title:'Glossário',search:false},body,'book');
   const input=document.getElementById('gloss-filter'),cards=Array.from(document.querySelectorAll('.gloss-entry'));
