@@ -3,6 +3,8 @@
 'use strict';
 if(window.__insPhotoPrivacy)return;window.__insPhotoPrivacy=true;
 var areas={
+'polio-sequelas-real-pv-20261015.jpg':[[52,16,12,4]],
+'sarampo-exantema-real-pv-20261015.jpg':[[54,36,10,12],[63,15,8,11]],
 'febre-amarela-doente-angola-2016-real-final-20261015.jpg':[[63,44,12,11],[62,23,6,4]],
 
 'lassa-cdc-real-lote3-20261014.jpg':[[69,21,12,11]],
@@ -38,3 +40,4 @@ function scan(root){if(root.nodeType!==1)return;if(root.tagName==='IMG')protect(
 function start(){scan(document.documentElement);new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(scan);});}).observe(document.documentElement,{childList:true,subtree:true});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
+
