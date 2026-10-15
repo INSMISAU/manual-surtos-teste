@@ -3,6 +3,8 @@
 'use strict';
 if(window.__insPhotoPrivacy)return;window.__insPhotoPrivacy=true;
 var areas={
+'febre-amarela-doente-angola-2016-real-final-20261015.jpg':[[63,44,12,11],[62,23,6,4]],
+
 'lassa-cdc-real-lote3-20261014.jpg':[[69,21,12,11]],
 'crimeia-cdc-real-lote3-20261014.jpg':[[22,27,24,15]],
 'peste-cdc-real-20261014.jpg':[[86,0,14,25]],
