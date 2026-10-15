@@ -1,9 +1,59 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v160-revisao-publica-cm-20261015";
+const CACHE_VERSION = "surtos-v161-imagens-pv-20261015";
 
 const CORE = [
+
+"./assets/ilustracoes/coqueluche-lactente-real-pv-20261015.jpg",
+"./assets/ilustracoes/coqueluche-vacina-real-pv-20261015.jpg",
+"./assets/ilustracoes/mers-avaliacao-respiratoria-real-pv-20261015.jpg",
+"./assets/ilustracoes/mers-doenca-renal-real-pv-20261015.jpg",
+"./assets/ilustracoes/mers-exposicao-real-pv-20261015.jpg",
+"./assets/ilustracoes/mers-profissionais-real-pv-20261015.jpg",
+"./assets/ilustracoes/mers-viajantes-real-pv-20261015.jpg",
+"./assets/ilustracoes/papeira-escola-real-pv-20261015.jpg",
+"./assets/ilustracoes/papeira-vacina-real-pv-20261015.jpg",
+"./assets/ilustracoes/parotidite-cdc-real-lote2-20261014.jpg",
+"./assets/ilustracoes/peste-bubao-drenagem-real-pv-20261015.jpg",
+"./assets/ilustracoes/peste-cdc-real-20261014.jpg",
+"./assets/ilustracoes/peste-profissionais-real-pv-20261015.jpg",
+"./assets/ilustracoes/polio-criancas-real-pv-20261015.jpg",
+"./assets/ilustracoes/polio-imunidade-real-pv-20261015.jpg",
+"./assets/ilustracoes/polio-saneamento-real-pv-20261015.jpg",
+"./assets/ilustracoes/polio-sequelas-real-pv-20261015.jpg",
+"./assets/ilustracoes/polio-viagem-real-pv-20261015.jpg",
+"./assets/ilustracoes/raiva-acesso-real-pv-20261015.jpg",
+"./assets/ilustracoes/raiva-caes-real-pv-20261015.jpg",
+"./assets/ilustracoes/raiva-doente-pub2024-real-pv-20261015.png",
+"./assets/ilustracoes/raiva-exposicao-mordedura-real-pv-20261015.jpg",
+"./assets/ilustracoes/raiva-veterinarios-real-pv-20261015.jpg",
+"./assets/ilustracoes/rubeola-cdc-real-20261014.jpg",
+"./assets/ilustracoes/rubeola-contacto-real-pv-20261015.jpg",
+"./assets/ilustracoes/rubeola-gravidez-real-pv-20261015.jpg",
+"./assets/ilustracoes/rubeola-src-cataratas-real-pv-20261015.jpg",
+"./assets/ilustracoes/rubeola-viagem-real-pv-20261015.jpg",
+"./assets/ilustracoes/sarampo-escola-real-pv-20261015.jpg",
+"./assets/ilustracoes/sarampo-exantema-real-pv-20261015.jpg",
+"./assets/ilustracoes/sarampo-gravidez-real-pv-20261015.jpg",
+"./assets/ilustracoes/sarampo-imunidade-real-pv-20261015.jpg",
+"./assets/ilustracoes/sarampo-viagem-real-pv-20261015.jpg",
+"./assets/ilustracoes/tb-imunidade-real-pv-20261015.jpg",
+"./assets/ilustracoes/tb-revisao-real-pv-20261015.jpg",
+"./assets/ilustracoes/tb-sobrelotacao-real-pv-20261015.jpg",
+"./assets/ilustracoes/tb-tratamento-real-pv-20261015.jpg",
+"./assets/ilustracoes/tungiase-criancas-real-pv-20261015.jpg",
+"./assets/ilustracoes/tungiase-descalcos-real-pv-20261015.jpg",
+"./assets/ilustracoes/tungiase-lesoes-pub2026-real-pv-20261015.png",
+"./assets/ilustracoes/varicela-familia-real-pv-20261015.jpg",
+"./assets/ilustracoes/varicela-imunidade-real-pv-20261015.jpg",
+"./assets/ilustracoes/varicela-lesoes-pub2024-real-pv-20261015.png",
+"./assets/ilustracoes/varicela-profissionais-real-pv-20261015.jpg",
+"./assets/ilustracoes/vsr-doenca-pulmonar-real-pv-20261015.jpg",
+"./assets/ilustracoes/vsr-idosos-real-pv-20261015.jpg",
+"./assets/ilustracoes/vsr-lactente-real-pv-20261015.jpg",
+"./assets/ilustracoes/vsr-lactente-tosse-real-pv-20261015.jpg",
+
 "./assets/ilustracoes/febre-amarela-doente-angola-2016-real-final-20261015.jpg",
 "./assets/ilustracoes/lepra-unidade-movel-2021-real-final-20261015.jpg",
 "./assets/ilustracoes/lepra-rastreio-2025-real-final-20261015.jpg",
@@ -317,6 +367,7 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
 
 
 
