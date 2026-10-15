@@ -13,7 +13,6 @@ var areas={
 'polio-misau-2009-capa.png':[[48,0,28,20]],
 'sarampo-misau-2009-p91.jpg':[[7,42,82,15],[91,3,9,36]],
 'colera-misau-2009-p32.jpg':[[55,48,8,7]],
-'mpox-ins-2025-documento.png':[[1,4,33,91],[70,4,19,24]],
 'parotidite-caso.jpg':[[31,27,40,12]],
 'varicela-caso.jpg':[[5,13,22,13],[43,11,22,15],[75,13,22,14]],
 'febre-amarela-caso.jpg':[[42,23,19,14]],
