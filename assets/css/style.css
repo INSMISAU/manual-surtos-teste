@@ -91,7 +91,7 @@ a{color:inherit;text-decoration:none}
 .recent{border:1px solid var(--line);background:#fff;border-radius:13px;padding:13px 16px;color:#8a98a1;font-size:13px;margin-top:14px}
 
 /* ---------- Grelha de sindromes ---------- */
-.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .syn{background:#fff;border-radius:14px;box-shadow:var(--shadow-s);padding:14px 8px 12px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
 .syn .ico{width:50px;height:50px;margin:2px auto 8px;display:flex;align-items:center;justify-content:center}
 .dico{width:100%;height:100%;object-fit:contain;display:block}
@@ -269,3 +269,11 @@ table.t1 a{color:var(--petrol);text-decoration:none}
 .tbl th, .tbl td{min-width:88px}
 .tbl th:first-child, .tbl td:first-child{min-width:40px}
 .tbl-wrap{position:relative}
+
+.gloss-entry p,.abbr .v,.fig figcaption,.synhero figcaption,.secimg figcaption{text-align:justify!important;line-height:1.65}
+.fig .photo-caption-text{display:block;font-style:normal}
+.fig .photo-source{display:block;margin-top:4px;font-size:11.5px;line-height:1.6;font-style:normal;overflow-wrap:break-word}
+
+/* Grelha de síndromes em ecrãs pequenos. */
+.syn{min-width:0}.syn .nm{max-width:100%;overflow-wrap:anywhere}
+@media(max-width:360px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
