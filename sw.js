@@ -1,9 +1,24 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v161-imagens-pv-20261015";
+const CACHE_VERSION = "surtos-v162-revisao-visual-20261015";
 
 const CORE = [
+"./assets/ilustracoes/papeira-colheita-oral-real-revisao-20261015.jpg",
+"./assets/ilustracoes/sarampo-colheita-sangue-2024-real-revisao-20261015.jpg",
+"./assets/ilustracoes/varicela-laboratorio-2019-real-revisao-20261015.jpg",
+"./assets/ilustracoes/dengue-aedes-albopictus-cdc-real-revisao-20261015.jpg",
+"./assets/ilustracoes/rift-culex-real-revisao-20261015.jpg",
+"./assets/ilustracoes/marburg-roussettus-2022-real-revisao-20261015.jpg",
+"./assets/ilustracoes/lepto-ratazana-2024-real-revisao-20261015.jpg",
+"./assets/ilustracoes/raiva-cao-2024-real-revisao-20261015.jpg",
+"./assets/ilustracoes/mpox-pcr-gana-2022-real-revisao-20261015.jpg",
+"./assets/ilustracoes/sarampo-espirro-real-revisao-20261015.jpg",
+"./assets/ilustracoes/peste-pulga-real-revisao-20261015.jpg",
+"./assets/ilustracoes/zika-aedes-real-revisao-20261015.jpg",
+"./assets/ilustracoes/colera-mosca-real-revisao-20261015.jpg",
+"./assets/ilustracoes/rotavirus-reidratacao-2010-real-revisao-20261015.jpg",
+
 
 "./assets/ilustracoes/coqueluche-lactente-real-pv-20261015.jpg",
 "./assets/ilustracoes/coqueluche-vacina-real-pv-20261015.jpg",
