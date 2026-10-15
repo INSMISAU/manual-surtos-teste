@@ -1,9 +1,30 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v158-revisao-cm-20261015";
+const CACHE_VERSION = "surtos-v160-revisao-publica-cm-20261015";
 
 const CORE = [
+"./assets/ilustracoes/febre-amarela-doente-angola-2016-real-final-20261015.jpg",
+"./assets/ilustracoes/lepra-unidade-movel-2021-real-final-20261015.jpg",
+"./assets/ilustracoes/lepra-rastreio-2025-real-final-20261015.jpg",
+"./assets/ilustracoes/gripe-transporte-colectivo-2025-real-final-20261015.jpg",
+"./assets/ilustracoes/gripe-idosos-avaliacao-2019-real-final-20261015.jpg",
+"./assets/ilustracoes/hepatite-preparacao-alimentos-2026-real-final-20261015.jpg",
+"./assets/ilustracoes/cchf-cuidados-penso-2026-real-final-20261015.jpg",
+"./assets/ilustracoes/rift-pastoreio-2022-real-final-20261015.jpg",
+"./assets/ilustracoes/lassa-cuidados-temperatura-2023-real-final-20261015.jpg",
+"./assets/ilustracoes/lassa-avaliacao-pulso-2017-real-final-20261015.jpg",
+"./assets/ilustracoes/ebola-cerimonia-funebre-2016-real-final-20261015.jpg",
+"./assets/ilustracoes/rota-recolha-agua-2025-real-final-20261015.jpg",
+"./assets/ilustracoes/noro-recolha-agua-2022-real-final-20261015.jpg",
+"./assets/ilustracoes/gastro-refeicao-colectiva-2025-real-final-20261015.jpg",
+"./assets/ilustracoes/gastro-agua-superficial-2022-real-final-20261015.jpg",
+"./assets/ilustracoes/gastro-fuga-esgoto-2022-real-final-20261015.jpg",
+"./assets/ilustracoes/colera-recolha-agua-2020-real-final-20261015.jpg",
+"./assets/ilustracoes/cha-cuidados-proximos-2020-real-final-20261015.jpg",
+"./assets/ilustracoes/cha-drenagem-aberta-2026-real-final-20261015.jpg",
+"./assets/ilustracoes/mpox-viagem-aeroporto-2023-real-final-20261015.jpg",
+"./assets/ilustracoes/mpox-sala-espera-2021-real-final-20261015.jpg",
 "./assets/ilustracoes/chik-pele-2019-publicacao-2025-real-cm-20261015.webp",
 "./assets/ilustracoes/escabiose-maos-publicacao-2024-real-cm-20261015.webp",
 "./assets/ilustracoes/filariase-perna-publicacao-2024-real-cm-20261015.jpg",
