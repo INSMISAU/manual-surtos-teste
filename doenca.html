@@ -39,7 +39,7 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke
 .casebox.case-provavel .casefig{background:#fdede0}
 /* S4-1: altura fixa para as figuras nao saltarem ao trocar de separador */
 .casefig{line-height:0;background:#faf3ee;height:172px;display:flex;align-items:center;justify-content:center;padding:6px;box-sizing:border-box}
-.case-media-grid{display:flex;align-items:center;justify-content:center;gap:16px;width:100%;height:100%;line-height:1.3}.case-media-grid>div{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;max-width:46%;flex:1}.case-media-grid img,.case-media-grid svg{max-height:128px!important}.case-media-grid span{font-size:11px;color:#333;text-align:center;margin-top:4px}
+.case-media-grid{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:100%;line-height:1.3}.case-media-grid>div{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;max-width:46%;flex:1}.case-media-grid img,.case-media-grid svg{max-height:128px!important}.case-media-grid span{font-size:11px;color:#333;text-align:center;margin-top:4px}
 .casefig svg,.casefig img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
 .casetxt{padding:13px 15px;font-size:13.5px;line-height:1.65;color:#333;text-align:justify}
 .casebox .casetxt{border-top:1px solid var(--line)}
@@ -160,11 +160,31 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke
 
 
 /* Composições antigas com vários sinais: mesmas imagens, tamanho maior. */
-.casebox.case-suspeito.case-size-large .case-media-grid{display:flex;flex-direction:column;height:auto;gap:16px;padding:14px;box-sizing:border-box}
+.casebox.case-suspeito.case-size-large .case-media-grid{display:flex;flex-direction:column;height:auto;gap:10px;padding:10px;box-sizing:border-box}
 .casebox.case-suspeito.case-size-large .case-media-grid>div{height:auto;max-width:100%;width:100%;flex:none}
 .casebox.case-suspeito.case-size-large .case-media-grid img,
 .casebox.case-suspeito.case-size-large .case-media-grid svg{width:min(180px,100%);height:auto;max-height:none!important;object-fit:contain}
 .casebox.case-suspeito.case-size-large .case-media-grid span{font-size:13px;line-height:1.4;margin-top:8px}
+
+.case-heading{padding:10px 14px;border-bottom:1px solid var(--line);background:#fff}
+.case-heading .casetag{margin:0}
+.riskitem{margin:12px 0 16px}
+.riskitem .riskrow{margin:0}
+.risk-credit{margin-top:7px}
+.photo-credit,.casefig .manual-figure:not(.review-case-diagram) figcaption.photo-credit{display:block;margin:0;padding:8px 12px;font:400 12px/1.6 'Raleway',Arial,sans-serif;color:#52616a;background:#fff;text-align:justify;overflow-wrap:break-word;word-break:normal}
+.risk-credit .photo-credit{padding:0;background:transparent}
+.photo-caption-text{display:block;color:#3c4c54}
+.photo-source{display:block;margin-top:3px;font-size:11.5px;line-height:1.6}
+.photo-source a{color:#00566a;text-decoration:underline;overflow-wrap:anywhere}
+.riskrow .tx,.rtext,.mpox-condition p,.review-case-row p,.casebox.case-suspeito.case-size-large .review-case-row p,.secimg figcaption,.media-credit,.evonote{text-align:justify}
+.secimg figcaption{line-height:1.6;overflow-wrap:break-word}
+.casefig .photo-credit{width:100%}
+
+.casebox:not(.case-suspeito) .real-photo img{max-height:260px!important;width:100%!important;object-fit:contain}
+.casefig .real-photo{width:100%;margin:0}
+
+.review-case-diagram .review-case-title{font-size:17px;font-weight:700;line-height:1.45;text-align:center;background:#eaf4ef;padding:12px 8px;border-radius:10px;margin-bottom:10px}
+.lepto-photo{margin:0}.review-case-diagram .lepto-photo figcaption.photo-credit{font:400 12px/1.6 'Raleway',Arial,sans-serif;text-align:justify;background:#fff;padding:8px 0;color:#52616a;border-radius:0}
 </style></head>
 <body><div class="app"><div id="app"></div></div>
 <script data-ins-photo-privacy="1" src="assets/js/photo-privacy.js"></script>
@@ -271,10 +291,10 @@ function riskHTML(t){t=String(t||'');
 function renderDisease(slug){var d=applyOv(slug);window.CUR=d;
  var keys='';(d.keys||[]).forEach(function(t,i){keys+='<li><span class="n">'+(i+1)+'</span><span>'+t+'</span></li>';});
  var keysBlock=keys?('<details class="keys" open><summary><svg class="i" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M21 2l-2 2m-7.6 7.6a5 5 0 1 1-7 7 5 5 0 0 1 7-7zm0 0L15 8m0 0l3 3 3-3-3-3"/></svg> Pontos-chave <span class="kchev"><svg class="i" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary><ul>'+keys+'</ul></details>'):'';
- var casesBlock='';if(d.cases&&d.cases.length){var bar='';d.cases.forEach(function(c,i){bar+='<button class="casebtn'+(i===0?' on':'')+'" onclick="setCase(\''+slug+'\','+i+',this)">'+c.label+'</button>';});
-  casesBlock='<div class="sec-h carmim"><svg class="i" viewBox="0 0 24 24"><path d="M8 15a6 6 0 0 0 12 0v-3M8 15V9a4 4 0 1 1 8 0v3M8 15H5a2 2 0 0 0 0 4h1"/></svg> Definição de caso</div><div class="casebar">'+bar+'</div><div class="casebox" id="casebox"><div class="casefig" id="casefig"></div><div class="casetxt"><span class="casetag" id="casetag"></span><div id="casebody"></div></div></div>';}
+ var casesBlock='';if(d.cases&&d.cases.length){var bar='';d.cases.forEach(function(c,i){bar+='<button type="button" aria-controls="casebox" aria-pressed="'+(i===0?'true':'false')+'" class="casebtn'+(i===0?' on':'')+'" onclick="setCase(\''+slug+'\','+i+',this)">'+c.label+'</button>';});
+  casesBlock='<div class="sec-h carmim"><svg class="i" viewBox="0 0 24 24"><path d="M8 15a6 6 0 0 0 12 0v-3M8 15V9a4 4 0 1 1 8 0v3M8 15H5a2 2 0 0 0 0 4h1"/></svg> Definição de caso</div><div class="casebar">'+bar+'</div><div class="casebox" id="casebox" role="region" aria-labelledby="casetag"><div class="case-heading"><span class="casetag" id="casetag" aria-live="polite"></span></div><div class="casefig" id="casefig"></div><div class="casetxt"><div id="casebody"></div></div></div>';}
  var evo='';if(d.evolution){evo='<div class="sec-h"><svg class="i" viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg> Evolução das lesões</div><div class="evo">'+d.evolution+'</div>';}
- var risksBlock='';if(d.risks&&d.risks.length){var rr='';d.risks.forEach(function(r){if(r.wide){rr+='<div class="riskitem"><div class="rtext">'+riskHTML(r.text)+(r.credit||'')+'</div>'+(r.media?'<div class="rbanner">'+r.media+'</div>':'')+'</div>';}else{rr+='<div class="riskrow'+(/colera-risk-image|review-risk-image/.test(r.media)?' risk-illustrated':'')+'">'+(r.media?'<div class="ill">'+r.media+'</div>':'')+'<div class="tx">'+riskHTML(r.text)+(r.credit||'')+'</div></div>';}});risksBlock='<div class="sec-h"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 21c0-3.3 2.7-5.5 6-5.5M16 11l2 2 4-4"/></svg> Grupos de risco</div>'+rr;}else{var gs=secByTitle(d,'Grupos de risco');if(gs)risksBlock='<div class="sec-h"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 21c0-3.3 2.7-5.5 6-5.5M16 11l2 2 4-4"/></svg> Grupos de risco</div><div class="acc" style="padding:2px 4px">'+renderItems(gs.items)+'</div>';}
+ var risksBlock='';if(d.risks&&d.risks.length){var rr='';d.risks.forEach(function(r){rr+='<div class="riskitem">';if(r.wide){rr+='<div class="rtext">'+riskHTML(r.text)+'</div>'+(r.media?'<div class="rbanner">'+r.media+'</div>':'');}else{rr+='<div class="riskrow'+(/colera-risk-image|review-risk-image/.test(r.media)?' risk-illustrated':'')+'">'+(r.media?'<div class="ill">'+r.media+'</div>':'')+'<div class="tx">'+riskHTML(r.text)+'</div></div>';}rr+=(r.credit?'<div class="risk-credit">'+r.credit+'</div>':'')+'</div>';});risksBlock='<div class="sec-h"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 21c0-3.3 2.7-5.5 6-5.5M16 11l2 2 4-4"/></svg> Grupos de risco</div>'+rr;}else{var gs=secByTitle(d,'Grupos de risco');if(gs)risksBlock='<div class="sec-h"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 21c0-3.3 2.7-5.5 6-5.5M16 11l2 2 4-4"/></svg> Grupos de risco</div><div class="acc" style="padding:2px 4px">'+renderItems(gs.items)+'</div>';}
  var secs='';DETAIL.forEach(function(t){var s=secByTitle(d,t);if(!s)return;var ic=ICONS[t]||'';
   var fig=s.img?('<figure class="secimg"><img src="'+s.img+'" alt="'+captionEscape(d.name+' — '+s.t)+'" loading="lazy">'+(s.alt?'<figcaption>'+s.alt+'</figcaption>':'')+'</figure>'):'';
   secs+='<details class="acc"><summary><span class="ic"><svg class="i" viewBox="0 0 24 24">'+ic+'</svg></span>'+t+chev+'</summary><div class="inner">'+fig+renderItems(s.items)+'</div></details>';});
@@ -307,7 +327,7 @@ function captionHTML(media,fallback){
  images.forEach(function(im){var path=im.getAttribute('src'),alt=(im.getAttribute('alt')||'').trim();if(alt&&!/\.(jpg|jpeg|png|webp|svg)$/i.test(alt)&&titles.indexOf(alt)<0)titles.push(alt);var credit=IMAGE_CREDITS[path];if(credit&&sources.indexOf(credit)<0)sources.push(credit);});
  var title=already?'':(titles.length===1&&titles[0].length<=90?titles[0]:(fallback||''));
  if(!title&&!sources.length)return '';
- return '<div class="media-credit" style="font:11.5px/1.5 Raleway,Arial,sans-serif;color:#52616a;padding:8px 12px;text-align:left;overflow-wrap:anywhere">'+(title?'<div>'+captionEscape(title)+'</div>':'')+(sources.length?'<div style="margin-top:3px;font-size:10.5px">Fonte: '+captionEscape(sources.join('; '))+'</div>':'')+'</div>';
+ return '<div class="media-credit" style="font:11.5px/1.5 Raleway,Arial,sans-serif;color:#52616a;padding:8px 12px;text-align:justify;overflow-wrap:anywhere">'+(title?'<div>'+captionEscape(title)+'</div>':'')+(sources.length?'<div style="margin-top:3px;font-size:10.5px">Fonte: '+captionEscape(sources.join('; '))+'</div>':'')+'</div>';
 }
 
 function formatConfirmedMedia(c){
@@ -339,7 +359,7 @@ function formatConfirmedMedia(c){
   '<text x="302" y="116" text-anchor="middle" font-family="Arial,sans-serif" font-size="9.5" font-weight="700" fill="#B02040">Confirmado</text>'+
   m.slice(end);
 }
-function setCase(slug,i,btn){var c=(window.CUR||DISEASES[slug]).cases[i];var fig=document.getElementById('casefig');if(c.media){fig.style.display='flex';fig.innerHTML=formatConfirmedMedia(c);}else{fig.style.display='none';fig.innerHTML='';}document.getElementById('casetag').innerHTML='Caso '+c.label.toLowerCase();document.getElementById('casebody').innerHTML=c.body;var priorCredit=document.getElementById('case-media-credit');if(priorCredit)priorCredit.remove();var credit=captionHTML(c.media,'Caso '+c.label.toLowerCase()+' — '+(window.CUR||DISEASES[slug]).name);if(credit){var node=document.createElement('div');node.id='case-media-credit';node.innerHTML=credit;fig.insertAdjacentElement('afterend',node);}var cb=document.getElementById('casebox');if(cb){cb.className='casebox';if(c.media&&c.media.indexOf('class="manual-figure')>=0)cb.classList.add('case-illustrated');if(/confirmad/i.test(c.label))cb.classList.add('case-confirmado');else if(/suspeit/i.test(c.label)){cb.classList.add('case-suspeito');cb.classList.add('case-size-large');}else if(/prov/i.test(c.label))cb.classList.add('case-provavel');}var bs=document.querySelectorAll('.casebtn');for(var j=0;j<bs.length;j++)bs[j].classList.remove('on');if(btn)btn.classList.add('on');}
+function setCase(slug,i,btn){var c=(window.CUR||DISEASES[slug]).cases[i];var fig=document.getElementById('casefig');if(c.media){fig.style.display='flex';fig.innerHTML=formatConfirmedMedia(c);}else{fig.style.display='none';fig.innerHTML='';}document.getElementById('casetag').innerHTML='Caso '+c.label.toLowerCase();document.getElementById('casebody').innerHTML=c.body;var priorCredit=document.getElementById('case-media-credit');if(priorCredit)priorCredit.remove();var credit=captionHTML(c.media,'Caso '+c.label.toLowerCase()+' — '+(window.CUR||DISEASES[slug]).name);if(credit){var node=document.createElement('div');node.id='case-media-credit';node.innerHTML=credit;fig.insertAdjacentElement('afterend',node);}var cb=document.getElementById('casebox');if(cb){cb.className='casebox';if(c.media&&c.media.indexOf('class="manual-figure')>=0)cb.classList.add('case-illustrated');if(/confirmad/i.test(c.label))cb.classList.add('case-confirmado');else if(/suspeit/i.test(c.label)){cb.classList.add('case-suspeito');cb.classList.add('case-size-large');}else if(/prov/i.test(c.label))cb.classList.add('case-provavel');}var bs=document.querySelectorAll('.casebtn');for(var j=0;j<bs.length;j++){bs[j].classList.remove('on');bs[j].setAttribute('aria-pressed','false');}if(btn){btn.classList.add('on');btn.setAttribute('aria-pressed','true');}}
 function renderEdit(slug){var base=DISEASES[slug];var d=applyOv(slug);var kv=(d.keys||[]).join('\n');var ci=d.cases.map(function(c,i){return '<label class="edlab">Caso — '+c.label+'</label><textarea class="edta" id="ec'+i+'">'+c.body.replace(/&nbsp;/g,' ')+'</textarea>';}).join('');
  document.getElementById('app').innerHTML='<header class="hdr"><div class="hdr-top"><button class="backlink" onclick="renderDisease(\''+slug+'\')"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Ficha</button><span>Editar · demonstração</span><span class="spacer"></span></div><h1 class="page-title">Editar — '+d.name+'</h1></header><main class="body"><div class="note">Modo administrador (demonstração). As alterações ficam guardadas neste navegador e registadas no histórico.</div><label class="edlab">Administrador</label><input class="edin" id="eadmin" value="Admin"><label class="edlab">Pontos-chave (um por linha)</label><textarea class="edta" id="ekeys" style="min-height:120px">'+kv+'</textarea>'+ci+'<button class="fullbtn" style="background:#B02040;border-color:#B02040;color:#fff;margin-top:16px" onclick="saveEdit(\''+slug+'\')">Guardar alterações</button></main>'+fab("renderDisease('"+slug+"')");window.scrollTo(0,0);}
 function saveEdit(slug){var base=DISEASES[slug];var cur=applyOv(slug);var o=ovGet(slug);var who=(document.getElementById('eadmin').value||'Admin').trim();var changed=[];var kt=document.getElementById('ekeys').value.split('\n').map(function(x){return x.trim()}).filter(Boolean);if(JSON.stringify(kt)!==JSON.stringify(cur.keys||[])){o.keys=kt;changed.push('Pontos-chave');}o.cases=o.cases||{};base.cases.forEach(function(c,i){var el=document.getElementById('ec'+i);if(!el)return;var v=el.value.trim();var old=(cur.cases[i].body||'').replace(/&nbsp;/g,' ').trim();if(v!==old){o.cases[String(i)]=v;changed.push('Caso '+c.label);}});try{LS().setItem('ins_ov_'+slug,JSON.stringify(o))}catch(e){}if(changed.length)logAdd({t:new Date().toLocaleString('pt-PT'),user:who,disease:base.name,fields:changed.join(', ')});renderDisease(slug);}

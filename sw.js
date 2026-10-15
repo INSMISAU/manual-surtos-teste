@@ -1,9 +1,58 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v162-revisao-visual-20261015";
+const CACHE_VERSION = "surtos-v165-revisao2-20261015";
+const CACHE_PREFIX = "ins-manual:" + new URL(self.registration.scope).pathname + ":";
+const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 const CORE = [
+"./assets/ilustracoes/dengue-grave-cdc-24878-r2-20261015.jpg",
+"./assets/ilustracoes/mpox-evolucao-cdc-mmwr-2025.gif",
+"./assets/ilustracoes/cdc-phil-10705-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-1207-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-12493-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-13481-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-13534-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-15282-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-15344-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-15908-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-17550-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-18794-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-1898-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-19184-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-1921-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-1940-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-19683-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-21420-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-21427-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-2175-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-2176-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-22355-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-22506-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-22906-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-23174-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-23209-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-24480-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-24898-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-25614-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-26246-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-273-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-2739-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-27584-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-2791-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-28446-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-29185-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-29417-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-3008-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-32075-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-3906-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-5319-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-6093-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-6470-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-6606-revisao-20261015.jpg",
+"./assets/ilustracoes/cdc-phil-8238-revisao-20261015.jpg",
+"./assets/ilustracoes/dengue-cdc-real-lote3-20261014.jpg",
+"./assets/ilustracoes/tungiase-cdc-real-20261014.jpg",
 "./assets/ilustracoes/papeira-colheita-oral-real-revisao-20261015.jpg",
 "./assets/ilustracoes/sarampo-colheita-sangue-2024-real-revisao-20261015.jpg",
 "./assets/ilustracoes/varicela-laboratorio-2019-real-revisao-20261015.jpg",
@@ -341,7 +390,7 @@ const DATA_RX = /(content|ddata|cms_data|fiche-assets|app)\.js$/i;
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
-    caches.open(CACHE_VERSION)
+    caches.open(CACHE_NAME)
       .then((c) => Promise.allSettled(CORE.map((u) => c.add(u))))
       .then(() => self.skipWaiting())
   );
@@ -350,7 +399,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith(CACHE_PREFIX) && k !== CACHE_NAME).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -366,19 +415,23 @@ self.addEventListener("fetch", (e) => {
   if (isPage || (isData && !isStatic)) {
     e.respondWith(
       fetch(req).then((res) => {
-        if (res && res.status === 200) { const copy = res.clone(); caches.open(CACHE_VERSION).then((c) => c.put(req, copy)); }
+        if (res && res.status === 200) { const copy = res.clone(); caches.open(CACHE_NAME).then((c) => c.put(req, copy)); }
         return res;
-      }).catch(() => caches.match(req).then((cached) => cached || caches.match("./index.html")))
+      }).catch(async () => {
+        const cache = await caches.open(CACHE_NAME);
+        const cached = await cache.match(req) || (isPage ? await cache.match(req, {ignoreSearch:true}) : null);
+        return cached || (isPage ? await cache.match("./index.html") : null) || Response.error();
+      })
     );
     return;
   }
   e.respondWith(
-    caches.match(req).then((cached) => {
+    caches.open(CACHE_NAME).then((cache) => cache.match(req)).then((cached) => {
       const network = fetch(req).then((res) => {
-        if (res && res.status === 200) { const copy = res.clone(); caches.open(CACHE_VERSION).then((c) => c.put(req, copy)); }
+        if (res && res.status === 200) { const copy = res.clone(); caches.open(CACHE_NAME).then((c) => c.put(req, copy)); }
         return res;
       }).catch(() => null);
-      return cached || network.then((res) => res || caches.match("./index.html"));
+      return cached || network.then((res) => res || Response.error());
     })
   );
 });
