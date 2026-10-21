@@ -185,6 +185,12 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke
 
 .review-case-diagram .review-case-title{font-size:17px;font-weight:700;line-height:1.45;text-align:center;background:#eaf4ef;padding:12px 8px;border-radius:10px;margin-bottom:10px}
 .lepto-photo{margin:0}.review-case-diagram .lepto-photo figcaption.photo-credit{font:400 12px/1.6 'Raleway',Arial,sans-serif;text-align:justify;background:#fff;padding:8px 0;color:#52616a;border-radius:0}
+
+.disease-hero{margin:0 0 20px;border:1px solid #dce5e7;border-radius:12px;overflow:hidden;background:#fff}
+.disease-hero figure{margin:0}.disease-hero img{display:block;width:100%;height:auto;max-height:480px;object-fit:contain;margin:auto}
+.disease-hero figcaption{padding:12px;font-size:12px;line-height:1.5;color:#52616a;overflow-wrap:anywhere}
+.disease-hero a{color:#00566a}.disease-hero .photo-source{display:block}
+@media(max-width:600px){.disease-hero img{max-height:360px}}
 </style></head>
 <body><div class="app"><div id="app"></div></div>
 <script data-ins-photo-privacy="1" src="assets/js/photo-privacy.js"></script>
@@ -288,6 +294,24 @@ function riskHTML(t){t=String(t||'');
  var m=t.match(/^([^:]{3,70}):\s+([\s\S]+)$/);
  if(m) return '<b>'+m[1]+':</b> '+m[2];
  return t;}
+
+function sourceOnly(container){
+ container.querySelectorAll('.photo-caption-text,.image-date').forEach(function(n){n.remove();});
+ container.querySelectorAll('figcaption,.risk-credit,.media-credit').forEach(function(n){
+  if(!/Fonte\s*:/i.test(n.textContent))return;
+  var walker=document.createTreeWalker(n,NodeFilter.SHOW_TEXT),t,found=null,offset=0;
+  while(t=walker.nextNode()){var m=/Fonte\s*:/i.exec(t.nodeValue);if(m){found=t;offset=m.index;break;}}
+  if(found){var range=document.createRange();range.setStart(n,0);range.setEnd(found,offset);range.deleteContents();}
+ });
+}
+function diseaseHero(d){
+ var c=(d.cases||[]).find(function(c){return /suspeit/i.test(c.label)&&c.media;});if(!c)return '';
+ var box=document.createElement('div');box.innerHTML=c.media;
+ if(!box.querySelector('img'))return '';
+ sourceOnly(box);
+ return '<div class="disease-hero">'+box.innerHTML+'</div>';
+}
+
 function renderDisease(slug){var d=applyOv(slug);window.CUR=d;
  var keys='';(d.keys||[]).forEach(function(t,i){keys+='<li><span class="n">'+(i+1)+'</span><span>'+t+'</span></li>';});
  var keysBlock=keys?('<details class="keys" open><summary><svg class="i" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M21 2l-2 2m-7.6 7.6a5 5 0 1 1-7 7 5 5 0 0 1 7-7zm0 0L15 8m0 0l3 3 3-3-3-3"/></svg> Pontos-chave <span class="kchev"><svg class="i" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary><ul>'+keys+'</ul></details>'):'';
@@ -298,8 +322,8 @@ function renderDisease(slug){var d=applyOv(slug);window.CUR=d;
  var secs='';DETAIL.forEach(function(t){var s=secByTitle(d,t);if(!s)return;var ic=ICONS[t]||'';
   var fig=s.img?('<figure class="secimg"><img src="'+s.img+'" alt="'+captionEscape(d.name+' — '+s.t)+'" loading="lazy">'+(s.alt?'<figcaption>'+s.alt+'</figcaption>':'')+'</figure>'):'';
   secs+='<details class="acc"><summary><span class="ic"><svg class="i" viewBox="0 0 24 24">'+ic+'</svg></span>'+t+chev+'</summary><div class="inner">'+fig+renderItems(s.items)+'</div></details>';});
- document.getElementById('app').innerHTML='<header class="hdr"><div class="hdr-top"><button class="backlink" onclick="goBack()"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Manual</button><span>'+d.grp+'</span><span class="spacer"></span></div><h1 class="page-title">'+d.name+'</h1></header><main class="body"><button class="fullbtn" onclick="renderFull(\''+slug+'\')"><svg class="i" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 13h6M9 17h6"/></svg> Ver texto integral do manual</button>'+(ADMIN?adminEditBtn(slug):'')+keysBlock+casesBlock+(d.illus||'')+'<div style="height:12px"></div>'+evo+risksBlock+'<div style="height:12px"></div>'+secs+pagerHTML(slug)+'<p class="foot"><a href="imagens.html?q='+encodeURIComponent(d.name)+'">Ver todas as imagens desta doença</a></p><p class="foot">Instituto Nacional de Saúde · MISAU</p></main>'+fab("goBack()");
- if(d.cases&&d.cases.length)setCase(slug,0,document.querySelector('.casebtn'));window.scrollTo(0,0);
+ document.getElementById('app').innerHTML='<header class="hdr"><div class="hdr-top"><button class="backlink" onclick="goBack()"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Manual</button><span>'+d.grp+'</span><span class="spacer"></span></div><h1 class="page-title">'+d.name+'</h1></header><main class="body">'+diseaseHero(d)+'<button class="fullbtn" onclick="renderFull(\''+slug+'\')"><svg class="i" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 13h6M9 17h6"/></svg> Ver texto integral do manual</button>'+(ADMIN?adminEditBtn(slug):'')+keysBlock+casesBlock+(d.illus||'')+'<div style="height:12px"></div>'+evo+risksBlock+'<div style="height:12px"></div>'+secs+pagerHTML(slug)+'<p class="foot"><a href="imagens.html?q='+encodeURIComponent(d.name)+'">Ver todas as imagens desta doença</a></p><p class="foot">Instituto Nacional de Saúde · MISAU</p></main>'+fab("goBack()");
+ if(d.cases&&d.cases.length)setCase(slug,0,document.querySelector('.casebtn'));sourceOnly(document.getElementById('app'));window.scrollTo(0,0);
 }
 /* O texto integral usa os mesmos blocos actualizados pelo CMS. Preserva títulos e secções sem correspondência. */
 function integralItems(d){
@@ -359,7 +383,16 @@ function formatConfirmedMedia(c){
   '<text x="302" y="116" text-anchor="middle" font-family="Arial,sans-serif" font-size="9.5" font-weight="700" fill="#B02040">Confirmado</text>'+
   m.slice(end);
 }
-function setCase(slug,i,btn){var c=(window.CUR||DISEASES[slug]).cases[i];var fig=document.getElementById('casefig');if(c.media){fig.style.display='flex';fig.innerHTML=formatConfirmedMedia(c);}else{fig.style.display='none';fig.innerHTML='';}document.getElementById('casetag').innerHTML='Caso '+c.label.toLowerCase();document.getElementById('casebody').innerHTML=c.body;var priorCredit=document.getElementById('case-media-credit');if(priorCredit)priorCredit.remove();var credit=captionHTML(c.media,'Caso '+c.label.toLowerCase()+' — '+(window.CUR||DISEASES[slug]).name);if(credit){var node=document.createElement('div');node.id='case-media-credit';node.innerHTML=credit;fig.insertAdjacentElement('afterend',node);}var cb=document.getElementById('casebox');if(cb){cb.className='casebox';if(c.media&&c.media.indexOf('class="manual-figure')>=0)cb.classList.add('case-illustrated');if(/confirmad/i.test(c.label))cb.classList.add('case-confirmado');else if(/suspeit/i.test(c.label)){cb.classList.add('case-suspeito');cb.classList.add('case-size-large');}else if(/prov/i.test(c.label))cb.classList.add('case-provavel');}var bs=document.querySelectorAll('.casebtn');for(var j=0;j<bs.length;j++){bs[j].classList.remove('on');bs[j].setAttribute('aria-pressed','false');}if(btn){btn.classList.add('on');btn.setAttribute('aria-pressed','true');}}
+function setCase(slug,i,btn){
+ var c=(window.CUR||DISEASES[slug]).cases[i],fig=document.getElementById('casefig');
+ fig.hidden=true;fig.style.display='none';fig.innerHTML='';
+ document.getElementById('casetag').textContent='Caso '+c.label.toLowerCase();
+ document.getElementById('casebody').innerHTML=c.body;
+ var prior=document.getElementById('case-media-credit');if(prior)prior.remove();
+ var cb=document.getElementById('casebox');cb.className='casebox'+(/confirmad/i.test(c.label)?' case-confirmado':'');
+ document.querySelectorAll('.casebtn').forEach(function(b){b.classList.toggle('on',b===btn);b.setAttribute('aria-pressed',b===btn?'true':'false');});
+}
+
 function renderEdit(slug){var base=DISEASES[slug];var d=applyOv(slug);var kv=(d.keys||[]).join('\n');var ci=d.cases.map(function(c,i){return '<label class="edlab">Caso — '+c.label+'</label><textarea class="edta" id="ec'+i+'">'+c.body.replace(/&nbsp;/g,' ')+'</textarea>';}).join('');
  document.getElementById('app').innerHTML='<header class="hdr"><div class="hdr-top"><button class="backlink" onclick="renderDisease(\''+slug+'\')"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Ficha</button><span>Editar · demonstração</span><span class="spacer"></span></div><h1 class="page-title">Editar — '+d.name+'</h1></header><main class="body"><div class="note">Modo administrador (demonstração). As alterações ficam guardadas neste navegador e registadas no histórico.</div><label class="edlab">Administrador</label><input class="edin" id="eadmin" value="Admin"><label class="edlab">Pontos-chave (um por linha)</label><textarea class="edta" id="ekeys" style="min-height:120px">'+kv+'</textarea>'+ci+'<button class="fullbtn" style="background:#B02040;border-color:#B02040;color:#fff;margin-top:16px" onclick="saveEdit(\''+slug+'\')">Guardar alterações</button></main>'+fab("renderDisease('"+slug+"')");window.scrollTo(0,0);}
 function saveEdit(slug){var base=DISEASES[slug];var cur=applyOv(slug);var o=ovGet(slug);var who=(document.getElementById('eadmin').value||'Admin').trim();var changed=[];var kt=document.getElementById('ekeys').value.split('\n').map(function(x){return x.trim()}).filter(Boolean);if(JSON.stringify(kt)!==JSON.stringify(cur.keys||[])){o.keys=kt;changed.push('Pontos-chave');}o.cases=o.cases||{};base.cases.forEach(function(c,i){var el=document.getElementById('ec'+i);if(!el)return;var v=el.value.trim();var old=(cur.cases[i].body||'').replace(/&nbsp;/g,' ').trim();if(v!==old){o.cases[String(i)]=v;changed.push('Caso '+c.label);}});try{LS().setItem('ins_ov_'+slug,JSON.stringify(o))}catch(e){}if(changed.length)logAdd({t:new Date().toLocaleString('pt-PT'),user:who,disease:base.name,fields:changed.join(', ')});renderDisease(slug);}
