@@ -1,7 +1,7 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v168-cde-apresentacao-20261021";
+const CACHE_VERSION = "surtos-v169-fontes-galeria-20261021";
 const CACHE_PREFIX = "ins-manual:" + new URL(self.registration.scope).pathname + ":";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
