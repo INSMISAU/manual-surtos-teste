@@ -422,10 +422,14 @@ try{ADMIN=(LS()&&LS().getItem('ins_admin')==='1')||false}catch(e){}
     var main=document.querySelector('main')||document.querySelector('.body');if(!main)return;
     var box=document.createElement('div');box.style.cssText='margin:12px 0;padding:14px;border:1px solid #a9e0cd;border-radius:12px;background:#e3f4ef';
     var text=document.createElement('p');text.textContent='Continuar a leitura: '+readingLabel(last.label);text.style.margin='0 0 10px';
-    var link=document.createElement('a');link.href=last.url;link.textContent='Retomar leitura';link.className='pill';box.appendChild(text);box.appendChild(link);main.insertBefore(box,main.firstChild);
+    var link=document.createElement('a');link.href=last.url+'#retomar';link.textContent='Retomar leitura';link.className='pill';box.appendChild(text);box.appendChild(link);main.insertBefore(box,main.firstChild);
    }return;
   }
-  var prior=saved&&saved.pages&&saved.pages[url],restoring=!!valid(prior),moved=false,timer;
+  var nav=window.performance&&typeof window.performance.getEntriesByType==='function'?window.performance.getEntriesByType('navigation')[0]:null;
+  var resume=location.hash==='#retomar'||!!(nav&&(nav.type==='reload'||nav.type==='back_forward'));
+  var prior=saved&&saved.pages&&saved.pages[url],restoring=!!valid(prior)&&(file!=='doenca.html'||resume),moved=false,timer;
+  // Uma nova abertura de ficha começa na imagem; retomar/recarregar preserva a leitura.
+  if(file==='doenca.html'&&!resume&&'scrollRestoration' in history)history.scrollRestoration='manual';
   function snapshot(){
    if(restoring)return;
    var data=load()||{},sub=document.querySelector('.page-sub'),tag=document.querySelector('.casebtn.on');
