@@ -277,3 +277,10 @@ table.t1 a{color:var(--petrol);text-decoration:none}
 /* Grelha de síndromes em ecrãs pequenos. */
 .syn{min-width:0}.syn .nm{max-width:100%;overflow-wrap:anywhere}
 @media(max-width:360px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Revisão do suporte: ajustes locais de leitura, sem alterar os parágrafos corridos. */
+.content .section-six h3,.content .section-six h4{text-align:left!important;font-weight:700!important;line-height:1.4;margin-top:24px;margin-bottom:10px}
+.content .section-six .section-reference{text-align:left!important;overflow-wrap:anywhere;word-break:normal;line-height:1.65}
+.content .section-six li{text-align:left!important;line-height:1.6}
+.syn .syndrome-card-icon{display:flex;align-items:center;justify-content:center;width:64px;height:64px;flex:none}
+.syn .syndrome-card-icon img{display:block;width:64px;height:64px;max-width:100%;object-fit:contain}
