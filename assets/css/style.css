@@ -290,3 +290,18 @@ table.t1 a{color:var(--petrol);text-decoration:none}
 
 .tbl th,.tbl td{min-width:160px;word-break:normal;overflow-wrap:break-word}
 .tbl th:first-child,.tbl td:first-child{min-width:112px;overflow-wrap:normal}
+
+/* Larguras ajustadas ao conteúdo de cada tabela. */
+.tbl-wrap:focus-visible{outline:2px solid var(--petrol);outline-offset:3px}
+.tbl.tbl-cases{min-width:600px;table-layout:auto}
+.tbl.tbl-cases th,.tbl.tbl-cases td{min-width:96px;text-align:center;white-space:normal;word-break:normal;overflow-wrap:normal;padding:10px}
+.tbl.tbl-cases th:first-child,.tbl.tbl-cases td:first-child{min-width:170px}
+.tbl.tbl-cases thead tr:nth-child(2) th:first-child{min-width:96px}
+.tbl.tbl-cases tbody th{text-align:left;font-weight:600}
+.tbl.tbl-cases tbody td{white-space:nowrap;font-variant-numeric:tabular-nums}
+.tbl.tbl-cases .table-group th{background:#e6f2f4;color:#0a4a5a;text-align:left}
+.tbl.tbl-cases .table-total th,.tbl.tbl-cases .table-total td{font-weight:700;border-top:2px solid #7396a0}
+.tbl.tbl-criteria{min-width:720px}
+.tbl.tbl-criteria th:first-child,.tbl.tbl-criteria td:first-child{min-width:125px}
+.tbl.tbl-criteria th:not(:first-child),.tbl.tbl-criteria td:not(:first-child){min-width:190px}
+.tbl.tbl-register th:first-child,.tbl.tbl-register td:first-child{min-width:48px;text-align:center}

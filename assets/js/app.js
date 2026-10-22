@@ -59,7 +59,24 @@ function tableHtml(texts){
       const neg = tag==='td' && v && (i===0 || grupo);
       h+='<'+tag+(grupo?' class="grp"':'')+'>'+(neg?'<b>'+v+'</b>':v)+'</'+tag+'>'; }
     return h; };
-  let html='<div class="tbl-wrap"><table class="tbl">';
+  // Tabela de casos: o cabeçalho original agrupa três colunas sob “Casos”.
+  const caseSummary = maxc===5 && rows[0][0]==='Características' && rows[0][1]==='Casos' && rows[0][2]==='Total';
+  if(caseSummary){
+    const sub=rows[sep+1];
+    let result='<div class="tbl-wrap" tabindex="0" role="region" aria-label="Tabela de características dos casos; deslize horizontalmente para consultar todas as colunas"><table class="tbl tbl-cases"><thead><tr><th scope="col" rowspan="2">'+esc(rows[0][0])+'</th><th scope="colgroup" colspan="3">'+esc(rows[0][1])+'</th><th scope="col" rowspan="2">'+esc(rows[0][2])+'</th></tr><tr>';
+    for(let j=1;j<=3;j++)result+='<th scope="col">'+esc(sub[j])+'</th>';
+    result+='</tr></thead><tbody>';
+    for(let j=sep+2;j<rows.length;j++){
+      const r=rows[j];
+      if(soRotulo(r)){result+='<tr class="table-group"><th colspan="5">'+esc(r[0])+'</th></tr>';continue;}
+      result+='<tr'+(/^totais?$/i.test(r[0])?' class="table-total"':'')+'><th scope="row">'+esc(r[0])+'</th>';
+      for(let k=1;k<5;k++)result+='<td>'+esc(r[k]||'')+'</td>';
+      result+='</tr>';
+    }
+    return result+'</tbody></table></div>';
+  }
+  const kind=maxc===11?' tbl-register':maxc===4 && rows[0][0]==='Categoria'?' tbl-criteria':'';
+  let html='<div class="tbl-wrap" tabindex="0" role="region" aria-label="Tabela; deslize horizontalmente para consultar todas as colunas"><table class="tbl'+kind+'">';
   if(sep>=0){
     html+='<thead>'; for(let i=0;i<sep;i++) html+='<tr>'+cells(rows[i],'th')+'</tr>'; html+='</thead><tbody>';
     for(let i=sep+1;i<rows.length;i++) html+='<tr>'+cells(rows[i],'td')+'</tr>'; html+='</tbody>';

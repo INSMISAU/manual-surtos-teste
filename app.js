@@ -59,7 +59,24 @@ function tableHtml(texts){
       const neg = tag==='td' && v && (i===0 || grupo);
       h+='<'+tag+(grupo?' class="grp"':'')+'>'+(neg?'<b>'+v+'</b>':v)+'</'+tag+'>'; }
     return h; };
-  let html='<div class="tbl-wrap"><table class="tbl">';
+  // Tabela de casos: o cabeçalho original agrupa três colunas sob “Casos”.
+  const caseSummary = maxc===5 && rows[0][0]==='Características' && rows[0][1]==='Casos' && rows[0][2]==='Total';
+  if(caseSummary){
+    const sub=rows[sep+1];
+    let result='<div class="tbl-wrap" tabindex="0" role="region" aria-label="Tabela de características dos casos; deslize horizontalmente para consultar todas as colunas"><table class="tbl tbl-cases"><thead><tr><th scope="col" rowspan="2">'+esc(rows[0][0])+'</th><th scope="colgroup" colspan="3">'+esc(rows[0][1])+'</th><th scope="col" rowspan="2">'+esc(rows[0][2])+'</th></tr><tr>';
+    for(let j=1;j<=3;j++)result+='<th scope="col">'+esc(sub[j])+'</th>';
+    result+='</tr></thead><tbody>';
+    for(let j=sep+2;j<rows.length;j++){
+      const r=rows[j];
+      if(soRotulo(r)){result+='<tr class="table-group"><th colspan="5">'+esc(r[0])+'</th></tr>';continue;}
+      result+='<tr'+(/^totais?$/i.test(r[0])?' class="table-total"':'')+'><th scope="row">'+esc(r[0])+'</th>';
+      for(let k=1;k<5;k++)result+='<td>'+esc(r[k]||'')+'</td>';
+      result+='</tr>';
+    }
+    return result+'</tbody></table></div>';
+  }
+  const kind=maxc===11?' tbl-register':maxc===4 && rows[0][0]==='Categoria'?' tbl-criteria':'';
+  let html='<div class="tbl-wrap" tabindex="0" role="region" aria-label="Tabela; deslize horizontalmente para consultar todas as colunas"><table class="tbl'+kind+'">';
   if(sep>=0){
     html+='<thead>'; for(let i=0;i<sep;i++) html+='<tr>'+cells(rows[i],'th')+'</tr>'; html+='</thead><tbody>';
     for(let i=sep+1;i<rows.length;i++) html+='<tr>'+cells(rows[i],'td')+'</tr>'; html+='</tbody>';
@@ -304,7 +321,7 @@ function pageDoenca(){
 function pageGlossario(){
   const concepts=(M.glossary&&M.glossary.concepts)||[],ab=(M.glossary&&M.glossary.abbreviations)||[];
   const entry=(title,def,kind)=>'<article class="gloss-entry" style="border:1px solid #dce5e9;border-radius:12px;padding:14px;margin:10px 0;background:#fff"><span style="font-size:12px;color:#5a6b73">'+kind+'</span><h3 style="margin:5px 0 8px">'+esc(title)+'</h3><p style="margin:0;line-height:1.65;text-align:justify">'+esc(def)+'</p></article>';
-  const body=((M.glossary&&M.glossary.intro)?'<p style="line-height:1.6">'+esc(M.glossary.intro)+'</p>':'')+'<label for="gloss-filter" style="display:block;font-weight:700;margin-bottom:8px">Localizar no Glossário</label><input id="gloss-filter" type="search" placeholder="Pesquisar termo ou definição" autocomplete="off" style="box-sizing:border-box;width:100%;padding:12px;border:1px solid #b6cbd4;border-radius:10px;font:inherit" aria-controls="gloss-results"><p id="gloss-count" role="status" aria-live="polite"></p><div id="gloss-results">'+concepts.map(c=>entry(c.term,c.def,'Conceito')).join('')+ab.map(c=>entry(c.abbr,c.meaning,'Abreviatura')).join('')+'</div><p id="gloss-empty" hidden>Não foram encontrados termos. Experimente outra palavra.</p>';
+  const body=((M.glossary&&M.glossary.intro)?'<p style="line-height:1.6;text-align:justify">'+esc(M.glossary.intro)+'</p>':'')+'<label for="gloss-filter" style="display:block;font-weight:700;margin-bottom:8px">Localizar no Glossário</label><input id="gloss-filter" type="search" placeholder="Pesquisar termo ou definição" autocomplete="off" style="box-sizing:border-box;width:100%;padding:12px;border:1px solid #b6cbd4;border-radius:10px;font:inherit" aria-controls="gloss-results"><p id="gloss-count" role="status" aria-live="polite"></p><div id="gloss-results">'+concepts.map(c=>entry(c.term,c.def,'Conceito')).join('')+ab.map(c=>entry(c.abbr,c.meaning,'Abreviatura')).join('')+'</div><p id="gloss-empty" hidden>Não foram encontrados termos. Experimente outra palavra.</p>';
   mount({crumb:'Glossário',title:'Glossário',search:false},body,'book');
   const input=document.getElementById('gloss-filter'),cards=Array.from(document.querySelectorAll('.gloss-entry'));
   const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
@@ -537,14 +554,10 @@ document.addEventListener('DOMContentLoaded',()=>{
     var main=document.querySelector('main')||document.querySelector('.body');if(!main)return;
     var box=document.createElement('div');box.style.cssText='margin:12px 0;padding:14px;border:1px solid #a9e0cd;border-radius:12px;background:#e3f4ef';
     var text=document.createElement('p');text.textContent='Continuar a leitura: '+readingLabel(last.label);text.style.margin='0 0 10px';
-    var link=document.createElement('a');link.href=last.url+'#retomar';link.textContent='Retomar leitura';link.className='pill';box.appendChild(text);box.appendChild(link);main.insertBefore(box,main.firstChild);
+    var link=document.createElement('a');link.href=last.url;link.textContent='Retomar leitura';link.className='pill';box.appendChild(text);box.appendChild(link);main.insertBefore(box,main.firstChild);
    }return;
   }
-  var nav=window.performance&&typeof window.performance.getEntriesByType==='function'?window.performance.getEntriesByType('navigation')[0]:null;
-  var resume=location.hash==='#retomar'||!!(nav&&(nav.type==='reload'||nav.type==='back_forward'));
-  var prior=saved&&saved.pages&&saved.pages[url],restoring=!!valid(prior)&&(file!=='doenca.html'||resume),moved=false,timer;
-  // Uma nova abertura de ficha começa na imagem; retomar/recarregar preserva a leitura.
-  if(file==='doenca.html'&&!resume&&'scrollRestoration' in history)history.scrollRestoration='manual';
+  var prior=saved&&saved.pages&&saved.pages[url],restoring=!!valid(prior),moved=false,timer;
   function snapshot(){
    if(restoring)return;
    var data=load()||{},sub=document.querySelector('.page-sub'),tag=document.querySelector('.casebtn.on');
