@@ -284,3 +284,9 @@ table.t1 a{color:var(--petrol);text-decoration:none}
 .content .section-six li{text-align:left!important;line-height:1.6}
 .syn .syndrome-card-icon{display:flex;align-items:center;justify-content:center;width:64px;height:64px;flex:none}
 .syn .syndrome-card-icon img{display:block;width:64px;height:64px;max-width:100%;object-fit:contain}
+
+/* Benildo 22/10: manter os rótulos das tabelas legíveis em ecrãs estreitos. */
+.tbl th:first-child,.tbl td:first-child{min-width:112px;word-break:normal;overflow-wrap:normal;hyphens:none}
+
+.tbl th,.tbl td{min-width:160px;word-break:normal;overflow-wrap:break-word}
+.tbl th:first-child,.tbl td:first-child{min-width:112px;overflow-wrap:normal}

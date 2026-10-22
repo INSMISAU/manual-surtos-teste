@@ -1,7 +1,7 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v182-suporte-20261022";
+const CACHE_VERSION = "surtos-v183-benildo-20261022";
 const CACHE_PREFIX = "ins-manual:" + new URL(self.registration.scope).pathname + ":";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
@@ -480,12 +480,24 @@ const CORE = [
 const STATIC_RX = /\.(css|png|jpg|jpeg|gif|svg|webp|ico|woff2?|ttf|otf|pdf)$/i;
 const DATA_RX = /(content|ddata|cms_data|fiche-assets|app)\.js$/i;
 
+// Só activar uma versão cuja base de leitura esteja integralmente guardada.
+const REQUIRED = ["./index.html", "./seccao.html", "./doenca.html", "./sindrome.html",
+  "./explorar-seccao.html", "./explorar-sindrome.html", "./explorar-abecedario.html",
+  "./glossario.html", "./pesquisa.html", "./perfil.html", "./emendas.html",
+  "./assets/css/style.css", "./assets/js/app.js", "./assets/js/content.js",
+  "./ddata.js", "./fiche-assets.js", "./assets/js/photo-privacy.js"];
 self.addEventListener("install", (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((c) => Promise.allSettled(CORE.map((u) => c.add(u))))
-      .then(() => self.skipWaiting())
-  );
+  e.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    try { await cache.addAll(REQUIRED); }
+    catch (error) { await caches.delete(CACHE_NAME); throw error; }
+    const optional = [...new Set(CORE)].filter(u => !REQUIRED.includes(u));
+    // Limitar pedidos simultâneos para não sobrecarregar ligações móveis.
+    for (let i = 0; i < optional.length; i += 8) {
+      await Promise.allSettled(optional.slice(i, i + 8).map(u => cache.add(u)));
+    }
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", (e) => {
