@@ -183,6 +183,7 @@ function pageHome(){
     '<p class="disclaimer" style="text-align:center;font-size:12px;color:var(--muted);margin-top:14px">Este manual digital não substitui o manual oficial do INS · MISAU.</p>';
   mount({crumb:'Estrutura de Exploração do Manual',title:'Estrutura de<br><span class="thin">Exploração do Manual</span>',search:true},body,'home');
 }
+function sectionLabel(id){return (id<=6?'SECÇÃO '+id+' — ':'')+SECT_TITLE(id);}
 function SECT_TITLE(id){
   const s=(M.sections||[]).find(s=>s.id===id);
   if(s) return s.title;
@@ -195,10 +196,12 @@ function pageExplorarSeccao(){
     3:'Orientações gerais e classificação dos tipos de surto.',
     4:'Detecção e resposta por condição de vigilância sindrómica.',
     5:'Passos da investigação de surtos no terreno.',
-    6:'Considerações éticas na investigação de surtos.'};
-  const body=[1,2,3,4,5,6].map(id=>{
+    6:'Considerações éticas na investigação de surtos.',
+    7:'Referências bibliográficas do manual.',
+    8:'Instrumentos e modelos de apoio à investigação de surtos.'};
+  const body=[1,2,3,4,5,6,7,8].map(id=>{
     const href=id===4?'explorar-sindrome.html':('seccao.html?id='+id);
-    return '<div class="sec-card"><h3>SECÇÃO '+id+' — '+esc(SECT_TITLE(id))+'</h3>'+
+    return '<div class="sec-card"><h3>'+esc(sectionLabel(id))+'</h3>'+
       '<p>'+esc(secInfo[id])+'</p>'+
       '<button class="pill" onclick="location.href=\''+href+'\'">Saiba Mais '+I.arrow+'</button></div>';
   }).join('');
@@ -211,7 +214,7 @@ function figHtml(f){
  return '<figure class="fig"><img src="'+f.file+'" alt="'+esc(desc)+'" loading="lazy"><figcaption><span class="photo-caption-text"><b>Figura '+f.num+'.</b> '+esc(desc)+'</span>'+(credit?'<span class="photo-source"><b>Fonte:</b> '+esc(credit)+'</span>':'')+'</figcaption></figure>';
 }
 function renderSectionContent(sec){
-  if(Number(sec.id)!==6)return renderBody((sec.blocks||[]),(sec.figures||[]));
+  if(![6,7,8].includes(Number(sec.id)))return renderBody((sec.blocks||[]),(sec.figures||[]));
   const subtitles=new Set(["Dimensões da EIS", "Funções da EIS", "Tipos de materiais logísticos", "A. Documentação e Materiais Essenciais para a Investigação do Surto", "B. Kits de Colheita de Amostras", "Itens Gerais", "Kits Específicos", "Outros materiais", "Informações gerais", "Secção 1: Caracterização do surto", "Secção 2: Caso-Índice", "Secção 3: Lista de Casos", "Não Necessária Quando:", "Quando é Necessário:", "Fase I: Antes da Investigação de Campo", "Fase II: Durante a Investigação de Campo", "Fase III: Durante a Contenção e Mitigação", "Exploração de História de Exposição", "Percepções e Práticas da Comunidade", "Adesão e Aceitação de Medidas de Controlo"]);
   const blocks=(sec.blocks||[]).map(b=>{
     const t=String(b.text||'').trim();
@@ -243,12 +246,12 @@ function pager(prev,next){
   return '<div class="pager">'+(prev?lnk(prev,'pv'):fim('Início do manual'))+(next?lnk(next,'nx'):fim('Fim do manual'))+'</div>';
 }
 function seccaoPager(id){
-  const ordem=[1,2,3,4,5,6];
+  const ordem=[1,2,3,4,5,6,7,8];
   const href=i=>i===4?'explorar-sindrome.html':('seccao.html?id='+i);
   const nome=i=>i===4?'Vigilância Sindrómica':SECT_TITLE(i);
   const i=ordem.indexOf(id);
-  const pv=i>0?{href:href(ordem[i-1]),title:'Secção '+ordem[i-1]+' · '+nome(ordem[i-1])}:null;
-  const nx=i<ordem.length-1?{href:href(ordem[i+1]),title:'Secção '+ordem[i+1]+' · '+nome(ordem[i+1])}:null;
+  const pv=i>0?{href:href(ordem[i-1]),title:(ordem[i-1]<=6?'Secção '+ordem[i-1]+' · ':'')+nome(ordem[i-1])}:null;
+  const nx=i<ordem.length-1?{href:href(ordem[i+1]),title:(ordem[i+1]<=6?'Secção '+ordem[i+1]+' · ':'')+nome(ordem[i+1])}:null;
   return pager(pv,nx);
 }
 function sindromePager(id){
@@ -263,7 +266,7 @@ function pageSeccao(){
   const s=(M.sections||[]).find(s=>s.id===id);
   if(!s){mount({back:true,title:'Secção'},'<div class="card">Secção não encontrada.</div>','map');return;}
   const body='<div class="content">'+renderSectionContent(s)+'</div>'+seccaoPager(id);
-  mount({back:true,crumb:'Secção '+id,title:'SECÇÃO '+id+'<br><span class="thin">'+esc(s.title)+'</span>',search:false},body,'map');
+  mount({back:true,crumb:id<=6?'Secção '+id:s.title,title:(id<=6?'SECÇÃO '+id+'<br>':'')+'<span class="thin">'+esc(s.title)+'</span>',search:false},body,'map');
 }
 function pageExplorarSindrome(){
   const cards=orderedGroups().map(g=>
@@ -365,8 +368,8 @@ function pageSearch(){
       if(matches(full)) results.push({t:d.name,s:'Ficha de doença',href:'doenca.html?slug='+d.slug,snip:snippet(full)});
     });
     (M.sections||[]).forEach(s=>{
-      const full='Secção '+s.id+' '+s.title+' '+s.blocks.map(b=>b.text).join(' ');
-      if(matches(full)) results.push({t:'SECÇÃO '+s.id+' — '+s.title,s:'Secção',href:'seccao.html?id='+s.id,snip:snippet(full)});
+      const full=sectionLabel(s.id)+' '+s.blocks.map(b=>b.text).join(' ');
+      if(matches(full)) results.push({t:sectionLabel(s.id),s:s.supplemental?s.title:'Secção',href:'seccao.html?id='+s.id,snip:snippet(full)});
     });
     ((M.glossary&&M.glossary.abbreviations)||[]).forEach(a=>{
       if(matches(a.abbr+' '+a.meaning)) results.push({t:a.abbr+' — '+a.meaning,s:'Abreviatura',href:'glossario.html',snip:''});
@@ -436,7 +439,7 @@ document.addEventListener('DOMContentLoaded',()=>{
    '.mnav .mh b{font-family:"Raleway","Segoe UI",sans-serif;font-size:16px;font-weight:800;flex:1}',
    '.mnav .mx{background:rgba(255,255,255,.2);border:none;border-radius:50%;width:32px;height:32px;',
      'font-size:15px;cursor:pointer;color:#fff}',
-   '.mnav .ml{padding:8px 10px 14px}',
+   '.mnav .ml{padding:8px 10px 14px;max-height:calc(100dvh - 88px);overflow-y:auto}',
    '.mnav a{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;',
      'color:#243038;font-weight:600;font-size:15px;cursor:pointer;text-decoration:none}',
    '.mnav a:active{background:#eef4f6}',
@@ -472,6 +475,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   var MENU=[
     ['index.html','⌂','Inicio',''],
     ['explorar-seccao.html','§','Explorar por Seccao',''],
+    ['seccao.html?id=7','▤','Referências',''],
+    ['seccao.html?id=8','▤','Anexos',''],
     ['explorar-sindrome.html','◆','Explorar por Sindrome',''],
     ['explorar-abecedario.html','AZ','Explorar por Abecedario',''],
     ['emendas.html','↻','Emendas / Versoes',''],

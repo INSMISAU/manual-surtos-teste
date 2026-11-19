@@ -201,6 +201,7 @@ svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke
 </style></head>
 <body><div class="app"><div id="app"></div></div>
 <script data-ins-photo-privacy="1" src="assets/js/photo-privacy.js"></script>
+<script src="assets/js/image-sources.js"></script>
 <script src="ddata.js"></script>
 <script src="fiche-assets.js"></script>
 <script>
@@ -303,6 +304,7 @@ function riskHTML(t){t=String(t||'');
  return t;}
 
 function sourceOnly(container){
+ window.INSImageSources.clean(container);
  container.querySelectorAll('.photo-caption-text,.image-date').forEach(function(n){n.remove();});
  container.querySelectorAll('figcaption,.risk-credit,.media-credit').forEach(function(n){
   if(!/Fonte\s*:/i.test(n.textContent))return;
