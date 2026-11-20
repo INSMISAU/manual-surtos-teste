@@ -1,11 +1,12 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v188-revisao-manual-testes-20261119";
+const CACHE_VERSION = "surtos-v189-imagens-contexto-africano-20261120";
 const CACHE_PREFIX = "ins-manual:" + new URL(self.registration.scope).pathname + ":";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 const CORE = [
+"./assets/ilustracoes/colera-tratamento-mocambique-oms-2019.jpg",
 "./assets/css/figures.css","./assets/fig/chart-palette.svg",
 "./assets/js/image-sources.js",
 "./assets/ilustracoes/ebola-doentes-msf-bambu-2026-gp.jpg","./assets/ilustracoes/lassa-cuidados-alima-publicacao-2025-gp.jpg","./assets/ilustracoes/tuberculose-pessoa-tosse-cdc-gp.jpg","./assets/ilustracoes/covid-19-anao-aprovada-gp-20261023.jpeg","./assets/ilustracoes/meningite-berrini-aprovada-gp-20261023.jpeg","./assets/ilustracoes/vsr-lactente-nhs-publicacao-2025-gp.jpeg",
@@ -484,7 +485,7 @@ const STATIC_RX = /\.(css|png|jpg|jpeg|gif|svg|webp|ico|woff2?|ttf|otf|pdf)$/i;
 const DATA_RX = /(content|ddata|cms_data|fiche-assets|app)\.js$/i;
 
 // Só activar uma versão cuja base de leitura esteja integralmente guardada.
-const REQUIRED = ["./assets/js/image-sources.js", "./assets/css/figures.css", "./assets/fig/chart-palette.svg", "./index.html", "./seccao.html", "./doenca.html", "./sindrome.html",
+const REQUIRED = ["./assets/ilustracoes/colera-tratamento-mocambique-oms-2019.jpg", "./assets/js/image-sources.js", "./assets/css/figures.css", "./assets/fig/chart-palette.svg", "./index.html", "./seccao.html", "./doenca.html", "./sindrome.html",
   "./explorar-seccao.html", "./explorar-sindrome.html", "./explorar-abecedario.html",
   "./glossario.html", "./pesquisa.html", "./perfil.html", "./emendas.html",
   "./assets/css/style.css", "./assets/js/app.js", "./assets/js/content.js",
