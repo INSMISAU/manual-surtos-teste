@@ -146,6 +146,7 @@ function tabbar(active){
 function mount(headerOpts, bodyHtml, activeTab){
   document.body.innerHTML='<div class="app">'+header(headerOpts)+'<main class="body">'+bodyHtml+'<p style="text-align:center;margin:20px 0"><a href="como-utilizar.html">Como utilizar o manual</a></p></main></div>'+tabbar(activeTab);
   addClosers();
+  document.querySelectorAll('.figure-zoom').forEach(button=>button.addEventListener('click',()=>openFigure(button.dataset.figureFile,button.dataset.figureLabel)));
 }
 /* Comprimir sem voltar ao topo: botao "Fechar" no fim de cada bloco aberto. */
 function addClosers(root){
@@ -208,10 +209,32 @@ function pageExplorarSeccao(){
   mount({crumb:'Explorar',title:'Explorar<br><span class="thin">por Secção</span>'},body,'map');
 }
 var IMAGE_CREDITS={};
+function openFigure(file,label) {
+  const trigger=document.activeElement,dialog=document.createElement('dialog');
+  dialog.className='figure-viewer';dialog.setAttribute('aria-label',label);
+  const toolbar=document.createElement('div');toolbar.className='figure-toolbar';
+  const heading=document.createElement('h2');heading.textContent=label;toolbar.appendChild(heading);
+  const controls=document.createElement('div');controls.className='figure-controls';
+  const canvas=document.createElement('div');canvas.className='figure-canvas';canvas.tabIndex=0;
+  canvas.setAttribute('role','region');canvas.setAttribute('aria-label','Figura ampliada; deslize para consultar toda a imagem');
+  const image=document.createElement('img');image.alt=label;canvas.appendChild(image);
+  let width=840;
+  function size(value){width=Math.max(240,Math.min(6000,Math.round(value)));image.style.width=width+'px';}
+  function button(text,title,action){const b=document.createElement('button');b.type='button';b.textContent=text;b.setAttribute('aria-label',title);b.addEventListener('click',action);controls.appendChild(b);return b;}
+  button('−','Diminuir figura',()=>size(width/1.3));
+  button('+','Aumentar figura',()=>size(width*1.3));
+  button('Ajustar','Ajustar figura ao ecrã',()=>size(canvas.clientWidth-20));
+  const close=button('Fechar','Fechar figura ampliada',()=>dialog.close());
+  dialog.addEventListener('close',()=>{dialog.remove();if(trigger&&trigger.isConnected)trigger.focus();},{once:true});
+  image.addEventListener('load',()=>size(Math.min(Math.max(image.naturalWidth,840),2400)),{once:true});
+  dialog.append(toolbar,controls,canvas);document.body.appendChild(dialog);
+  if(typeof dialog.showModal!=='function'){dialog.remove();window.open(file,'_blank','noopener');return;}
+  dialog.showModal();close.focus();image.src=file;
+}
 function figHtml(f){
  const parts=(f.caption||'').replace(/^Figura\s+\d+\.\s*/,'').split(/\s+Fonte\s*:\s*/i);
  const desc=parts.shift(),credit=parts.join(' Fonte: ')||IMAGE_CREDITS[f.file]||'';
- return '<figure class="fig"><img src="'+f.file+'" alt="'+esc(desc)+'" loading="lazy"><figcaption><span class="photo-caption-text"><b>Figura '+f.num+'.</b> '+esc(desc)+'</span>'+(credit?'<span class="photo-source"><b>Fonte:</b> '+esc(credit)+'</span>':'')+'</figcaption></figure>';
+ return '<figure class="fig"><img src="'+f.file+'" alt="'+esc(desc)+'" loading="lazy"><figcaption><span class="photo-caption-text"><b>Figura '+f.num+'.</b> '+esc(desc)+'</span>'+(credit?'<span class="photo-source"><b>Fonte:</b> '+esc(credit)+'</span>':'')+'</figcaption><button type="button" class="figure-zoom" data-figure-file="'+esc(f.file)+'" data-figure-label="'+esc('Figura '+f.num+'. '+desc)+'">Ampliar figura</button></figure>';
 }
 function renderSectionContent(sec){
   if(![6,7,8].includes(Number(sec.id)))return renderBody((sec.blocks||[]),(sec.figures||[]));
@@ -343,23 +366,27 @@ function pageEmendas(){
     '';
   mount({crumb:'Emendas',title:'Histórico<br><span class="thin">de Versões</span>',search:false},body,'doc');
 }
+function searchComparable(text){return deaccent(String(text)).replace(/[^a-z0-9\s]/g,'');}
 function pageSearch(){
   const q=(param('q')||'').trim();
   const STOP=['de','do','da','dos','das','e','a','o','as','os','em','no','na','para','com','ou'];
   /* pesquisa flexível: divide em palavras, ignora acentos e artigos, e casa por qualquer ordem */
-  const tokens=deaccent(q).split(/\s+/).map(t=>t.replace(/[^a-z0-9]/g,'')).filter(t=>t.length>=2 && STOP.indexOf(t)<0);
-  function matches(text){ const dt=deaccent(text); return tokens.length>0 && tokens.every(t=>dt.indexOf(t)>=0); }
+  const tokens=q.split(/\s+/).map(searchComparable).filter(t=>t.length>=2 && STOP.indexOf(t)<0);
+  function matches(text){ const dt=searchComparable(text); return tokens.length>0 && tokens.every(t=>dt.indexOf(t)>=0); }
   function hl(text){ /* destaca as palavras pesquisadas (ignorando acentos) */
     return String(text).split(/(\s+)/).map(function(w){
-      var dw=deaccent(w.replace(/[.,;:()"']/g,''));
+      var dw=searchComparable(w);
       return (dw && tokens.some(function(t){return dw.indexOf(t)>=0;})) ? '<mark>'+esc(w)+'</mark>' : esc(w);
     }).join('');
   }
-  function snippet(text){ const dt=deaccent(text); let pos=-1;
-    tokens.forEach(function(t){ var p=dt.indexOf(t); if(p>=0 && (pos<0||p<pos)) pos=p; });
-    if(pos<0) return '';
-    var start=Math.max(0,pos-45); var s=String(text).slice(start,start+150).trim();
-    return (start>0?'… ':'')+hl(s)+' …';
+  function snippet(text){
+    let pos=0,offset=0;
+    for(const part of String(text).split(/(\s+)/)){
+      if(tokens.some(t=>searchComparable(part).indexOf(t)>=0)){pos=offset;break;}
+      offset+=part.length;
+    }
+    const start=Math.max(0,pos-45),excerpt=String(text).slice(start,start+150).trim();
+    return (start>0?'… ':'')+hl(excerpt)+' …';
   }
   let results=[];
   if(tokens.length){
@@ -396,7 +423,7 @@ function pagePerfil(){
   const body='<div class="brand"><img src="assets/img/logos.png" alt="INS"><div class="bt"><b>Instituto Nacional de Saúde</b>Ministério da Saúde · Moçambique</div></div>'+'<div class="card content"><h3 style="margin-top:2px">'+esc(m.title||'Manual de Surtos')+'</h3>'+
     '<p class="lead">'+esc(m.subtitle||'')+'</p>'+
     '<p><b>Versão:</b> '+esc(m.version||'V1.0')+'</p>'+
-    '<p><b>Conteúdo:</b> '+(M.sections||[]).length+' secções narrativas, '+orderedGroups().length+' grupos sindrómicos, '+(M.diseases||[]).length+' fichas de doença e '+((M.glossary&&M.glossary.abbreviations)||[]).length+' abreviaturas.</p>'+
+    '<p><b>Conteúdo:</b> '+new Set((M.sections||[]).filter(s=>!s.supplemental).map(s=>s.id).concat([4])).size+' secções, Referências e Anexos, '+orderedGroups().length+' grupos sindrómicos, '+(M.diseases||[]).length+' fichas de doença e '+((M.glossary&&M.glossary.abbreviations)||[]).length+' abreviaturas.</p>'+
     '<p><b>Funcionamento:</b> aplicação estática, funciona offline (sem necessidade de internet).</p></div>'+
     '<div class="card content"><h4 style="margin-top:2px">Sobre</h4>'+
     '<p>Digitalização do Manual de Detecção e Investigação de Surtos em Moçambique, do Instituto Nacional de Saúde (INS) / Ministério da Saúde (MISAU).</p></div>'+
