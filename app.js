@@ -292,8 +292,10 @@ function pageSeccao(){
   mount({back:true,crumb:id<=6?'Secção '+id:s.title,title:(id<=6?'SECÇÃO '+id+'<br>':'')+'<span class="thin">'+esc(s.title)+'</span>',search:false},body,'map');
 }
 function pageExplorarSindrome(){
-  const cards=orderedGroups().map(g=>
-    '<a class="syn" href="sindrome.html?id='+g.id+'" style="min-height:104px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;text-decoration:none;color:inherit">'+'<span class="syndrome-card-icon">'+(g.id===4?'<img src="assets/icones/helder-20261014/paralisia.svg" alt="">':g.id===2?'<img src="assets/icones/helder-20261014/exantematicas.svg" alt="">':groupIcon(g.icon,g.id))+'</span>'+'<div class="nm">'+esc(g.name)+'</div></a>').join('');
+  const cards=orderedGroups().map(g=>{
+    const picture=g.illustration?'<span class="syndrome-card-photo"><img src="'+esc(g.illustration.file)+'" alt="'+esc(g.illustration.alt)+'" loading="lazy" decoding="async"></span>':'<span class="syndrome-card-icon">'+groupIcon(g.icon,g.id)+'</span>';
+    return '<a class="syn" href="sindrome.html?id='+g.id+'" style="min-height:104px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;text-decoration:none;color:inherit">'+picture+'<div class="nm">'+esc(g.name)+'</div></a>';
+  }).join('');
   const si=(M.meta&&M.meta.sindromesIntro)||[];
   const intro='';
   const t1=(M.meta&&M.meta.tabela1)||null;
@@ -302,7 +304,7 @@ function pageExplorarSindrome(){
     t1.cabecalho.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+
     orderedGroups().map(g=>'<tr><td><a href="sindrome.html?id='+g.id+'"><b>'+esc(g.name)+'</b></a></td><td>'+esc(g.agentes||'')+'</td><td>'+esc(g.obs||'')+'</td></tr>').join('')+
     '</tbody></table></div></div></details>'):'';
-  const body=intro+'<div class="grid">'+cards+'</div>'+tabela+
+  const body=intro+'<div class="grid">'+cards+'</div><p class="image-attribution"><a href="imagens.html?q=Explorar%20por%20s%C3%ADndrome">Fontes das imagens</a></p>'+tabela+
     '<div class="card" style="margin-top:16px;display:flex;gap:14px;align-items:center">'+
     '<img src="assets/img/cover.jpg" style="width:84px;height:84px;object-fit:cover;border-radius:12px" alt="Capa oficial do manual">'+
     '<div><div style="font-family:Poppins;font-weight:700;color:var(--petrol);font-size:14px"><a href="manual.html" style="color:inherit;text-decoration:none">Manual de Detecção e Investigação de Surtos em Moçambique</a></div>'+
