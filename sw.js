@@ -1,7 +1,7 @@
 /* Service Worker — Manual de Surtos INS
    Mostra SEMPRE a versao mais recente com internet (acaba com os "varios refreshes")
    e funciona offline. Sobe CACHE_VERSION quando publicares (v5 -> v6). */
-const CACHE_VERSION = "surtos-v191-leitura-offline-completa-20261120";
+const CACHE_VERSION = "surtos-v193-ronda4-imagens-consolidadas-20261120";
 const CACHE_PREFIX = "ins-manual:" + new URL(self.registration.scope).pathname + ":";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
@@ -152,6 +152,7 @@ const CORE = [
   "./assets/ilustracoes/filariase-culex-vector-cdc-real-ef-20261015.jpg",
   "./assets/ilustracoes/filariase-elefantiase-publicacao-2023-real-cm-20261015.jpg",
   "./assets/ilustracoes/filariase-perna-publicacao-2024-real-cm-20261015.jpg",
+  "./assets/ilustracoes/gravidez-cagole-cicv-2020.webp",
   "./assets/ilustracoes/hepatite-alimentos-maputo-estudo-2021.jpg",
   "./assets/ilustracoes/hepatite-ictericia-ocular-real-lote4-20261014.jpg",
   "./assets/ilustracoes/hfrs-tomografia-renal-real-ef-20261015.jpg",
@@ -195,6 +196,7 @@ const CORE = [
   "./assets/ilustracoes/rotavirus-agua-boromata-unicef-2007.jpg",
   "./assets/ilustracoes/rubeola-cdc-real-20261014.jpg",
   "./assets/ilustracoes/rubeola-src-cataratas-real-pv-20261015.jpg",
+  "./assets/ilustracoes/saneamento-guara-guara-susana-2011.jpg",
   "./assets/ilustracoes/sangue-colheita-profissional-cdc-real-ef-20261015.jpg",
   "./assets/ilustracoes/sarampo-espirro-real-revisao-20261015.jpg",
   "./assets/ilustracoes/sarampo-misau-2009-p91.jpg",
