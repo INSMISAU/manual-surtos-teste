@@ -88,6 +88,10 @@ var FIELDS=[
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2800);}
 function show(id){['cfg','login','recuperar','trocar','app'].forEach(function(x){document.getElementById(x).classList.toggle('hide',x!==id);});}
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function mensagemEstadoEditorial(etapa,estado){
+var mensagens={revisao:{rascunho:'Revisão: aguarda submissão.',revisao:'Em revisão.',aprovado:'Revisão concluída.',publicado:'Conteúdo já publicado.'},publicacao:{rascunho:'Publicação: aguarda submissão e aprovação.',revisao:'Publicação: aguarda aprovação.',aprovado:'Pronto para publicação.',publicado:'Conteúdo já publicado.'}};
+return (mensagens[etapa]&&mensagens[etapa][estado||'rascunho'])||'Estado do conteúdo indisponível.';
+}
 function badge(e){var m={publicado:'pub',revisao:'rev',rascunho:'rasc',aprovado:'aprov'};return '<span class="badge '+(m[e]||'rasc')+'">'+e+'</span>';}
 function loadCfg(){ if(HARD_URL && HARD_KEY) return {url:HARD_URL,key:HARD_KEY}; try{return JSON.parse(localStorage.getItem(CFG_KEY));}catch(e){return null;} }
 function saveCfg(){
@@ -322,8 +326,8 @@ document.getElementById('content').innerHTML=
 '<div class="field"><label>Conteúdo</label><textarea id="scConteudo" rows="12" '+(can('edit')?'':'readonly')+'>'+esc(s.conteudo||'')+'</textarea></div>'+
 '<div class="row" style="border-top:1px solid var(--linha);padding-top:12px;flex-wrap:wrap;gap:6px;align-items:center">'+
 (can('edit')?'<button class="btn-o" onclick="saveSeccao(\''+id+'\',null)">Guardar</button><button class="btn-w" onclick="saveSeccao(\''+id+'\',\'revisao\')">Guardar &amp; submeter</button>':'')+
-(can('review')?((s.estado||'rascunho')==='revisao'?'<button class="btn-g" onclick="setEstadoSeccao(\''+id+'\',\'aprovado\')">✔ Aprovar</button><button class="btn-r" onclick="setEstadoSeccao(\''+id+'\',\'rascunho\')">↩ Devolver</button>':'<span class="mut" style="font-size:12px;margin-left:8px">Revisão: aguarda submissão</span>'):'')+
-(can('publish')?((s.estado||'rascunho')==='aprovado'?'<button class="btn-p" onclick="setEstadoSeccao(\''+id+'\',\'publicado\')">↥ Publicar</button>':'<span class="mut" style="font-size:12px;margin-left:8px">Publicação: aguarda aprovação</span>'):'')+
+(can('review')?((s.estado||'rascunho')==='revisao'?'<button class="btn-g" onclick="setEstadoSeccao(\''+id+'\',\'aprovado\')">✔ Aprovar</button><button class="btn-r" onclick="setEstadoSeccao(\''+id+'\',\'rascunho\')">↩ Devolver</button>':'<span class="mut" style="font-size:12px;margin-left:8px">'+esc(mensagemEstadoEditorial('revisao',s.estado))+'</span>'):'')+
+(can('publish')?((s.estado||'rascunho')==='aprovado'?'<button class="btn-p" onclick="setEstadoSeccao(\''+id+'\',\'publicado\')">↥ Publicar</button>':'<span class="mut" style="font-size:12px;margin-left:8px">'+esc(mensagemEstadoEditorial('publicacao',s.estado))+'</span>'):'')+
 '</div></div>';
 });
 }
@@ -447,8 +451,8 @@ document.getElementById('content').innerHTML=
 (can('edit')?'<div class="field"><label>Carregar correcção de pontos-chave</label><input type="file" accept=".json,application/json" data-slug="'+esc(d.slug)+'" onchange="carregarCorreccaoFicha(this)"><div id="correccaoStatus" class="mut">Seleccione o ficheiro da ficha. O texto será preenchido para conferir antes de Guardar.</div></div>':'')+f+imgHTML()+
 '<div class="row" style="border-top:1px solid var(--linha);padding-top:12px;margin-top:6px;flex-wrap:wrap;gap:6px;align-items:center">'+
 (can('edit')?'<button class="btn-o" onclick="saveDoe(\''+id+'\',null)">Guardar</button><button class="btn-w" onclick="saveDoe(\''+id+'\',\'revisao\')">Guardar &amp; submeter</button>':'')+
-(can('review')?(d.estado==='revisao'?'<button class="btn-g" onclick="setEstado(\''+id+'\',\'aprovado\')">✔ Aprovar</button><button class="btn-r" onclick="setEstado(\''+id+'\',\'rascunho\')">↩ Devolver</button>':'<span class="mut" style="font-size:12px;margin-left:8px">Revisão: aguarda submissão</span>'):'')+
-(can('publish')?(d.estado==='aprovado'?'<button class="btn-p" onclick="setEstado(\''+id+'\',\'publicado\')">↥ Publicar</button>':'<span class="mut" style="font-size:12px;margin-left:8px">Publicação: aguarda aprovação</span>'):'')+
+(can('review')?(d.estado==='revisao'?'<button class="btn-g" onclick="setEstado(\''+id+'\',\'aprovado\')">✔ Aprovar</button><button class="btn-r" onclick="setEstado(\''+id+'\',\'rascunho\')">↩ Devolver</button>':'<span class="mut" style="font-size:12px;margin-left:8px">'+esc(mensagemEstadoEditorial('revisao',d.estado))+'</span>'):'')+
+(can('publish')?(d.estado==='aprovado'?'<button class="btn-p" onclick="setEstado(\''+id+'\',\'publicado\')">↥ Publicar</button>':'<span class="mut" style="font-size:12px;margin-left:8px">'+esc(mensagemEstadoEditorial('publicacao',d.estado))+'</span>'):'')+
 '</div></div>';
 loadImageTargets(d.slug,id);
 });
