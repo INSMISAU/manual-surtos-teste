@@ -1,13 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="fig4" color-interpolation-filters="sRGB">
-      <feColorMatrix type="matrix" values="0.821428571 0.178571429 0 0 0  0.321428571 0.678571429 0 0 0  0.306878307 0 0.693121693 0 0  0 0 0 1 0"/>
-    </filter>
-    <filter id="fig5" color-interpolation-filters="sRGB">
-      <feColorMatrix type="matrix" values="1.06122449 0 -0.06122449 0 0  0 0.971428571 0.028571429 0 0  -0.020408163 0 1.020408163 0 0  0 0 0 1 0"/>
-    </filter>
-    <filter id="fig6" color-interpolation-filters="sRGB">
-      <feColorMatrix type="matrix" values="0.932432432 0.067567568 0 0 0  0 0.970588235 0.029411765 0 0  -0.027777778 0 1.027777778 0 0  0 0 0 1 0"/>
-    </filter>
-  </defs>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg"><defs><filter id="fig4" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -20 0 20 0 0" result="blue-mask"/><feFlood flood-color="#1b6185" result="blue"/><feComposite in="blue" in2="blue-mask" operator="in" result="recoloured"/><feComposite in="recoloured" in2="SourceGraphic" operator="over"/></filter><filter id="fig5" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -20 0 20 0 0" result="blue-mask"/><feFlood flood-color="#1b6185" result="blue"/><feComposite in="blue" in2="blue-mask" operator="in" result="recoloured"/><feComposite in="recoloured" in2="SourceGraphic" operator="over"/></filter><filter id="fig6" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -20 0 20 0 0" result="blue-mask"/><feFlood flood-color="#1b6185" result="blue"/><feComposite in="blue" in2="blue-mask" operator="in" result="recoloured"/><feComposite in="recoloured" in2="SourceGraphic" operator="over"/></filter></defs></svg>

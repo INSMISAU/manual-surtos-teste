@@ -527,6 +527,7 @@ function sincCasos(o){
   });
 }
 function publicarSite(){
+if(!can('publish')){toast('Sem permissão para publicar.');return;}
 if(!emTeste()){ if(!confirm('ATENCAO: vais publicar no MANUAL REAL, visivel ao publico ('+ghRepo()+').\n\nSo as fichas APROVADAS e depois PUBLICADAS serao geradas. Confirmas?')) return; }
 toast('A gerar o manual a partir da base de dados...');
 Promise.all([
@@ -537,6 +538,7 @@ sb.from('glossario_abreviaturas').select('*').order('sigla'),
 fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/ddata.js?_='+Date.now()).then(function(r){return r.ok?r.text():null;}).catch(function(){return null;}),
 fetch('https://raw.githubusercontent.com/'+ghRepo()+'/'+GH_BRANCH+'/assets/js/content.js?_='+Date.now()).then(function(r){return r.ok?r.text():null;}).catch(function(){return null;})
 ]).then(function(res){
+if(res.slice(0,4).some(function(r){return !r||r.error||!Array.isArray(r.data);})){toast('Publicação cancelada: não foi possível carregar todos os conteúdos. Tente novamente.');return;}
 var sind=res[0].data||[], doe=res[1].data||[], sec=res[2].data||[], ab=res[3].data||[], ddataTxt=res[4], contentTxt=res[5];
 /* Identificadores antigos no CMS: publicar com os caminhos existentes no leitor,
    sem alterar os registos da base de dados ou as imagens aprovadas. */
@@ -579,10 +581,11 @@ if(baseMAN.sections){ baseMAN.sections.sort(function(a,b){ var oa=secByOrd[a.id]
    Conteudo rico de cada doenca preservado do base (so se reordena/renomeia). */
 if(sind && sind.length){
 var slugsBase={}; (baseMAN.diseases||[]).forEach(function(dis){ slugsBase[dis.slug]=true; });
-var iconByName={}; (baseMAN.groups||[]).forEach(function(g){ iconByName[g.name]=g.icon; });
+var groupByName={},groupByOrder={}; (baseMAN.groups||[]).forEach(function(g){groupByName[g.name]=g;groupByOrder[g.id]=g;});
 baseMAN.groups=sind.slice().sort(function(a,b){return (a.ordem||0)-(b.ordem||0);}).map(function(s,i){
 var membros=doe.filter(function(d){return d.sindrome_id===s.id && slugsBase[d.slug];}).map(function(d){return d.slug;});
-return { id:i+1, name:s.nome, icon:(s.icone||iconByName[s.nome]||'sindrome'), diseases:membros };
+var previous=groupByName[s.nome]||groupByOrder[s.ordem],group=previous?JSON.parse(JSON.stringify(previous)):{};
+group.id=i+1;group.name=s.nome;group.icon=s.icone||group.icon||'sindrome';group.diseases=membros;return group;
 });
 var gidBySlug={}; baseMAN.groups.forEach(function(g){ g.diseases.forEach(function(sl){ gidBySlug[sl]=g.id; }); });
 (baseMAN.diseases||[]).forEach(function(dis){ if(gidBySlug[dis.slug]) dis.group=gidBySlug[dis.slug]; });
