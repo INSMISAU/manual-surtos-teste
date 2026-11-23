@@ -296,7 +296,7 @@ function pageExplorarSindrome(){
     const symbols={1:0,2:1,4:2,5:3,6:4,7:5,8:6,9:7,10:8,3:9};
     const symbolIndex=symbols[g.id];
     const symbolX=(symbolIndex%5)*350.4+5,symbolY=symbolIndex<5?135:500;
-    const picture='<span class="syndrome-card-symbol" role="img" aria-label="'+esc(g.name)+'"><svg xmlns="http://www.w3.org/2000/svg" viewBox="'+symbolX+' '+symbolY+' 340.4 330" aria-hidden="true" focusable="false"><image href="assets/icons/simbolos-sindromicos-aprovados-20261123.png" width="1752" height="897"/></svg></span>';
+    const picture='<span class="syndrome-card-symbol" role="img" aria-label="'+esc(g.name)+'"><svg xmlns="http://www.w3.org/2000/svg" viewBox="'+symbolX+' '+symbolY+' 340.4 330" aria-hidden="true" focusable="false"><defs><clipPath id="symbol-clip-'+g.id+'"><rect x="'+symbolX+'" y="'+symbolY+'" width="340.4" height="330"/></clipPath></defs><image href="assets/icons/simbolos-sindromicos-aprovados-20261123.png" width="1752" height="897" clip-path="url(#symbol-clip-'+g.id+')"/></svg></span>';
     return '<a class="syn" href="sindrome.html?id='+g.id+'" style="min-height:104px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;text-decoration:none;color:inherit">'+picture+'<div class="nm">'+esc(g.name)+'</div></a>';
   }).join('');
   const si=(M.meta&&M.meta.sindromesIntro)||[];
